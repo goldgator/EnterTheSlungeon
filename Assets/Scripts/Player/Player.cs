@@ -11,27 +11,64 @@ public class Player : MonoBehaviour
 
 
     [Header("Components")]
+    public GameObject weaponPivot;
+    public GameObject weapon;
     private Rigidbody2D rb;
+
+
+    public Player Instance { get; set; }
 
     private void Awake()
     {
+        Instance = this;
         rb = GetComponent<Rigidbody2D>();
     }
 
     private void FixedUpdate()
     {
         ProcessMove();
+        ProcessAim();
     }
 
     private void ProcessMove()
     {
-        float inpX = Input.GetAxisRaw("Horizontal");
-        float inpY = Input.GetAxisRaw("Vertical");
-
-        Vector3 velocity = new Vector2(inpX, inpY).normalized;
+        Vector3 velocity = InputManager.Instance.PlayerMovement.normalized;
         velocity *= baseSpeed * Time.deltaTime;
 
         rb.MovePosition(transform.position + velocity);
+    }
+
+    private void ProcessAim()
+    {
+        if (InputManager.isGamepad)
+        {
+            ProcessAimGamePad();
+        } else
+        {
+            ProcessAimKeyboard();
+        }
+    }
+
+    private void ProcessAimGamePad()
+    {
+
+    }
+
+    private void ProcessAimKeyboard()
+    {
+        Vector3 worldMousePos = InputManager.Instance.MouseWorldPosition;
+
+        //Weapon pivot
+        Vector3 direction = (worldMousePos - weaponPivot.transform.position).normalized;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        weaponPivot.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+
+        //Weapon
+        direction = (worldMousePos - weapon.transform.position).normalized;
+        angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        weapon.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
     }
 
     // Update is called once per frame
