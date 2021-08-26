@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class Utilities
@@ -36,6 +37,7 @@ public static class Utilities
             return CardinalDir.West;
         } else
         {
+            Debug.Log(vector);
             throw new Exception("Invalid vector for Cardinal Direction");
         }
     }
@@ -67,5 +69,6 @@ public static class Utilities
         //move clockwise this many steps from current dir to get that dir
         return (CardinalDir)((((int)direction) + steps) % 4);
     }
+
 }
 

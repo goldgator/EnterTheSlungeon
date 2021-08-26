@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
@@ -9,7 +11,14 @@ public class InputManager : MonoBehaviour
     public Camera playerCamera;
     public BaseControls baseControls;
 
+    //Delegates and events
+    public delegate void MoveDelegate(Vector2 position);
 
+    public event MoveDelegate moveStartEvent;
+    public event MoveDelegate moveUpdateEvent;
+    public event MoveDelegate moveStopEvent;
+
+    #region Input Properties
     //Input values
     public Vector2 PlayerMovement
     {
@@ -18,7 +27,6 @@ public class InputManager : MonoBehaviour
             return baseControls.Controls.Move.ReadValue<Vector2>();
         }
     }
-
 
     public Vector2 MousePosition
     {
@@ -48,7 +56,7 @@ public class InputManager : MonoBehaviour
     {
         get
         {
-            return baseControls.Controls.Fire.ReadValue<bool>();
+            return baseControls.Controls.Fire.triggered;
         }
     }
 
@@ -56,10 +64,30 @@ public class InputManager : MonoBehaviour
     {
         get
         {
-            return baseControls.Controls.Dodge.ReadValue<bool>();
+            return baseControls.Controls.Dodge.triggered;
         }
     }
 
+    public bool DodgeUpdate
+    {
+        get
+        {
+            return (baseControls.Controls.Dodge.ReadValue<Single>() > 0);
+        }
+    }
+
+    public bool Map
+    {
+        get
+        {
+            return baseControls.Controls.Map.triggered;
+        }
+    }
+    #endregion
+
+    #region Event Subscription
+    
+    #endregion
 
     public static InputManager Instance { get; set; }
     private void Start()
@@ -68,5 +96,23 @@ public class InputManager : MonoBehaviour
         baseControls = new BaseControls();
         baseControls.Enable();
         DontDestroyOnLoad(gameObject);
+
+        baseControls.Controls.Move.started += ctx => MoveStart(ctx);
+        baseControls.Controls.Move.canceled += ctx => MoveStart(ctx);
+    }
+
+    void MoveStart(InputAction.CallbackContext context)
+    {
+        moveStartEvent?.Invoke(PlayerMovement);
+    }
+
+    void MoveStop(InputAction.CallbackContext context)
+    {
+        moveStopEvent?.Invoke(PlayerMovement);
+    }
+
+    private void Update()
+    {
+        moveUpdateEvent?.Invoke(PlayerMovement);
     }
 }

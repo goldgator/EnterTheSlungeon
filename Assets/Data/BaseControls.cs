@@ -57,6 +57,14 @@ public class @BaseControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Map"",
+                    ""type"": ""Value"",
+                    ""id"": ""03be97e8-56e7-4d9f-b405-2ecd0f070b00"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -191,6 +199,28 @@ public class @BaseControls : IInputActionCollection, IDisposable
                     ""action"": ""MousePos"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a96d7a9f-8190-4f27-82f2-cbb0e9d0b502"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Map"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e9f251a-27ac-44fe-9d8a-78a0070f0af1"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Map"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -204,6 +234,7 @@ public class @BaseControls : IInputActionCollection, IDisposable
         m_Controls_Dodge = m_Controls.FindAction("Dodge", throwIfNotFound: true);
         m_Controls_StickAim = m_Controls.FindAction("StickAim", throwIfNotFound: true);
         m_Controls_MousePos = m_Controls.FindAction("MousePos", throwIfNotFound: true);
+        m_Controls_Map = m_Controls.FindAction("Map", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -258,6 +289,7 @@ public class @BaseControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Controls_Dodge;
     private readonly InputAction m_Controls_StickAim;
     private readonly InputAction m_Controls_MousePos;
+    private readonly InputAction m_Controls_Map;
     public struct ControlsActions
     {
         private @BaseControls m_Wrapper;
@@ -267,6 +299,7 @@ public class @BaseControls : IInputActionCollection, IDisposable
         public InputAction @Dodge => m_Wrapper.m_Controls_Dodge;
         public InputAction @StickAim => m_Wrapper.m_Controls_StickAim;
         public InputAction @MousePos => m_Wrapper.m_Controls_MousePos;
+        public InputAction @Map => m_Wrapper.m_Controls_Map;
         public InputActionMap Get() { return m_Wrapper.m_Controls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -291,6 +324,9 @@ public class @BaseControls : IInputActionCollection, IDisposable
                 @MousePos.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMousePos;
                 @MousePos.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMousePos;
                 @MousePos.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMousePos;
+                @Map.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMap;
+                @Map.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMap;
+                @Map.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMap;
             }
             m_Wrapper.m_ControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -310,6 +346,9 @@ public class @BaseControls : IInputActionCollection, IDisposable
                 @MousePos.started += instance.OnMousePos;
                 @MousePos.performed += instance.OnMousePos;
                 @MousePos.canceled += instance.OnMousePos;
+                @Map.started += instance.OnMap;
+                @Map.performed += instance.OnMap;
+                @Map.canceled += instance.OnMap;
             }
         }
     }
@@ -321,5 +360,6 @@ public class @BaseControls : IInputActionCollection, IDisposable
         void OnDodge(InputAction.CallbackContext context);
         void OnStickAim(InputAction.CallbackContext context);
         void OnMousePos(InputAction.CallbackContext context);
+        void OnMap(InputAction.CallbackContext context);
     }
 }

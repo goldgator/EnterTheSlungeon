@@ -7,6 +7,7 @@ public class FloorData
     public List<RoomData> roomData;
     public List<ResourceData> resourceData;
     public CellType[,] cells;
+    public List<Vector2> originalSpots = new List<Vector2>();
     public FloorGenerator.FloorType floorType;
 
     public Vector2 roomMin;
@@ -15,7 +16,7 @@ public class FloorData
     {
         get
         {
-            return new Vector2(roomMax.x - roomMin.x, roomMax.y - roomMin.y);
+            return new Vector2(roomMax.x - roomMin.x, roomMax.y - roomMin.y) + new Vector2(1,1);
         }
     }
 
@@ -23,7 +24,7 @@ public class FloorData
     {
         get
         {
-            Vector2 roomSize = FloorSize + new Vector2(1,1);
+            Vector2 roomSize = FloorSize;
             return (int) (roomSize.x * roomSize.y);
         }
     }
@@ -63,7 +64,20 @@ public class FloorData
         cells = new CellType[cellWidth+1, cellHeight+1];
         UpdateRoomData();
     }
+    private void UpdateRoomData()
+    {
+        foreach (RoomData room in roomData)
+        {
+            room.UpdateCellData();
 
+            foreach (CellData cell in room.cellData)
+            {
+                cells[(int)cell.position.x, (int)cell.position.y] = CellType.Visited;
+            }
+        }
+    }
+
+    #region Adjust Methods
     private void ExpandInDirection(CardinalDir direction, int amount)
     {
         Vector2 offset = Utilities.CardinalDirToVector2(direction);
@@ -76,18 +90,7 @@ public class FloorData
             roomMax += offset * amount;
         }
     }
-
-    private void ShiftAllRooms(Vector2 offset)
-    {
-        foreach (RoomData room in roomData)
-        {
-            foreach (CellData cell in room.cellData)
-            {
-                cell.position += offset;
-            }
-        }
-    }
-
+    
     private void AdjustSizeExpansive()
     {
         //Store old min and max bounds
@@ -115,12 +118,12 @@ public class FloorData
         CardinalDir randDir4 = Utilities.GetRelativeDir(randDir2, 1);
         while (randDir4 == randDir1 || randDir4 == randDir2 || randDir4 == randDir3) randDir4 = Utilities.GetRelativeDir(randDir4, 1);
 
-        //Expand each direction until volume is at least 7 times the starting room count
-        while (FloorVolume < (roomData.Count * 7))
+        //Expand each direction until volume is at least 6 times the starting room count
+        while (FloorVolume < (roomData.Count * 6))
         {
             ExpandInDirection(randDir3, 1);
 
-            if (FloorVolume >= (roomData.Count * 7)) break;
+            if (FloorVolume >= (roomData.Count * 6)) break;
 
             ExpandInDirection(randDir4, 1);
         }
@@ -160,12 +163,12 @@ public class FloorData
             randDir2 = Utilities.GetRandomDir();
         } while (randDir2 == randDir1);
 
-        //Expand each direction until volume is at least 3 times the starting room count
-        while (FloorVolume < (roomData.Count * 3))
+        //Expand each direction until volume is at least 2.5 times the starting room count
+        while (FloorVolume < (roomData.Count * 2.5))
         {
             ExpandInDirection(randDir1, 1);
 
-            if (FloorVolume >= (roomData.Count * 7)) break;
+            if (FloorVolume >= (roomData.Count * 2.5)) break;
 
             ExpandInDirection(randDir2, 1);
         }
@@ -193,20 +196,81 @@ public class FloorData
     {
         //TODO implement
     }
+    #endregion
 
-    private void UpdateRoomData()
+    #region Basic Room manipulation
+    private void ShiftAllRooms(Vector2 offset)
     {
         foreach (RoomData room in roomData)
         {
-            room.UpdateCellData();
-
             foreach (CellData cell in room.cellData)
             {
-                cells[(int)cell.position.x, (int)cell.position.y] = CellType.Visited;
+                cell.position += offset;
             }
         }
     }
 
+    private bool MoveRoom(RoomData room, Vector2 offset)
+    {
+        foreach (CellData cell in room.cellData)
+        {
+            //Check if offset is free
+            Vector2 testPos = cell.position + offset;
+
+            //Fail if future spot is out of bounds
+            if (!IsInBounds(testPos)) return false;
+
+            //Fail if there is a different room at that spot
+            RoomData adjRoom = RoomAtPos(testPos);
+            if (!(adjRoom == null || adjRoom == room)) return false;
+        }
+
+        //If reached this point, all cells are valid, Shift cells
+        room.ShiftCells(offset);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Attempts to move a room in one direction for a set distance
+    /// </summary>
+    /// <param name="room"></param>
+    /// <param name="direction"></param>
+    /// <param name="pushAmount"></param>
+    /// <returns>If the room was able to move the full distance or not</returns>
+    public bool TryMoveRoom(RoomData room, CardinalDir direction, int pushAmount)
+    {
+        //loop for amount of pushes
+        for (int i = 0; i < pushAmount; i++)
+        {
+            //Test if next square(s) are open
+            bool canMove = RoomCanMoveInDirection(room, direction);
+
+            //IF can't move, break loop
+            if (!canMove) return false;
+
+            //adjust position to that square
+            //Set new cell position to visited
+            Vector2 offset = Utilities.CardinalDirToVector2(direction);
+            foreach (CellData cell in room.cellData)
+            {
+                cell.position += offset;
+
+                if (cell.position.x < 0 || cell.position.x >= cells.GetLength(0) || cell.position.y < 0 || cell.position.y >= cells.GetLength(1))
+                {
+                    int alert = 0;
+                }
+
+                cells[(int)cell.position.x, (int)cell.position.y] = CellType.Visited;
+            }
+        }
+
+        //Was able to move the full distance
+        return true;
+    }
+    #endregion
+
+    #region Shuffle
     /// <summary>
     /// Shuffles the given rooms using rules defined by player moveset
     /// </summary>
@@ -230,11 +294,18 @@ public class FloorData
             PushAdjacentRooms(currentRoom, maxPush);
 
             //Find if a neighboring room wasn't able to be pushed
-            RoomData nextRoom = FindNextAdjacentTarget(currentRoom, previousRoom);
+            RoomData nextRoom = FindNextAdjacentTarget(currentRoom, previousRoom, maxVisits);
 
             //Update unshuffled rooms
             unshuffledRooms = FindUnshuffledRooms();
-            unshuffledRooms.Remove(previousRoom);
+
+            //move previous room to the back of the list
+            if (previousRoom != null)
+            {
+                bool wasRemoved = unshuffledRooms.Remove(previousRoom);
+
+                if (wasRemoved) unshuffledRooms.Add(previousRoom);
+            }
 
             //if unshuffled rooms only has one and its the current room
             if (unshuffledRooms.Count == 1 && unshuffledRooms[0] == currentRoom)
@@ -249,12 +320,18 @@ public class FloorData
             if (nextRoom == null && unshuffledRooms.Count > 0)
             {
                 //Move room to a compatible unshuffled room
-                nextRoom = FindNextTarget(currentRoom, unshuffledRooms);
+                nextRoom = FindNextTarget(currentRoom, unshuffledRooms, maxVisits);
                 
                 //IF no unshuffled rooms are compatible
                 if (nextRoom == null)
                 {
-                    nextRoom = CreateNextTarget(currentRoom, unshuffledRooms);
+                    nextRoom = CreateNextTarget(currentRoom, unshuffledRooms, maxVisits);
+
+                    //IF still null, try to find an adjacent target again, not caring if it was the previous room or not
+                    if (nextRoom == null)
+                    {
+                        nextRoom = FindNextAdjacentTarget(currentRoom, null, maxVisits);
+                    }
                 }
             }
 
@@ -312,7 +389,7 @@ public class FloorData
 
             //Get new dir
             openDirs.Clear();
-            for (int j = 0; i < 4; j++)
+            for (int j = 0; j < 4; j++)
             {
                 CardinalDir testDir = (CardinalDir)j;
                 if (testDir == unwantedDir) continue;
@@ -325,14 +402,17 @@ public class FloorData
 
             //Return function if no directions are open
             if (openDirs.Count == 0) return;
+
+            //Assign new currentDir
+            currentDir = openDirs[Random.Range(0, openDirs.Count)];
         }
     }
 
-    private RoomData CreateNextTarget(RoomData currentRoom, List<RoomData> unshuffledRooms)
+    private RoomData CreateNextTarget(RoomData currentRoom, List<RoomData> unshuffledRooms, int maxVisits)
     {
         foreach (RoomData targetRoom in unshuffledRooms)
         {
-            if (targetRoom == currentRoom) continue;
+            if (targetRoom == currentRoom || targetRoom.visits >= maxVisits) continue;
             foreach(CellData targetCell in targetRoom.cellData)
             {
                 foreach(CellData currentCell in currentRoom.cellData)
@@ -344,7 +424,11 @@ public class FloorData
                     //Check for compatibility for each direction
                     foreach (CardinalDir wantedDir in wantedDirs)
                     {
-                        //Add direction to target cell
+                        //skip this dir if cell already has it
+                        //If it failed for FindNextTarget, it would fail here too
+                        if (targetCell.HasDir(wantedDir)) continue;
+                            
+                        //Add direction to this cell
                         targetCell.openings.Add(wantedDir);
 
                         //Test if rooms can interact (remember doors facing out of bounds)
@@ -373,13 +457,14 @@ public class FloorData
         return null;
     }
 
-    private RoomData FindNextTarget(RoomData currentRoom, List<RoomData> unshuffledRooms)
+    private RoomData FindNextTarget(RoomData currentRoom, List<RoomData> unshuffledRooms, int maxVisits)
     {
         //Find an unshuffled room
         RoomData nextRoom = null;
 
         foreach (RoomData testRoom in unshuffledRooms)
         {
+            //Might not be needed???
             if (testRoom == currentRoom)
             {
                 if (unshuffledRooms.Count > 1) continue;
@@ -391,6 +476,8 @@ public class FloorData
                 break;
             }
 
+            if (testRoom.visits >= maxVisits) continue;
+
             //Test if rooms can interact (remember doors facing out of bounds)
             ConnectionData connectionData = ConnectionPoint(currentRoom, testRoom);
             //IF not, find a different unshuffled room
@@ -399,12 +486,12 @@ public class FloorData
             //Move to that room (based on connections)
             bool success = AttemptConnectRooms(connectionData);
             //Add that room as the next room on success
-            nextRoom = testRoom;
+            if (success) return nextRoom;
         }
         return null;
     }
 
-    private RoomData FindNextAdjacentTarget(RoomData currentRoom, RoomData previousRoom)
+    private RoomData FindNextAdjacentTarget(RoomData currentRoom, RoomData previousRoom, int maxVisits)
     {
         //Attempt to find connected room that wasn't pushed
         RoomData nextRoom = null;
@@ -422,10 +509,13 @@ public class FloorData
                 if (!nextRoom.HasOpening(adjacentCellPos, oppositeDir)) continue;
 
                 //Skip room if boss room
-                if (nextRoom != null && nextRoom.roomType == RoomData.RoomType.Boss) continue;
+                if (nextRoom.roomType == RoomData.RoomType.Boss) continue;
 
                 //Skip room if previous room
-                if (nextRoom != null && nextRoom == previousRoom) continue;
+                if (nextRoom == previousRoom) continue;
+
+                //Skip room if already visited too much
+                if (nextRoom.visits >= maxVisits) continue;
 
                 allNeighbors.Add(nextRoom);
             }
@@ -465,42 +555,195 @@ public class FloorData
     }
 
     /// <summary>
-    /// Attempts to move a room in one direction for a set distance
+    /// Will try to organically connect two rooms together via these two cells taken from ConnectionPoint()
     /// </summary>
-    /// <param name="room"></param>
-    /// <param name="direction"></param>
-    /// <param name="pushAmount"></param>
-    /// <returns>If the room was able to move the full distance or not</returns>
-    public bool TryMoveRoom(RoomData room, CardinalDir direction, int pushAmount)
+    /// <param name="connections">The two cells that need to be connected</param>
+    /// <returns>If the room was successfully moved towards or not</returns>
+    public bool AttemptConnectRooms(ConnectionData connectionData)
     {
-        //loop for amount of pushes
-        for (int i = 0; i < pushAmount; i++)
-        {
-            //Test if next square(s) are open
-            bool canMove = RoomCanMoveInDirection(room, direction);
+        CellData thisCell = connectionData.thisCell;
 
-            //IF can't move, break loop
-            if (!canMove) return false;
-            
-            //adjust position to that square
-            //Set new cell position to visited
-            Vector2 offset = Utilities.CardinalDirToVector2(direction);
-            foreach (CellData cell in room.cellData)
+        //Determine finishing location
+        Vector2 targetPos = connectionData.otherCell.position + Utilities.CardinalDirToVector2(connectionData.otherConnectionDir);
+
+        //Early escape just in case of rare situations
+        if (thisCell.position == targetPos) return true;
+
+        //Create a list of original positions for each cell of the first room.
+        List<Vector2> originalCellPos = new List<Vector2>();
+        foreach (CellData cell in thisCell.roomOwner.cellData)
+        {
+            originalCellPos.Add(cell.position);
+        }
+
+        //Create a list of coordinates that will be changed to visited if movement succeeds
+        List<Vector2> newVisitedCells = new List<Vector2>();
+
+        //Create a Queue of movements
+        Queue<Vector2> movements = new Queue<Vector2>();
+
+        //Add first movement
+        movements.Enqueue(QueryMovement(thisCell, targetPos));
+
+        //Loop until first cell is at desired location or failed to reach
+        int queryAttempts = 3;
+        while (thisCell.position != targetPos)
+        {
+            Vector2 movement = movements.Dequeue();
+
+            //Attempt to move room and update visited cells
+            bool success = MoveRoom(thisCell.roomOwner, movement);
+
+            if (success)
             {
-                cell.position += offset;
-                
-                if (cell.position.x < 0 || cell.position.x >= cells.GetLength(0) || cell.position.y < 0 || cell.position.y >= cells.GetLength(1))
+                //Update visited cells
+                AddVisitedCells(thisCell.roomOwner, newVisitedCells);
+                //Add basic movement if none more available
+                if (movements.Count == 0) movements.Enqueue(QueryMovement(thisCell, targetPos));
+            }
+            else
+            {
+                //Query a detour if something blocks basic movement
+                List<Vector2> newMovements = QueryDetour(thisCell, Utilities.Vector2ToCardinalDir(movement));
+                queryAttempts--;
+
+                //If query failed and/or queries ran out (movement failed)
+                if (newMovements == null || queryAttempts < 0)
                 {
-                    int alert = 0;
+                    //Failed to reach reset cell position and return false;
+                    for (int i = 0; i < thisCell.roomOwner.cellData.Count; i++)
+                    {
+                        thisCell.roomOwner.cellData[i].position = originalCellPos[i];
+                    }
+
+                    return false;
                 }
 
-                cells[(int) cell.position.x, (int) cell.position.y] = CellType.Visited;
+                //query was successful
+                foreach (Vector2 newMovement in newMovements)
+                {
+                    movements.Enqueue(newMovement);
+                }
             }
         }
 
-        //Was able to move the full distance
+        //If reached here, it is in the correct position
         return true;
     }
+
+    private Vector2 QueryMovement(CellData cell, Vector2 targetPos)
+    {
+        //Determine x Direction
+        int xDirection = (int)(targetPos.x - cell.position.x);
+        if (xDirection != 0)
+        {
+            xDirection = (int)Mathf.Sign(xDirection);
+        }
+        //Determine y Direction
+        int yDirection = (int)(targetPos.y - cell.position.y);
+        if (yDirection != 0)
+        {
+            yDirection = (int)Mathf.Sign(yDirection);
+        }
+
+        //if xDirection != 0
+        bool xValid = false;
+        if (xDirection != 0)
+        {
+            //Check next cellState
+            int xPos = (int)cell.position.x + xDirection;
+            //Check for out of bounds
+            if (!(xPos < 0 || xPos >= cells.GetLength(0)))
+            {
+                CellType type = cells[xPos, (int)cell.position.y];
+                if (type == CellType.Visited) return new Vector2(xDirection, 0);
+
+                xValid = (type == CellType.Unvisited);
+            }
+        }
+
+        if (yDirection != 0)
+        {
+            //Check next cellState
+            int yPos = (int)cell.position.y + yDirection;
+            //Check for out of bounds
+            if (!(yPos < 0 || yPos >= cells.GetLength(1)))
+            {
+                CellType type = cells[(int)cell.position.x, yPos];
+                if (type == CellType.Visited) return new Vector2(0, yDirection);
+            }
+        }
+
+        if (xValid)
+        {
+            return new Vector2(xDirection, 0);
+        }
+        else
+        {
+            return new Vector2(0, yDirection);
+        }
+    }
+    private List<Vector2> QueryDetour(CellData cell, CardinalDir attemptedDir)
+    {
+        //Create list to hold movements
+        List<Vector2> movements = new List<Vector2>();
+
+        //Test clockwise direction first
+        CardinalDir testDir = Utilities.GetRelativeDir(attemptedDir, 1);
+
+        //Loop until not conflicting
+        bool isSafe = true;
+        bool swapped = false;
+        int testSteps = 0;
+        do
+        {
+            testSteps++;
+            Vector2 testVector = Utilities.CardinalDirToVector2(testDir) * testSteps;
+
+            //Test if out of bounds
+            if (!IsInBounds(cell.position + testVector))
+            {
+                //If already tested both directions, query failed
+                if (swapped) return null;
+
+                //swap directions
+                swapped = true;
+                testDir = Utilities.GetRelativeDir(testDir, 2);
+                testSteps = 0;
+                continue;
+            }
+
+            //Test if new place will conflict
+            bool test1 = TestConfliction(cell, cell.position + testVector);
+            bool test2 = TestConfliction(cell, cell.position + testVector + Utilities.CardinalDirToVector2(attemptedDir));
+
+            isSafe = (test1 && test2);
+        } while (!isSafe);
+
+        //Add movements 
+        for (int i = 0; i < testSteps; i++)
+        {
+            movements.Add(Utilities.CardinalDirToVector2(testDir));
+        }
+        movements.Add(Utilities.CardinalDirToVector2(attemptedDir));
+
+        //return movements
+        return movements;
+    }
+
+    private void AddVisitedCells(RoomData room, List<Vector2> newVisitedCells)
+    {
+        foreach (CellData cell in room.cellData)
+        {
+            if (!newVisitedCells.Contains(cell.position))
+            {
+                newVisitedCells.Add(cell.position);
+            }
+        }
+    }
+    #endregion
+
+    #region Query Methods
 
     public bool RoomCanMoveInDirection(RoomData room, CardinalDir direction)
     {
@@ -551,9 +794,9 @@ public class FloorData
                     Vector2 newCellPos = otherCell.position + Utilities.CardinalDirToVector2(oppositeDir);
 
                     //If any of the potential cell positions conflict with something existing move onto the next cell
-                    bool conflicted = TestConfliction(cell, newCellPos);
+                    bool safeSpot = TestConfliction(cell, newCellPos);
 
-                    if (conflicted) continue;
+                    if (!safeSpot) continue;
 
                     //If reached this point, these two rooms can connect with these cells, return them both
                     return new ConnectionData(cell, otherCell, oppositeDir);
@@ -565,222 +808,24 @@ public class FloorData
         return null;
     }
 
+    /// <summary>
+    /// Returns true if a room could be placed
+    /// </summary>
+    /// <param name="cellData"></param>
+    /// <param name="newCellPos"></param>
+    /// <returns></returns>
     public bool TestConfliction(CellData cellData, Vector2 newCellPos)
     {
         Vector2 movement = newCellPos - cellData.position;
         foreach (CellData testCell in cellData.roomOwner.cellData)
         {
-            if (!IsValidPosition(testCell.position + movement))
+             if (!IsValidPosition(testCell.position + movement))
             {
                 return false;
             }
         }
         return true;
     }
-
-    /// <summary>
-    /// Will try to organically connect two rooms together via these two cells taken from ConnectionPoint()
-    /// </summary>
-    /// <param name="connections">The two cells that need to be connected</param>
-    /// <returns>If the room was successfully moved towards or not</returns>
-    public bool AttemptConnectRooms(ConnectionData connectionData)
-    {
-        CellData thisCell = connectionData.thisCell;
-
-        //Determine finishing location
-        Vector2 targetPos = connectionData.otherCell.position + Utilities.CardinalDirToVector2(connectionData.otherConnectionDir);
-
-        //Early escape just in case of rare situations
-        if (thisCell.position == targetPos) return true;
-
-        //Create a list of original positions for each cell of the first room.
-        List<Vector2> originalCellPos = new List<Vector2>();
-        foreach (CellData cell in thisCell.roomOwner.cellData)
-        {
-            originalCellPos.Add(cell.position);
-        }
-
-        //Create a list of coordinates that will be changed to visited if movement succeeds
-        List<Vector2> newVisitedCells = new List<Vector2>();
-        
-        //Create a Queue of movements
-        Queue<Vector2> movements = new Queue<Vector2>();
-
-        //Add first movement
-        movements.Enqueue(QueryMovement(thisCell, targetPos));
-
-        //Loop until first cell is at desired location or failed to reach
-        int queryAttempts = 3;
-        while(thisCell.position != targetPos)
-        {
-            Vector2 movement = movements.Dequeue();
-
-            //Attempt to move room and update visited cells
-            bool success = MoveRoom(thisCell.roomOwner, movement);
-
-            if (success)
-            {
-                //Update visited cells
-                AddVisitedCells(thisCell.roomOwner, newVisitedCells);
-                //Add basic movement if none more available
-                if (movements.Count == 0) movements.Enqueue(QueryMovement(thisCell, targetPos));
-            } else
-            {
-                //Query a detour if something blocks basic movement
-                List<Vector2> newMovements = QueryDetour(thisCell, Utilities.Vector2ToCardinalDir(movement));
-                queryAttempts--;
-
-                //If query failed and/or queries ran out (movement failed)
-                if (newMovements == null || queryAttempts < 0)
-                {
-                    //Failed to reach reset cell position and return false;
-                    for (int i = 0; i < thisCell.roomOwner.cellData.Count; i++)
-                    {
-                        thisCell.roomOwner.cellData[i].position = originalCellPos[i];
-                    }
-
-                    return false;
-                }
-
-                //query was successful
-                foreach(Vector2 newMovement in newMovements)
-                {
-                    movements.Enqueue(newMovement);
-                }
-            }
-        }
-
-        //If reached here, it is in the correct position
-        return true;
-    }
-    
-    private void AddVisitedCells(RoomData room, List<Vector2> newVisitedCells)
-    {
-        foreach (CellData cell in room.cellData) { 
-            if (!newVisitedCells.Contains(cell.position))
-            {
-                newVisitedCells.Add(cell.position);
-            }
-        }
-    }
-    private Vector2 QueryMovement(CellData cell, Vector2 targetPos)
-    {
-        //Determine x Direction
-        int xDirection = (int) (targetPos.x - cell.position.x);
-        if (xDirection != 0) {
-            xDirection = (int) Mathf.Sign(xDirection);
-        }
-        //Determine y Direction
-        int yDirection = (int) (targetPos.y - cell.position.y);
-        if (yDirection != 0)
-        {
-            yDirection = (int)Mathf.Sign(yDirection);
-        }
-
-        //if xDirection != 0
-        bool xValid = false;
-        if (xDirection != 0)
-        {
-            //Check next cellState
-            int xPos = (int) cell.position.x + xDirection;
-            //Check for out of bounds
-            if (!(xPos < 0 || xPos >= cells.GetLength(0)))
-            {
-                CellType type = cells[xPos, (int)cell.position.y];
-                if (type == CellType.Visited) return new Vector2(xDirection, 0);
-
-                xValid = (type == CellType.Unvisited);
-            }
-        }
-
-        if (yDirection != 0)
-        {
-            //Check next cellState
-            int yPos = (int)cell.position.y + yDirection;
-            //Check for out of bounds
-            if (!(yPos < 0 || yPos >= cells.GetLength(1)))
-            {
-                CellType type = cells[(int)cell.position.x, yPos];
-                if (type == CellType.Visited) return new Vector2(0, yDirection);
-            }
-        }
-
-        if (xValid)
-        {
-            return new Vector2(xDirection, 0);
-        } else
-        {
-            return new Vector2(0, yDirection);
-        }
-    }
-    private List<Vector2> QueryDetour(CellData cell, CardinalDir attemptedDir)
-    {
-        //Create list to hold movements
-        List<Vector2> movements = new List<Vector2>();
-        
-        //Test clockwise direction first
-        CardinalDir testDir = Utilities.GetRelativeDir(attemptedDir, 1);
-
-        //Loop until not conflicting
-        bool isConflicting = true;
-        bool swapped = false;
-        int testSteps = 0;
-        do
-        {
-            testSteps++;
-            Vector2 testVector = Utilities.CardinalDirToVector2(testDir) * testSteps;
-
-            //Test if out of bounds
-            if (!IsInBounds(cell.position + testVector))
-            {
-                //If already tested both directions, query failed
-                if (swapped) return null;
-                
-                //swap directions
-                swapped = true;
-                testDir = Utilities.GetRelativeDir(testDir, 2);
-                testSteps = 0;
-                continue;
-            }
-
-            //Test if new place will conflict
-            bool confliction1 = TestConfliction(cell, cell.position + testVector);
-            bool confliction2 = TestConfliction(cell, cell.position + testVector + Utilities.CardinalDirToVector2(attemptedDir));
-
-            isConflicting = (confliction1 || confliction2);
-        } while (isConflicting);
-
-        //Add movements 
-        for(int i = 0; i < testSteps; i++)
-        {
-            movements.Add(Utilities.CardinalDirToVector2(testDir));
-        }
-        movements.Add(Utilities.CardinalDirToVector2(attemptedDir));
-
-        //return movements
-        return movements;
-    }
-
-    private bool MoveRoom(RoomData room, Vector2 offset)
-    {
-        foreach (CellData cell in room.cellData)
-        {
-            //Check if offset is free
-            Vector2 testPos = cell.position + offset;
-
-            //Fail if future spot is out of bounds
-            if (!IsInBounds(testPos)) return false;
-
-            //Fail if there is a different room at that spot
-            RoomData adjRoom = RoomAtPos(testPos);
-            if (!(adjRoom == null || adjRoom == room)) return false;
-        }
-
-        //If reached this point, all cells are valid, Shift cells
-        room.ShiftCells(offset);
-
-        return true;
-    } 
 
     /// <summary>
     /// Finds all rooms (excluding boss room) that are still in their original position
@@ -805,10 +850,21 @@ public class FloorData
         unshuffledRooms.OrderBy(ctx => ctx.visits);
         return unshuffledRooms;
     }
-
     public RoomData RoomAtPos(Vector2 position)
     {
         return roomData.RoomAtPos(position);
+    }
+
+    public CellData CellAtPos(Vector2 position)
+    {
+        foreach (RoomData data in roomData)
+        {
+            foreach (CellData cell in data.cellData)
+            {
+                if (cell.position == position) return cell;
+            }
+        }
+        return null;
     }
 
     public bool HasRoomAtPos(Vector2 position)
@@ -836,4 +892,74 @@ public class FloorData
         //if not, return whatever it grabbed
         return adjacentRoom;
     }
+
+    public void UpdateOriginalPositions()
+    {
+        foreach (RoomData room in roomData)
+        {
+            foreach (CellData cell in room.cellData)
+            {
+                originalSpots.Add(cell.position);
+            }
+        }
+    }
+
+    #endregion
+
+    #region Sprinkle rooms
+    public void AddSprinkleRooms(int amount)
+    {
+        //Find all spaces a sprinkle room can be placed
+        List<Vector2> possibleSpots = new List<Vector2>();
+        for (int i = 0; i < cells.GetLength(0); i++)
+        {
+            for (int j = 0; j < cells.GetLength(1); j++)
+            {
+                if (cells[i, j] == CellType.Unvisited) possibleSpots.Add(new Vector2(i, j));
+            }
+        }
+
+        //loop while there are spots in the list and haven't made enough rooms
+        System.Random rng = new System.Random();
+        int roomCount = 0;
+        while (possibleSpots.Count > 0 && roomCount < amount)
+        {
+            //Choose random spot
+            Vector2 spot = possibleSpots[Random.Range(0, possibleSpots.Count)];
+
+            //Remove from list
+            possibleSpots.Remove(spot);
+
+            //Create a list of all possible openings
+            List<CardinalDir> possibleOpenings = new List<CardinalDir>();
+            for (int i = 0; i < 4; i++)
+            {
+                CardinalDir currentDir = (CardinalDir)i;
+
+                if (IsValidPosition(spot + Utilities.CardinalDirToVector2(currentDir)))
+                {
+                    possibleOpenings.Add(currentDir);
+                }
+            }
+
+            //If no openings, remove from list and continue loop
+            if (possibleOpenings.Count <= 0) continue;
+
+            //Shuffle list
+            possibleOpenings.OrderBy(a => rng.Next());
+
+            //Remove a random amount from [0->(count-1)]
+            possibleOpenings.RemoveRange(0,Random.Range(0, possibleOpenings.Count));
+
+            //Create a room
+            RoomData room = new RoomData(RoomData.RoomType.Generic, spot);
+            roomData.Add(room);
+
+            //Add openings to its cell
+            room.cellData[0].openings = possibleOpenings;
+            roomCount++;
+        }
+    }
+    #endregion
+
 }

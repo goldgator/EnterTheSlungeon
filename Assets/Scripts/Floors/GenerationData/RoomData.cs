@@ -17,6 +17,7 @@ public class RoomData
     public RoomType roomType = RoomType.Generic;
     public List<CellData> cellData = new List<CellData>();
     public int visits = 0;
+    public Room roomObject;
 
     public bool Shuffled
     {

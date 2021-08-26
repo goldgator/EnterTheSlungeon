@@ -11,39 +11,41 @@ public static class FloorGenerator
         ConstrainedExpansive
     }
 
-    public static FloorData GenerateFloor(FloorType floorType)
+    public static FloorData GenerateFloor(FloorType floorType, int patternSize)
     {
         switch (floorType)
         {
             case FloorType.Expansive:
-                return ExpansiveFloor();
+                return ExpansiveFloor(patternSize);
             case FloorType.Tight:
-                return TightFloor();
+                return TightFloor(patternSize);
             case FloorType.ConstrainedExpansive:
-                return ConstrainedFloor();
+                return ConstrainedFloor(patternSize);
         }
 
         return null;
     }
 
-    public static FloorData ExpansiveFloor()
+    public static FloorData ExpansiveFloor(int patternSize)
     {
         //Create base pattern
-        List<RoomData> roomData = CreatePattern(5);
+        List<RoomData> roomData = CreatePattern(patternSize);
 
         //Assign doors to new pattern
         AssignDoors(roomData);
 
         //Create FloorData to hold RoomData and other details
         FloorData floorData = new FloorData(roomData, FloorType.Expansive);
+        floorData.UpdateOriginalPositions();
 
         //Shuffle rooms in floor Data
-        RoomData lastShuffledRoom = floorData.Shuffle(2, 4);
+        RoomData lastShuffledRoom = floorData.Shuffle(5, 4);
         //Set last shuffled room as the entry rooms
         lastShuffledRoom.roomType = RoomData.RoomType.Entry;
 
         //Sprinkle rooms
-
+        int sprinkleAmount = (int)(patternSize * .8f);
+        floorData.AddSprinkleRooms(sprinkleAmount);
 
         //Assign Room Contents
 
@@ -51,24 +53,26 @@ public static class FloorGenerator
         return floorData;
     }
 
-    public static FloorData TightFloor()
+    public static FloorData TightFloor(int patternSize)
     {
         //Create base pattern
-        List<RoomData> roomData = CreatePattern(5);
+        List<RoomData> roomData = CreatePattern(patternSize);
 
         //Assign doors to new pattern
         AssignDoors(roomData);
 
         //Create FloorData to hold RoomData and other details
         FloorData floorData = new FloorData(roomData, FloorType.Tight);
+        floorData.UpdateOriginalPositions();
 
         //Shuffle rooms in floor Data
-        RoomData lastShuffledRoom = floorData.Shuffle(2, 4);
+        RoomData lastShuffledRoom = floorData.Shuffle(5, 4);
         //Set last shuffled room as the entry rooms
         lastShuffledRoom.roomType = RoomData.RoomType.Entry;
 
         //Sprinkle rooms
-
+        int sprinkleAmount = (int)(patternSize * .5f);
+        floorData.AddSprinkleRooms(sprinkleAmount);
 
         //Assign Room Contents
 
@@ -76,7 +80,7 @@ public static class FloorGenerator
         return floorData;
     }
 
-    public static FloorData ConstrainedFloor()
+    public static FloorData ConstrainedFloor(int patternSize)
     {
         return null;
     }
@@ -84,7 +88,7 @@ public static class FloorGenerator
     /// <summary>
     /// Creates the basic puzzle layout for the floor
     /// </summary>
-    /// <param name="cellSize">amount of cells created</param>
+    /// <param name="cellSize">amount of cells created MUST BE >1</param>
     /// <returns>A list of rooms unshuffled without doors assigned</returns>
     public static List<RoomData> CreatePattern(int cellSize)
     {
@@ -106,7 +110,7 @@ public static class FloorGenerator
         //Until roomData.Count is cellSize + 1
         while (roomData.Count < (cellSize + 1))
         {
-            TryPlaceRoom(roomData);
+            TryPlaceRoom(roomData, cellSize);
             //TODO implement big rooms
         }
 
@@ -114,7 +118,7 @@ public static class FloorGenerator
         return roomData;
     }
 
-    public static void TryPlaceRoom(List<RoomData> roomData)
+    public static void TryPlaceRoom(List<RoomData> roomData, int cellSize)
     {
         //Create a Vector2 to hold a free space once found
         Vector2 tryPlace;
@@ -133,6 +137,10 @@ public static class FloorGenerator
 
             //Combine offset and cell position
             tryPlace = randCell + randomDir;
+
+            //Find another position if cell would be placed at outermost border
+            //This is to prevent patterns from being straight lines
+            if (Mathf.Abs(tryPlace.x) >= cellSize || Mathf.Abs(tryPlace.y) >= cellSize) continue;
 
         //Loop if there is already a room with that position
         } while (roomData.HasRoomAtPos(tryPlace));

@@ -7,6 +7,12 @@ public class ResourceData
     public ResourceType resourceType;
     public Vector2 position;
     public bool harvested;
+
+    public ResourceData(ResourceType newType, Vector2 newPosition)
+    {
+        resourceType = newType;
+        position = newPosition;
+    }
 }
 
 public enum ResourceType { 

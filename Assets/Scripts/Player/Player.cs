@@ -16,7 +16,10 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
 
 
-    public Player Instance { get; set; }
+    //Private Fields
+    private bool playerEnabled = true;
+
+    public static Player Instance { get; set; }
 
     private void Awake()
     {
@@ -26,8 +29,16 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        ProcessMove();
-        ProcessAim();
+        if (playerEnabled)
+        {
+            ProcessMove();
+            ProcessAim();
+        }
+    }
+
+    public void SetPlayerEnabled(bool isEnabled)
+    {
+        playerEnabled = isEnabled;
     }
 
     private void ProcessMove()
