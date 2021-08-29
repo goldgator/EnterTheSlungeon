@@ -13,10 +13,15 @@ public class InputManager : MonoBehaviour
 
     //Delegates and events
     public delegate void MoveDelegate(Vector2 position);
+    public delegate void FireDelegate(bool pressed);
 
     public event MoveDelegate moveStartEvent;
     public event MoveDelegate moveUpdateEvent;
     public event MoveDelegate moveStopEvent;
+
+    public event FireDelegate fireStartEvent;
+    public event FireDelegate fireUpdateEvent;
+    public event FireDelegate fireStopEvent;
 
     #region Input Properties
     //Input values
@@ -56,7 +61,7 @@ public class InputManager : MonoBehaviour
     {
         get
         {
-            return baseControls.Controls.Fire.triggered;
+            return (0 < baseControls.Controls.Fire.ReadValue<Single>());
         }
     }
 
@@ -86,19 +91,31 @@ public class InputManager : MonoBehaviour
     #endregion
 
     #region Event Subscription
-    
+
     #endregion
 
-    public static InputManager Instance { get; set; }
+    private static InputManager instance;
+    public static InputManager Instance { get
+        {
+            if (instance == null) instance = GameObject.FindObjectOfType<InputManager>();
+            return instance;
+        }
+    }
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
-        Instance = this;
         baseControls = new BaseControls();
         baseControls.Enable();
         DontDestroyOnLoad(gameObject);
 
         baseControls.Controls.Move.started += ctx => MoveStart(ctx);
         baseControls.Controls.Move.canceled += ctx => MoveStart(ctx);
+
+        baseControls.Controls.Fire.started += ctx => FireStart(ctx, ctx.ReadValueAsButton());
+        baseControls.Controls.Fire.canceled += ctx => FireStop(ctx, ctx.ReadValueAsButton());
     }
 
     void MoveStart(InputAction.CallbackContext context)
@@ -111,8 +128,20 @@ public class InputManager : MonoBehaviour
         moveStopEvent?.Invoke(PlayerMovement);
     }
 
+    void FireStart(InputAction.CallbackContext context, bool pressed)
+    {
+        fireStartEvent?.Invoke(pressed);
+    }
+
+    void FireStop(InputAction.CallbackContext context, bool pressed)
+    {
+        fireStopEvent?.Invoke(pressed);
+    }
+
     private void Update()
     {
         moveUpdateEvent?.Invoke(PlayerMovement);
+
+        fireUpdateEvent?.Invoke(Fire);
     }
 }

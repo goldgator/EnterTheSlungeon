@@ -4,6 +4,16 @@ using UnityEngine;
 
 public static class Utilities
 {
+    public static GameObject AudioFXObject
+    {
+        get
+        {
+            return Resources.Load<GameObject>("Prefabs/Misc/SoundFX");
+        }
+    }
+
+
+
     public static Vector2 CardinalDirToVector2(CardinalDir direction)
     {
         switch (direction)
@@ -69,6 +79,8 @@ public static class Utilities
         //move clockwise this many steps from current dir to get that dir
         return (CardinalDir)((((int)direction) + steps) % 4);
     }
+
+    
 
 }
 

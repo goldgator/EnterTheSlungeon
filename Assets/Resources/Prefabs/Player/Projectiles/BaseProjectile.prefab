@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 830448720151008801}
   - component: {fileID: 1139354216277857781}
   - component: {fileID: 4570993612995379691}
-  m_Layer: 0
+  - component: {fileID: 8236566453946427022}
+  m_Layer: 7
   m_Name: BaseProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,11 +100,11 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!58 &4570993612995379691
 CircleCollider2D:
@@ -121,3 +122,16 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &8236566453946427022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6229470945475235130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 720f3b63b9fc1654bb8f1eeea4aeaa6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitFX: {fileID: 8300000, guid: d7da440ad4f6c4e7489efd85844988d8, type: 3}

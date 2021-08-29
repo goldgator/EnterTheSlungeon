@@ -13,11 +13,13 @@ public class Player : MonoBehaviour
     [Header("Components")]
     public GameObject weaponPivot;
     public GameObject weapon;
+    private Animator animator;
     private Rigidbody2D rb;
 
 
     //Private Fields
     private bool playerEnabled = true;
+    private Vector3 velocity;
 
     public static Player Instance { get; set; }
 
@@ -25,15 +27,15 @@ public class Player : MonoBehaviour
     {
         Instance = this;
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
-
     private void FixedUpdate()
     {
         if (playerEnabled)
         {
             ProcessMove();
-            ProcessAim();
         }
+        animator.SetFloat("Speed", velocity.magnitude);
     }
 
     public void SetPlayerEnabled(bool isEnabled)
@@ -41,50 +43,16 @@ public class Player : MonoBehaviour
         playerEnabled = isEnabled;
     }
 
+    public bool GetPlayerEnabled()
+    {
+        return playerEnabled;
+    }
+
     private void ProcessMove()
     {
-        Vector3 velocity = InputManager.Instance.PlayerMovement.normalized;
+        velocity = InputManager.Instance.PlayerMovement.normalized;
         velocity *= baseSpeed * Time.deltaTime;
 
         rb.MovePosition(transform.position + velocity);
-    }
-
-    private void ProcessAim()
-    {
-        if (InputManager.isGamepad)
-        {
-            ProcessAimGamePad();
-        } else
-        {
-            ProcessAimKeyboard();
-        }
-    }
-
-    private void ProcessAimGamePad()
-    {
-
-    }
-
-    private void ProcessAimKeyboard()
-    {
-        Vector3 worldMousePos = InputManager.Instance.MouseWorldPosition;
-
-        //Weapon pivot
-        Vector3 direction = (worldMousePos - weaponPivot.transform.position).normalized;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        weaponPivot.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-
-        //Weapon
-        direction = (worldMousePos - weapon.transform.position).normalized;
-        angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        weapon.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
