@@ -139,7 +139,7 @@ public class FloorUI : MonoBehaviour
         int blankIndex = 0;
 
         bool fullContinue = false;
-        bool pressedBefore = false;
+        //bool pressedBefore = false;
         for (int y = 0; y < floorData.FloorSize.y; y++)
         {
             for (int x = 0; x < floorData.FloorSize.x; x++)

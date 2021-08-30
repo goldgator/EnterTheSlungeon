@@ -256,11 +256,6 @@ public class FloorData
             {
                 cell.position += offset;
 
-                if (cell.position.x < 0 || cell.position.x >= cells.GetLength(0) || cell.position.y < 0 || cell.position.y >= cells.GetLength(1))
-                {
-                    int alert = 0;
-                }
-
                 cells[(int)cell.position.x, (int)cell.position.y] = CellType.Visited;
             }
         }

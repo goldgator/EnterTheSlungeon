@@ -14,6 +14,7 @@ public class InputManager : MonoBehaviour
     //Delegates and events
     public delegate void MoveDelegate(Vector2 position);
     public delegate void FireDelegate(bool pressed);
+    public delegate void DodgeDelegate(bool pressed);
 
     public event MoveDelegate moveStartEvent;
     public event MoveDelegate moveUpdateEvent;
@@ -22,6 +23,10 @@ public class InputManager : MonoBehaviour
     public event FireDelegate fireStartEvent;
     public event FireDelegate fireUpdateEvent;
     public event FireDelegate fireStopEvent;
+
+    public event DodgeDelegate dodgeStartEvent;
+    public event DodgeDelegate dodgeUpdateEvent;
+    public event DodgeDelegate dodgeStopEvent;
 
     #region Input Properties
     //Input values
@@ -116,6 +121,9 @@ public class InputManager : MonoBehaviour
 
         baseControls.Controls.Fire.started += ctx => FireStart(ctx, ctx.ReadValueAsButton());
         baseControls.Controls.Fire.canceled += ctx => FireStop(ctx, ctx.ReadValueAsButton());
+
+        baseControls.Controls.Dodge.started += ctx => DodgeStart(ctx, ctx.ReadValueAsButton());
+        baseControls.Controls.Dodge.canceled += ctx => DodgeStop(ctx, ctx.ReadValueAsButton());
     }
 
     void MoveStart(InputAction.CallbackContext context)
@@ -138,10 +146,22 @@ public class InputManager : MonoBehaviour
         fireStopEvent?.Invoke(pressed);
     }
 
+    void DodgeStart(InputAction.CallbackContext context, bool pressed)
+    {
+        dodgeStartEvent?.Invoke(pressed);
+    }
+
+    void DodgeStop(InputAction.CallbackContext context, bool pressed)
+    {
+        dodgeStopEvent?.Invoke(pressed);
+    }
+
     private void Update()
     {
         moveUpdateEvent?.Invoke(PlayerMovement);
 
         fireUpdateEvent?.Invoke(Fire);
+
+        dodgeUpdateEvent?.Invoke(DodgeUpdate);
     }
 }

@@ -33,12 +33,12 @@ public class PlayerWeapon : MonoBehaviour
 
     private void OnEnable()
     {
-        InputManager.Instance.fireUpdateEvent += OnFire;
+        if (InputManager.Instance) InputManager.Instance.fireUpdateEvent += OnFire;
     }
 
     private void OnDisable()
     {
-        InputManager.Instance.fireUpdateEvent -= OnFire;
+        if (InputManager.Instance) InputManager.Instance.fireUpdateEvent -= OnFire;
     }
 
     // Update is called once per frame
@@ -81,6 +81,11 @@ public class PlayerWeapon : MonoBehaviour
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+
+        //Determine player and weapon scale
+        float aimX = Mathf.Sign(direction.x);
+        Player.Instance.transform.localScale = new Vector3(aimX, 1, 1);
+        transform.localScale = new Vector3(aimX, aimX, 1); ;
     }
 
     void OnFire(bool pressed)

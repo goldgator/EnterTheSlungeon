@@ -111,7 +111,7 @@ Animation:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5919370034836082329}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Animation: {fileID: 7400000, guid: 1eb30fb2fc9e91a4cabd880c64f3e1c4, type: 2}
   m_Animations: []
@@ -131,3 +131,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a677df142f312ad449a7c8e7fcffd369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clipName: SlimeDeath

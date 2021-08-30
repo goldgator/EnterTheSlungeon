@@ -7,14 +7,15 @@ using UnityEngine;
 public class AnimLifetime : MonoBehaviour
 {
     //private Animator animator;
-    private Animation animation;
+    private Animator animator;
+    public string clipName;
     
 
     // Start is called before the first frame update
     void Start()
     {
-        animation = GetComponent<Animation>();
-        animation.Play();
-        Destroy(gameObject, animation.clip.length);
+        animator = GetComponent<Animator>();
+        animator.Play(clipName);
+        Destroy(gameObject, animator.GetCurrentAnimatorClipInfo(0)[0].clip.length);
     }
 }

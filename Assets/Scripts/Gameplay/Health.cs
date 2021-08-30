@@ -7,6 +7,8 @@ public class Health : MonoBehaviour
 {
     public float maxHealth;
     private float currentHealth = 1;
+    public float invinicibilityTime = 0.0f;
+    private float invincTimer = 0;
     public bool hasRegen = false;
     public float regenTime = 2.0f;
     private float currentRegTime;
@@ -27,6 +29,7 @@ public class Health : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
+        invincTimer = invinicibilityTime;
     }
 
     public void AddHealth(float add)
@@ -45,11 +48,14 @@ public class Health : MonoBehaviour
     }
     public void SubtractHealth(float minus)
     {
+        if (invincTimer < invinicibilityTime) return;
+
         currentHealth -= minus;
         parentHealth?.SubtractHealth(minus);
 
         if (minus >= subEventThreshold)
         {
+            invincTimer = 0;
             subtractEvent?.Invoke();
         }
     }
@@ -68,6 +74,7 @@ public class Health : MonoBehaviour
     private void Update()
     {
         currentRegTime += Time.deltaTime;
+        invincTimer += Time.deltaTime;
 
         if (currentRegTime > regenTime && hasRegen && !hasDied)
         {

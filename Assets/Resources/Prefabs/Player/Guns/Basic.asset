@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cff1128a57c18ea4891670ff641c3b91, type: 3}
   m_Name: Basic
   m_EditorClassIdentifier: 
-  fireRate: 0.4
+  fireRate: 0.25
   shotDamage: 2
   shotSize: 0.2
   shotSpeed: 20

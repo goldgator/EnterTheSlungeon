@@ -2,39 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Health))]
-[RequireComponent(typeof(Collider))]
-public class RushEnemy : MonoBehaviour
+
+public class RushEnemy : BaseEnemy
 {
     [Header("Enemy Stats")]
-    public float speed = 0;
-    public float damage = 0;
-    public float attackRange = 0;
-    public bool contactFocused;
+    public bool hasAttack;
 
-    [Header("Details")]
-    private const string fxPath = "Prefabs/Enemies/Deaths/";
-    public string deathFX;
-
-
-    //Private fields
-    private Player target;
-    private Health health;
-    private Animator animator;
-
-    private void Start()
-    {
-        target = Player.Instance;
-        health = GetComponent<Health>();
-        animator = GetComponent<Animator>();
-    }
+    
 
     // Update is called once per frame
     void Update()
     {
-        if (!health.HasDied)
+        stopTime -= Time.deltaTime;
+        if (!health.HasDied && stopTime <= 0)
         {
             OnMove();
+            OnAttack();
         }
     }
 
@@ -42,31 +25,67 @@ public class RushEnemy : MonoBehaviour
     {
         //Get distance vector
         Vector3 distance = target.transform.position - transform.position;
+
+        //Orient sprite
+        transform.localScale = new Vector3(Mathf.Sign(distance.x), transform.localScale.y, transform.localScale.z);
         
-        if (distance.magnitude > attackRange)
-        {
-            float travel = Mathf.Min(distance.magnitude, speed);
-            Vector3 velocity = travel * distance.normalized;
+        //if (distance.magnitude > attackRange)
+        Vector3 velocity = speed * distance.normalized;
 
-            transform.position += velocity * Time.deltaTime;
-        }
+        velocity = velocity * Time.deltaTime;
+        transform.position += velocity;
     }
 
-    public void Death()
+    private void OnAttack()
     {
-        //Create deathFX
-        GameObject fxObject = Resources.Load<GameObject>(fxPath + deathFX);
-        Instantiate(fxObject, transform.position, Quaternion.identity);
-        //Destroy this object
-        Destroy(gameObject);
+        if (hasAttack)
+        {
+            Vector3 distance = target.transform.position - transform.position;
+
+            if (distance.magnitude < (attackRange * 0.7f))
+            {
+                animator.Play("Attack");
+                stopTime = attackCooldown;
+            }
+        }  
     }
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag("Player"))
+        if (!hasAttack)
         {
-            Health otherHealth = collision.collider.GetComponent<Health>();
-            otherHealth.SubtractHealth(damage);
+            if (collision.collider.CompareTag("Player"))
+            {
+                Health otherHealth = collision.collider.GetComponent<Health>();
+
+                if (otherHealth)
+                {
+                    otherHealth.SubtractHealth(damage); 
+                }
+            }
+        }
+    }
+
+    public void Attack()
+    {
+        //Play sound
+        if (audioSource) audioSource.Play();
+
+        //Attempt to attack
+        Vector2 position = new Vector2(transform.position.x, transform.position.y) + collider.offset;
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(position, attackRange, new Vector2());
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider.CompareTag("Player"))
+            {
+                Health health = Player.Instance.GetComponent<Health>();
+                if (health)
+                {
+                    health.SubtractHealth(damage);
+                }
+                break;
+            }
         }
     }
 }

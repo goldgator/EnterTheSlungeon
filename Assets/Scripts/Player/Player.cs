@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
 {
     [Header("Movement Stats")]
     public float baseSpeed = 6.0f;
+    public float dodgeSpeed = 12.0f;
+    public AnimationCurve dodgeCurve;
 
 
     [Header("Components")]
@@ -15,10 +17,13 @@ public class Player : MonoBehaviour
     public GameObject weapon;
     private Animator animator;
     private Rigidbody2D rb;
+    private AudioSource audioSource;
+    public AudioClip dodgeAudio;
 
 
     //Private Fields
     private bool playerEnabled = true;
+    private Vector3 lastMoveDir;
     private Vector3 velocity;
 
     public static Player Instance { get; set; }
@@ -28,6 +33,11 @@ public class Player : MonoBehaviour
         Instance = this;
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
+    }
+    private void Start()
+    {
+        InputManager.Instance.dodgeStartEvent += Dodge;
     }
     private void FixedUpdate()
     {
@@ -35,6 +45,8 @@ public class Player : MonoBehaviour
         {
             ProcessMove();
         }
+
+        ProcessVelocity();
         animator.SetFloat("Speed", velocity.magnitude);
     }
 
@@ -48,11 +60,52 @@ public class Player : MonoBehaviour
         return playerEnabled;
     }
 
+    private void ProcessVelocity()
+    {
+        if (velocity.magnitude > 0)
+        {
+            rb.MovePosition(transform.position + velocity * Time.deltaTime);
+        }
+    }
+
     private void ProcessMove()
     {
         velocity = InputManager.Instance.PlayerMovement.normalized;
-        velocity *= baseSpeed * Time.deltaTime;
+        velocity *= baseSpeed;
 
-        rb.MovePosition(transform.position + velocity);
+        lastMoveDir = velocity.normalized;
+    }
+
+    private void Dodge(bool pressed)
+    {
+        if (playerEnabled && pressed)
+        {
+            animator.SetTrigger("Dodge");
+            audioSource.clip = dodgeAudio;
+            audioSource.Play();
+            StartCoroutine(DoDodge());
+        }
+    }
+
+    private IEnumerator DoDodge()
+    {
+        playerEnabled = false;
+        float dodgeTime = 0.5f;
+        weapon.SetActive(false);
+        Vector3 dodgeDir = lastMoveDir;
+        if (dodgeDir.magnitude <= 0.1f) dodgeDir = new Vector3(transform.localScale.x, 0, 0);
+        transform.localScale = new Vector3(Mathf.Sign(dodgeDir.x), 1, 1);
+
+        while (dodgeTime > 0)
+        {
+            velocity = dodgeDir * dodgeSpeed * dodgeCurve.Evaluate(.5f - dodgeTime);
+            Debug.Log(velocity);
+
+            yield return null;
+            dodgeTime -= Time.deltaTime;
+        }
+
+        weapon.SetActive(true);
+        playerEnabled = true;
     }
 }

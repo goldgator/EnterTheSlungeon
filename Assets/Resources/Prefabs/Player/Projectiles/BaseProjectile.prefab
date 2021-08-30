@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1139354216277857781}
   - component: {fileID: 4570993612995379691}
   - component: {fileID: 8236566453946427022}
+  - component: {fileID: -848257967592699573}
   m_Layer: 7
   m_Name: BaseProjectile
   m_TagString: Untagged
@@ -135,3 +136,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitFX: {fileID: 8300000, guid: d7da440ad4f6c4e7489efd85844988d8, type: 3}
+--- !u!114 &-848257967592699573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6229470945475235130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb9f15322e8ea8f4c91ecea8da05d100, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifeTime: 3
