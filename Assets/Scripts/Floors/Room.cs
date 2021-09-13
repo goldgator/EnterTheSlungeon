@@ -4,63 +4,142 @@ using UnityEngine;
 
 public class Room : MonoBehaviour
 {
-    [Header("Components")]
-    public List<ConnectionPoint> connectionPoints = new List<ConnectionPoint>();
-    public List<Door> doors = new List<Door>();
-    
+    public List<Cell> cells = new List<Cell>();
 
-    public Vector2 GridPosition
+    //Events
+    public delegate void RoomEnter();
+    public RoomEnter roomEnterEvent;
+
+    private RoomContent roomContents;
+    private RoomData myRoomData;
+
+    private const string ROOM_PATH = "Prefabs/Rooms/";
+    private const string CONTENT_PATH = "Prefabs/RoomContents/";
+
+    public bool CanMove
     {
         get
         {
-            Vector3 offset = new Vector3(10, 10, 0);
-            Vector3 pos = (transform.position - offset) / Floor.CELL_SIZE;
-
-            return pos;
+            return roomContents.Completed && (myRoomData.roomType != RoomData.RoomType.Boss);
         }
     }
-
-    public ConnectionPoint RandomConnectionPoint()
+    public bool CanBePulled
     {
-        return connectionPoints[Random.Range(0, connectionPoints.Count)];
-    }
-
-    public bool ConnectionPossible(ConnectionDir direction)
-    {
-        foreach (ConnectionPoint point in connectionPoints)
+        get
         {
-            if (point.direction == direction) return true;
+            return (myRoomData.roomType != RoomData.RoomType.Boss);
         }
-        return false;
     }
-
-    public List<ConnectionPoint> ReturnOpenPoints(bool ignoreBounds)
+    public bool Completed
     {
-        List<ConnectionPoint> points = new List<ConnectionPoint>();
-
-        foreach (ConnectionPoint point in connectionPoints)
-        {
-            Vector2 pos = point.GridPosition;
-            if (!ignoreBounds)
-            {
-                if (pos.x < 0 || pos.x > Floor.Instance.floorSize.x) continue;
-                if (pos.y < 0 || pos.y > Floor.Instance.floorSize.y) continue;
-            }
-            if (!Floor.Instance.IsGridPosEmpty(pos)) continue;
-
-            //Add point if not out of bounds (if applicable) and is in a open spot
-            points.Add(point);
-        }
-
-        return points;
+        get { return roomContents.Completed; }
     }
+    public bool locked = false;
 
-    public void UpdateState()
+    public void InstantiateRoom(RoomData roomData)
     {
-        foreach(Door door in doors)
+        myRoomData = roomData;
+        roomData.roomObject = this;
+        Vector2 bottomLeftPos = roomData.BottomLeftPos();
+
+        transform.position = bottomLeftPos * Floor.CELL_SIZE;
+
+        //Instantiate each cell based on their localPos
+        GameObject cellPrefab = Resources.Load<GameObject>(ROOM_PATH + "Cell/BaseCell");
+        foreach (CellData cellData in roomData.cellData) {
+            GameObject newObject = Instantiate(cellPrefab, this.transform);
+            Cell newCell = newObject.GetComponent<Cell>();
+
+            Vector2 relativePos = cellData.position - bottomLeftPos;
+            newCell.transform.localPosition = relativePos * Floor.CELL_SIZE;
+
+            newCell.InstantiateCell(cellData, this);
+            cells.Add(newCell);
+        }
+
+        //Add content if not boss room
+        if (roomData.roomType != RoomData.RoomType.Boss)
         {
-            door.UpdateState();
+            GameObject[] allRooms = Resources.LoadAll<GameObject>(CONTENT_PATH + myRoomData.selectedRoomContent);
+            roomContents = Instantiate(allRooms[Random.Range(0, allRooms.Length)], transform).GetComponent<RoomContent>();
+            roomContents.parentRoom = this;
+        } else
+        {
+            string bossPath = "Prefabs/BossRooms/Golem";
+            GameObject[] allRooms = Resources.LoadAll<GameObject>(bossPath);
+            roomContents = Instantiate(allRooms[Random.Range(0, allRooms.Length)], transform).GetComponent<RoomContent>();
+            roomContents.parentRoom = this;
+        }
+        
+
+        //Teleport player to room if entry room, and update cells
+        if (roomData.roomType == RoomData.RoomType.Entry && Player.Instance)
+        {
+            Vector3 offset = new Vector3(Floor.CELL_SIZE / 2, Floor.CELL_SIZE / 2);
+            Player.Instance.transform.position = cells[0].transform.position + offset;
+            ForceComplete();
+            UpdateCells();
+        }
+
+        //If room is a boss room, lock it
+        locked = (roomData.roomType == RoomData.RoomType.Boss);
+    }
+
+    public void MoveRoom(Vector2 move, bool movePlayer)
+    {
+        myRoomData.ShiftCells(move);
+
+        Vector3 offset = (move * Floor.CELL_SIZE);
+        transform.position = transform.position + offset;
+
+        if (movePlayer) Player.Instance.transform.position += offset;
+
+        Floor.Instance.UpdateBossRoomState();
+        UpdateCells();
+    }
+
+    public void UpdateCells()
+    {
+        foreach(Cell cell in cells)
+        {
+            cell.UpdateState();
         }
     }
 
+    public void RoomFinished()
+    {
+        Floor.Instance.UpdateBossRoomState();
+        UpdateCells();
+    }
+
+    public void TakePlayer()
+    {
+        PlayerCamera.Instance.GetNewBounds();
+        RoomEntered();
+    }
+
+    private void RoomEntered()
+    {
+        if (Completed)
+        {
+            UpdateCells();
+        } else
+        {
+            CloseAllDoors();
+            roomEnterEvent?.Invoke();
+        }
+    }
+
+    private void CloseAllDoors()
+    {
+        foreach (Cell cell in cells)
+        {
+            cell.CloseAllDoors();
+        }
+    }
+
+    public void ForceComplete()
+    {
+        roomContents.ForceComplete();
+    }
 }

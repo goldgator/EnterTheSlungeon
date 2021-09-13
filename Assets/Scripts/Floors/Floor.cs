@@ -1,158 +1,259 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Floor : MonoBehaviour
 {
-    // INSPECTOR VALUES
-    [Header("Spawn Values")]
-    public int roomStopAmount;
-    public Vector2 floorSize;
-    public bool randomStart = false;
-    public Vector2 startPosition;
+    //[Header("FloorDetails")]
+    public GameObject testPrefab;
+    public GameObject testBorder;
+    public GameObject visitedParent;
+    public static float CELL_SIZE = 20;
+    public Vector3 Offset
+    {
+        get
+        {
+            return new Vector3(CELL_SIZE / 2, CELL_SIZE / 2, 0);
+        }
+    }
+
+    [Header("GenerationStats")]
+    public FloorGenerator.FloorType floorType = FloorGenerator.FloorType.Expansive;
+    public int patternSize;
+    public bool debug = false;
 
     [Header("Components")]
-    public GameObject camera;
-    public GameObject player;
+    public GameObject floorCanvas;
+    public GameObject tempVictoryPanel;
+    public GameObject tempLossPanel;
 
-    //PUBLIC VALUES
-    public static Floor Instance { get; set; }
-    [HideInInspector]
-    public const float CELL_SIZE = 20.0f;
 
-    // PRIVATE VALUES
+    private FloorData generatedFloor;
     private List<Room> rooms = new List<Room>();
+    private Room bossRoom;
+
+    private bool gameOver = false;
 
 
+    private static Floor instance;
+    public static Floor Instance { get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<Floor>();
+                if (instance == null) return null;
+                instance.generatedFloor = FloorGenerator.GenerateFloor(instance.floorType, instance.patternSize);
+            }
+            return instance;
+        }
+    }
     private void Awake()
     {
-        Instance = this;
+        instance = this;
     }
 
-    private void Start()
+    // Start is called before the first frame update
+    void Start()
     {
-        SpawnFloor();
-        SetPlayer();
+        if (generatedFloor == null) generatedFloor = FloorGenerator.GenerateFloor(floorType, patternSize);
+        InstantiateFloor();
+        Debug.Log(generatedFloor.FloorSize);
     }
 
-    private void SetPlayer()
+    private void Update()
     {
-        camera.transform.position = rooms[0].transform.position;
-        camera.transform.Translate(new Vector3(0, 0, -10));
-        player.transform.position = rooms[0].transform.position;
-    }
-
-    private void SpawnFloor()
-    {
-        rooms.Add(SpawnRandomRoom("Entry", new Vector2(0,0)));
-
-        while (rooms.Count < roomStopAmount)
+        if (InputManager.Instance.Map && !PlayerInActiveRoom())
         {
-            GenerateRoom();
+            bool currentState = floorCanvas.gameObject.activeSelf;
+            Player.Instance.ForceStop();
+
+            floorCanvas.SetActive(!currentState);
+            Player.Instance.SetPlayerEnabled(currentState);
         }
 
-        //Move everything into the first quadrant (no position is in negatives)
-        AdjustRoom();
-
-        UpdateState();
-
-    }
-
-    private void AdjustRoom()
-    {
-        int lowestPoint = 0;
-        int leftMostPoint = 0;
-
-        int highestPoint = 0;
-        int rightMostPoint = 0;
-
-        foreach(Room room in rooms)
+        //Check if game won
+        if (bossRoom.Completed)
         {
-            Vector2 pos = room.GridPosition;
-            if (pos.x < leftMostPoint) leftMostPoint = (int) pos.x;
-            if (pos.x > rightMostPoint) rightMostPoint = (int) pos.x;
-
-            if (pos.y < lowestPoint) lowestPoint = (int) pos.y;
-            if (pos.y > highestPoint) highestPoint = (int) pos.y;
+            OnFloorFinish();
         }
 
-        //Adjust based bottom left of generated dungeon
-        Vector3 adjustVector = new Vector2(leftMostPoint - 1, lowestPoint - 1);
-
-        transform.position -= (adjustVector * CELL_SIZE);
-
-
-        floorSize = new Vector2(rightMostPoint - adjustVector.x + 1, highestPoint - adjustVector.y + 1);
-        Debug.Log(floorSize);
-    }
-
-    private void GenerateRoom()
-    {
-        //Get a list of OPEN connection points
-        List<ConnectionPoint> openPoints = new List<ConnectionPoint>();
-        foreach (Room room in rooms) openPoints.AddRange(room.ReturnOpenPoints(true));
-
-        //Select a random from the bunch
-        ConnectionPoint chosenPoint = openPoints[Random.Range(0, openPoints.Count)];
-
-        //Get a list of roomtypes that will work for that connection
-        string[] roomTypes = ConnectionPoint.RoomTypesFromDirection(chosenPoint.direction, openPoints.Count);
-
-        //Select a random roomtype
-        int randInd = Random.Range(0, roomTypes.Length);
-        string roomType = roomTypes[randInd];
-
-        //Instantiate a room based on that type
-        rooms.Add(SpawnRandomRoom(roomType, chosenPoint.GridPosition));
-    }
-
-    public Room SpawnRandomRoom(string roomType, Vector2 position)
-    {
-        GameObject[] roomOptions = Resources.LoadAll<GameObject>("Prefabs/Rooms/" + roomType);
-
-        GameObject randomRoom = roomOptions[Random.Range(0, roomOptions.Length)];
-        Vector3 spawnPosition = GetWorldPosFromGrid(position);
-
-        GameObject spawnedRoom = Instantiate(randomRoom, spawnPosition, Quaternion.identity, transform);
-
-        return spawnedRoom.GetComponent<Room>();
-    }
-
-    public void UpdateState()
-    {
-        foreach (Room room in rooms)
+        if (gameOver)
         {
-            room.UpdateState();
-        }
-    }
-
-
-
-
-    #region Query Functions
-    public Vector3 GetWorldPosFromGrid(Vector2 gridPos)
-    {
-        return (gridPos * CELL_SIZE) + new Vector2(CELL_SIZE / 2, CELL_SIZE / 2);
-    }
-
-    public Room GetRoomAtGridPos(Vector2 gridPos)
-    {
-        foreach (Room room in rooms)
-        {
-            if (room.GridPosition == gridPos)
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                return room;
+                SceneManager.LoadScene("FloorScene");
             }
         }
-        return null;
     }
 
-    public bool IsGridPosEmpty(Vector2 gridPos)
+    private void OnFloorFinish()
     {
-        return (GetRoomAtGridPos(gridPos) == null);
+        tempVictoryPanel.SetActive(true);
+        Player.Instance.SetPlayerEnabled(false);
+        Player.Instance.ForceStop();
+        MusicManager.Instance.PlaySong("Victory");
+        gameOver = true;
     }
 
-    #endregion
+    public void OnPlayerDeath()
+    {
+        tempLossPanel.SetActive(true);
+        MusicManager.Instance.PlaySong("Victory");
+        gameOver = true;
+    }
 
+    public bool PlayerInActiveRoom()
+    {
+        Room currentRoom = CurrentPlayerCell().GetRoom();
 
+        return (!currentRoom.Completed);
+    }
+
+    public FloorData GetFloorData()
+    {
+        return generatedFloor;
+    }
+
+    private void InstantiateFloor()
+    {
+        if (debug)
+        {
+            GameObject border = Instantiate(testBorder);
+            //Debug.Log(border);
+            //Debug.Log(border.transform);
+            border.transform.localScale = (generatedFloor.roomMax + new Vector2(1, 1)) * CELL_SIZE;
+
+            //Place visited cells
+            for (int i = 0; i < generatedFloor.cells.GetLength(0); i++)
+            {
+                for (int j = 0; j < generatedFloor.cells.GetLength(1); j++)
+                {
+                    if (generatedFloor.cells[i, j] == FloorData.CellType.Visited)
+                    {
+                        Vector3 newPosition = (new Vector2(i, j) * CELL_SIZE);
+                        newPosition += Offset;
+
+                        GameObject testObject = Instantiate(testPrefab, newPosition, Quaternion.identity);
+                        testObject.transform.SetParent(visitedParent.transform, false);
+                        TMP_Text text = testObject.GetComponent<TMP_Text>();
+
+                        text.text = "Visited";
+                    }
+                }
+            }
+        }
+
+        GameObject roomPrefab = Resources.Load<GameObject>("Prefabs/Rooms/BaseRoom");
+        Room roomComponent = roomPrefab.GetComponent<Room>();
+        foreach (RoomData roomData in generatedFloor.roomData)
+        {
+            Room newRoom = Instantiate(roomComponent);
+            newRoom.InstantiateRoom(roomData);
+            if (roomData.roomType == RoomData.RoomType.Boss) bossRoom = newRoom;
+        }
+    }
+
+    public void UpdateBossRoomState()
+    {
+        //Check each original spot and see if it has a cell (skip boss original spot)
+        for (int i = 1; i < generatedFloor.originalSpots.Count; i++)
+        {
+            Cell cell = CellAtPos(generatedFloor.originalSpots[i]);
+
+            //If spot is empty (no cell) then set lock to true and leave method
+            if (cell == null)
+            {
+                bossRoom.locked = true;
+                return;
+            } else
+            {
+                //Check if cell's room has not been completed
+                if (!cell.GetRoom().Completed)
+                {
+                    bossRoom.locked = true;
+                    return;
+                }
+            }
+        }
+
+        //If none are empty, set the lock to false
+        bossRoom.locked = false;
+    }
+
+    public Cell CurrentPlayerCell()
+    {
+        return CellAtWorldPos(Player.Instance.transform.position);
+    }
+
+    public Cell CellAtWorldPos(Vector3 position)
+    {
+        return generatedFloor.CellDataAtPos(WorldToCellPos(position)).cellObject;
+    }
+
+    public Cell CellAtPos(Vector2 position)
+    {
+        CellData data = generatedFloor.CellDataAtPos(position);
+        if (data != null)
+        {
+            return data.cellObject;
+        } else
+        {
+            return null;
+        }
+    }
+
+    public CellData CellDataAtPos(Vector2 position)
+    {
+        return generatedFloor.CellDataAtPos(position);
+    }
+
+    public bool HasCellAtPos(Vector2 position)
+    {
+        return (generatedFloor.CellDataAtPos(position) != null);
+    }
+
+    public Vector2 WorldToCellPos(Vector3 position)
+    {
+        float posX = position.x / 20f;
+        float posY = position.y / 20f;
+
+        posX = Mathf.Floor(posX);
+        posY = Mathf.Floor(posY);
+
+        return new Vector2(posX, posY);
+    }
+
+    public Cell FindCellInLine(Vector2 testPos, Vector2 stepOffset)
+    {
+        Cell foundCell = null;
+        while (foundCell == null)
+        {
+            testPos += stepOffset;
+
+            //return null if out of bounds
+            if (!generatedFloor.IsInBounds(testPos)) return null;
+
+            CellData cellData = generatedFloor.CellDataAtPos(testPos);
+            if (cellData != null) foundCell = cellData.cellObject;
+
+        }
+        return foundCell;
+    }
+
+    public bool IsValidPosition(Vector2 cellPosition)
+    {
+        return generatedFloor.IsValidPosition(cellPosition);
+    }
+
+    public bool RoomCanMoveInDirection(RoomData roomData, CardinalDir dir)
+    {
+        return generatedFloor.RoomCanMoveInDirection(roomData, dir);
+    }
+
+    public bool IsOriginalPosition(Vector2 position)
+    {
+        return (generatedFloor.originalSpots.Contains(position));
+    }
 }

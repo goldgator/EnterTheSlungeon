@@ -5,18 +5,26 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class Door : MonoBehaviour
 {
-    [Header("Components")]
-    public ConnectionPoint connectionPoint;
-    public ConnectionDir connectionDir;
-    public GameObject wallCollider;
     public Transform spawnLocation;
-    private Room connectedRoom;
+    public GameObject doorCloseObject;
+    public CardinalDir direction;
+    public Cell parentCell;
+    
 
-    public void UpdateState() {
-        //Keep track of current connectedRoom
-        connectedRoom = connectionPoint.GetConnectedRoom();
+    public void SetDoorState(bool state)
+    {
+        doorCloseObject.SetActive(state);
+    }
 
-        //Bring wall back if there is no connected room
-        wallCollider.SetActive( (connectedRoom == null) );
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //Check if player
+        if (collision.CompareTag("Player"))
+        {
+            //Tell parent cell player is moving
+            //Give direction
+            Debug.Log("Moving Player");
+            parentCell.MovePlayer(direction);
+        }
     }
 }
