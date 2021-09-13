@@ -80,7 +80,24 @@ public static class Utilities
         return (CardinalDir)((((int)direction) + steps) % 4);
     }
 
-    
+    public static T GetComponentFromParent<T>(this GameObject baseObject) where T : Component
+    {
+        T wantedComponent = baseObject.GetComponent<T>();
+        if (wantedComponent == null)
+        {
+            GameObject parent = baseObject.transform.parent.gameObject;
+            if (parent)
+            {
+                return parent.GetComponentFromParent<T>();
+            } else
+            {
+                return null;
+            }
+        } else
+        {
+            return wantedComponent;
+        }
+    }
 
 }
 

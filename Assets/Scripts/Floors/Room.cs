@@ -6,12 +6,35 @@ public class Room : MonoBehaviour
 {
     public List<Cell> cells = new List<Cell>();
 
+    //Events
+    public delegate void RoomEnter();
+    public RoomEnter roomEnterEvent;
 
-    private GameObject roomContents;
+    private RoomContent roomContents;
     private RoomData myRoomData;
 
-    private const string PREFAB_PATH = "Prefabs/Rooms/";
+    private const string ROOM_PATH = "Prefabs/Rooms/";
+    private const string CONTENT_PATH = "Prefabs/RoomContents/";
 
+    public bool CanMove
+    {
+        get
+        {
+            return roomContents.Completed && (myRoomData.roomType != RoomData.RoomType.Boss);
+        }
+    }
+    public bool CanBePulled
+    {
+        get
+        {
+            return (myRoomData.roomType != RoomData.RoomType.Boss);
+        }
+    }
+    public bool Completed
+    {
+        get { return roomContents.Completed; }
+    }
+    public bool locked = false;
 
     public void InstantiateRoom(RoomData roomData)
     {
@@ -22,7 +45,7 @@ public class Room : MonoBehaviour
         transform.position = bottomLeftPos * Floor.CELL_SIZE;
 
         //Instantiate each cell based on their localPos
-        GameObject cellPrefab = Resources.Load<GameObject>(PREFAB_PATH + "Cell/BaseCell");
+        GameObject cellPrefab = Resources.Load<GameObject>(ROOM_PATH + "Cell/BaseCell");
         foreach (CellData cellData in roomData.cellData) {
             GameObject newObject = Instantiate(cellPrefab, this.transform);
             Cell newCell = newObject.GetComponent<Cell>();
@@ -34,12 +57,32 @@ public class Room : MonoBehaviour
             cells.Add(newCell);
         }
 
-        //Teleport player to room if entry room
+        //Add content if not boss room
+        if (roomData.roomType != RoomData.RoomType.Boss)
+        {
+            GameObject[] allRooms = Resources.LoadAll<GameObject>(CONTENT_PATH + myRoomData.selectedRoomContent);
+            roomContents = Instantiate(allRooms[Random.Range(0, allRooms.Length)], transform).GetComponent<RoomContent>();
+            roomContents.parentRoom = this;
+        } else
+        {
+            string bossPath = "Prefabs/BossRooms/Golem";
+            GameObject[] allRooms = Resources.LoadAll<GameObject>(bossPath);
+            roomContents = Instantiate(allRooms[Random.Range(0, allRooms.Length)], transform).GetComponent<RoomContent>();
+            roomContents.parentRoom = this;
+        }
+        
+
+        //Teleport player to room if entry room, and update cells
         if (roomData.roomType == RoomData.RoomType.Entry && Player.Instance)
         {
             Vector3 offset = new Vector3(Floor.CELL_SIZE / 2, Floor.CELL_SIZE / 2);
             Player.Instance.transform.position = cells[0].transform.position + offset;
+            ForceComplete();
+            UpdateCells();
         }
+
+        //If room is a boss room, lock it
+        locked = (roomData.roomType == RoomData.RoomType.Boss);
     }
 
     public void MoveRoom(Vector2 move, bool movePlayer)
@@ -50,7 +93,53 @@ public class Room : MonoBehaviour
         transform.position = transform.position + offset;
 
         if (movePlayer) Player.Instance.transform.position += offset;
+
+        Floor.Instance.UpdateBossRoomState();
+        UpdateCells();
     }
 
-    
+    public void UpdateCells()
+    {
+        foreach(Cell cell in cells)
+        {
+            cell.UpdateState();
+        }
+    }
+
+    public void RoomFinished()
+    {
+        Floor.Instance.UpdateBossRoomState();
+        UpdateCells();
+    }
+
+    public void TakePlayer()
+    {
+        PlayerCamera.Instance.GetNewBounds();
+        RoomEntered();
+    }
+
+    private void RoomEntered()
+    {
+        if (Completed)
+        {
+            UpdateCells();
+        } else
+        {
+            CloseAllDoors();
+            roomEnterEvent?.Invoke();
+        }
+    }
+
+    private void CloseAllDoors()
+    {
+        foreach (Cell cell in cells)
+        {
+            cell.CloseAllDoors();
+        }
+    }
+
+    public void ForceComplete()
+    {
+        roomContents.ForceComplete();
+    }
 }

@@ -16,7 +16,7 @@ public class CellUI : MonoBehaviour
     {
         cellData = cell;
 
-        if (cellData.roomOwner.roomType == RoomData.RoomType.Boss) background.color = Color.red;
+        UpdateColor();
 
         //Change sprite to door if cell has opening (is a wall sprite by default)
         for (int i = 0; i < 4; i++)
@@ -28,6 +28,12 @@ public class CellUI : MonoBehaviour
                 wallImages[i].sprite = doorSprite;
             } 
         }
+    }
+
+    public void UpdateColor()
+    {
+        if (cellData.roomOwner.roomType == RoomData.RoomType.Boss) background.color = Color.red;
+        if (cellData.cellObject.GetRoom().Completed) background.color = Color.green;
     }
 
     public Vector2 GetCellPos()

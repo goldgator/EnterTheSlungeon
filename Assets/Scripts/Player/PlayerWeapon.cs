@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerWeapon : MonoBehaviour
 {
+    public SpriteRenderer renderer;
     public WeaponDetails weaponDetails;
     public Transform shotTransform;
     private AudioSource audioSource;
@@ -29,6 +30,7 @@ public class PlayerWeapon : MonoBehaviour
         shotDamage = weaponDetails.shotDamage;
         shotSize = weaponDetails.shotSize;
         shotSpeed = weaponDetails.shotSpeed;
+        renderer.sprite = weaponDetails.gunSprite;
     }
 
     private void OnEnable()
@@ -85,7 +87,7 @@ public class PlayerWeapon : MonoBehaviour
         //Determine player and weapon scale
         float aimX = Mathf.Sign(direction.x);
         Player.Instance.transform.localScale = new Vector3(aimX, 1, 1);
-        transform.localScale = new Vector3(aimX, aimX, 1); ;
+        transform.localScale = new Vector3(aimX, aimX, 1);
     }
 
     void OnFire(bool pressed)

@@ -24,6 +24,7 @@ public class BaseEnemy : MonoBehaviour
     protected Collider2D collider;
     protected AudioSource audioSource;
     protected float stopTime = 0;
+    protected EnemySpawn homeSpawner;
 
     protected virtual void Start()
     {
@@ -42,8 +43,12 @@ public class BaseEnemy : MonoBehaviour
         GameObject newFX = Instantiate(fxObject, transform.position, Quaternion.identity);
         newFX.transform.localScale = transform.localScale;
         //Destroy this object
+        homeSpawner?.EnemyDied();
         Destroy(gameObject);
     }
 
-
+    public void InstantiateEnemy(EnemySpawn newSpawn)
+    {
+        homeSpawner = newSpawn;
+    }
 }

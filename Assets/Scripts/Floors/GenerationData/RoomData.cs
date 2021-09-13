@@ -18,6 +18,7 @@ public class RoomData
     public List<CellData> cellData = new List<CellData>();
     public int visits = 0;
     public Room roomObject;
+    public string selectedRoomContent = "NSEW";
 
     public bool Shuffled
     {

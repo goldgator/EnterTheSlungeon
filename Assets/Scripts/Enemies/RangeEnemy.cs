@@ -21,7 +21,7 @@ public class RangeEnemy : BaseEnemy
     protected override void Start()
     {
         base.Start();
-        stopTime = Random.Range(attackCooldown / 3f, attackCooldown);
+        stopTime = Random.Range(attackCooldown / 4f, attackCooldown / 2f);
     }
 
     private void OnMove()

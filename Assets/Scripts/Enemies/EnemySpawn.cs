@@ -4,32 +4,61 @@ using UnityEngine;
 
 public class EnemySpawn : MonoBehaviour
 {
-    public const string PREFAB_PATH = "Prefabs/Enemies/Prefabs";
+    public const string PREFAB_PATH = "Prefabs/Enemies/Prefabs/";
+    public const string BOSS_PATH = "Prefabs/Enemies/Bosses/";
+    public bool isBoss = false;
     public string enemyName;
 
+    private int enemyDeathCount = 0;
 
-    // Start is called before the first frame update
-    void Start()
+    public void SpawnEnemy(bool hasParticles)
     {
-        SpawnEnemy();
+        if (hasParticles)
+        {
+            SpawnEnemyWithAnim();
+        } else
+        {
+            OnSpawnEnemy();
+        }
     }
 
-    public void SpawnEnemy()
+    private void SpawnEnemyWithAnim()
     {
+        GetComponent<Animator>()?.SetTrigger("Spawn");
+    }
+
+    public void OnSpawnEnemy()
+    {
+        string path = (isBoss) ? BOSS_PATH : PREFAB_PATH;
+
         if (enemyName == "")
         {
-            
-            GameObject[] allEnemies = Resources.LoadAll<GameObject>(PREFAB_PATH);
+            GameObject[] allEnemies = Resources.LoadAll<GameObject>(path);
             GameObject chosenEnemy = allEnemies[Random.Range(0, allEnemies.Length)];
-            Debug.Log(chosenEnemy.name);
-            Instantiate(chosenEnemy, transform.position, Quaternion.identity);
+            Instantiate(chosenEnemy, transform.position, Quaternion.identity).GetComponent<BaseEnemy>().InstantiateEnemy(this);
         }
         else
         {
-            GameObject enemy = Resources.Load<GameObject>(PREFAB_PATH + enemyName);
-            Instantiate(enemy, transform.position, Quaternion.identity);
+            GameObject enemy = Resources.Load<GameObject>(path + enemyName);
+            Instantiate(enemy, transform.position, Quaternion.identity).GetComponent<BaseEnemy>().InstantiateEnemy(this);
         }
     }
 
-    
+    /// <summary>
+    /// Called from the enemies when they die
+    /// </summary>
+    public void EnemyDied()
+    {
+        enemyDeathCount++;
+    }
+
+    public bool SpawnHasBeenKilled()
+    {
+        return (enemyDeathCount > 0);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(transform.position, .5f);
+    }
 }

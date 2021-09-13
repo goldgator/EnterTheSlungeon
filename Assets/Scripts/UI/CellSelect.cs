@@ -28,13 +28,13 @@ public class CellSelect : MonoBehaviour
         transform.SetParent(newParent.transform, false);
 
         //Subscribe to movement start
-        InputManager.Instance.moveStartEvent += OnMoveInp;
+        if (InputManager.Instance) InputManager.Instance.moveStartEvent += OnMoveInp;
     }
 
     private void OnDisable()
     {
         //Unsubscribe from movement start
-        InputManager.Instance.moveStartEvent -= OnMoveInp;
+        if (InputManager.Instance) InputManager.Instance.moveStartEvent -= OnMoveInp;
     }
     
 
@@ -71,14 +71,34 @@ public class CellSelect : MonoBehaviour
             Debug.Log("Attempting move");
             OnMove(moveDir);
         }
+        selectedCell.cellObject.GetRoom().UpdateCells();
+        PlayerCamera.Instance.GetNewBounds();
     }
 
     private void OnPull(Vector2 moveDir)
     {
+        //Check if room doesn't have correct opening
+        if (!selectedCell.HasDir(Utilities.Vector2ToCardinalDir(moveDir)))
+        {
+            //Play fail noise and leave method
+            audioSource.clip = roomBump;
+            audioSource.Play();
+            return;
+        }
+
         //Find in direction
         Cell foundCell = Floor.Instance.FindCellInLine(selectedCell.position, moveDir);
         if (foundCell == null)
         {
+            audioSource.clip = roomBump;
+            audioSource.Play();
+            return;
+        }
+
+        //Check if room can't be pulled
+        if (!foundCell.GetRoom().CanBePulled)
+        {
+            //Play fail noise and leave method
             audioSource.clip = roomBump;
             audioSource.Play();
             return;
@@ -109,6 +129,15 @@ public class CellSelect : MonoBehaviour
 
     private void OnMove(Vector2 moveDir)
     {
+        //Check if you can even move current room
+        if (!selectedCell.cellObject.GetRoom().CanMove)
+        {
+            //Play fail noise and leave method
+            audioSource.clip = roomBump;
+            audioSource.Play();
+            return;
+        }
+
         //Check if current room can move in that direction
         if (Floor.Instance.RoomCanMoveInDirection(selectedCell.roomOwner, Utilities.Vector2ToCardinalDir(moveDir)))
         {
@@ -130,9 +159,4 @@ public class CellSelect : MonoBehaviour
             audioSource.Play();
         }
     }
-
-
-
-
-
 }

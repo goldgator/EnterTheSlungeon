@@ -117,7 +117,7 @@ public class InputManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         baseControls.Controls.Move.started += ctx => MoveStart(ctx);
-        baseControls.Controls.Move.canceled += ctx => MoveStart(ctx);
+        baseControls.Controls.Move.canceled += ctx => MoveStop(ctx);
 
         baseControls.Controls.Fire.started += ctx => FireStart(ctx, ctx.ReadValueAsButton());
         baseControls.Controls.Fire.canceled += ctx => FireStop(ctx, ctx.ReadValueAsButton());
@@ -128,6 +128,7 @@ public class InputManager : MonoBehaviour
 
     void MoveStart(InputAction.CallbackContext context)
     {
+        //Debug.Log(PlayerMovement);
         moveStartEvent?.Invoke(PlayerMovement);
     }
 

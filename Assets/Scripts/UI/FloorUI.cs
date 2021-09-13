@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class FloorUI : MonoBehaviour
 {
+    
     private FloorData floorData;
     private GridLayout gridLayout;
     private RectTransform rectTransform;
@@ -18,13 +19,18 @@ public class FloorUI : MonoBehaviour
     {
         if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
         if (gridLayout == null) gridLayout = GetComponent<GridLayout>();
+        //Adjust parent size
+        RectTransform parent = ((RectTransform)transform.parent);
+        parent.sizeDelta = new Vector2(Screen.width * .9f, Screen.height *.9f);
         if (floorData == null) {
             floorData = Floor.Instance.GetFloorData();
             InstantiateUI();
         };
 
+        UpdateColor();
     }
 
+    
     private void InstantiateUI()
     {
         //Change width and height of rectTransform based on floor size
@@ -37,7 +43,18 @@ public class FloorUI : MonoBehaviour
         float xScale = parentTransform.sizeDelta.x / rectTransform.sizeDelta.x;
         float yScale = parentTransform.sizeDelta.y / rectTransform.sizeDelta.y;
 
-        float newScale = Mathf.Min(xScale, yScale) * 0.9f;
+        float newScale;
+        if (xScale < yScale)
+        {
+            float targetSize = parentTransform.sizeDelta.x * .9f;
+            newScale = targetSize / rectTransform.sizeDelta.x;
+        } else
+        {
+            float targetSize = parentTransform.sizeDelta.y * .9f;
+            newScale = targetSize / rectTransform.sizeDelta.y;
+        }
+
+        Debug.Log(newScale);
         rectTransform.localScale = new Vector3(newScale, newScale, newScale);
 
         //Iterate through each cell from bottom left, starting on rows
@@ -49,7 +66,7 @@ public class FloorUI : MonoBehaviour
             for (int x = 0; x < floorSize.x; x++)
             {
                 //If position has cell
-                CellData cell = floorData.CellAtPos(new Vector2(x,y));
+                CellData cell = floorData.CellDataAtPos(new Vector2(x,y));
                 if (cell != null)
                 {
                     //Place RoomUI
@@ -89,6 +106,14 @@ public class FloorUI : MonoBehaviour
     public int CellPosToChildIndex(Vector2 position)
     {
         return (int)(position.x + (position.y * floorData.FloorSize.x));
+    }
+
+    public void UpdateColor()
+    {
+        foreach (CellUI cell in cellUIs)
+        {
+            cell.UpdateColor();
+        }
     }
 
     public void UpdateUI()

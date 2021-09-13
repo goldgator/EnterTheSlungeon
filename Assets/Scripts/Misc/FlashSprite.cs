@@ -23,6 +23,7 @@ public class FlashSprite : MonoBehaviour
 
     public IEnumerator DoFlash()
     {
+        if (renderer.material == flashMaterial) yield break;
         Material oldMat = renderer.material;
 
         for (int i = 0; i < flashAmount; i++)

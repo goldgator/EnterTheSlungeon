@@ -29,7 +29,11 @@ public class Health : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
-        invincTimer = invinicibilityTime;
+    }
+
+    public void SetInvincibleTimer(float time)
+    {
+        invincTimer = Mathf.Max(time, invincTimer);
     }
 
     public void AddHealth(float add)
@@ -48,14 +52,14 @@ public class Health : MonoBehaviour
     }
     public void SubtractHealth(float minus)
     {
-        if (invincTimer < invinicibilityTime) return;
+        if (invincTimer > 0) return;
 
         currentHealth -= minus;
         parentHealth?.SubtractHealth(minus);
 
         if (minus >= subEventThreshold)
         {
-            invincTimer = 0;
+            invincTimer = invinicibilityTime;
             subtractEvent?.Invoke();
         }
     }
@@ -74,7 +78,7 @@ public class Health : MonoBehaviour
     private void Update()
     {
         currentRegTime += Time.deltaTime;
-        invincTimer += Time.deltaTime;
+        invincTimer -= Time.deltaTime;
 
         if (currentRegTime > regenTime && hasRegen && !hasDied)
         {
@@ -89,8 +93,4 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void PlayerDeath()
-    {
-        Debug.Log("Player Killed");
-    }
 }

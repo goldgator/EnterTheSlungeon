@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     private Animator animator;
     private Rigidbody2D rb;
     private AudioSource audioSource;
+    private Health playerHealth;
     public AudioClip dodgeAudio;
 
 
@@ -34,11 +35,22 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        playerHealth = GetComponent<Health>();
     }
     private void Start()
     {
         InputManager.Instance.dodgeStartEvent += Dodge;
     }
+
+    public void OnPlayerDeath()
+    {
+        animator.SetBool("Death", true);
+        weaponPivot.SetActive(false);
+        playerEnabled = false;
+        ForceStop();
+        Floor.Instance.OnPlayerDeath();
+    }
+
     private void FixedUpdate()
     {
         if (playerEnabled)
@@ -75,12 +87,16 @@ public class Player : MonoBehaviour
 
         lastMoveDir = velocity.normalized;
     }
+    public void ForceStop() {
+        velocity = new Vector2(0, 0);
+    }
 
     private void Dodge(bool pressed)
     {
         if (playerEnabled && pressed)
         {
             animator.SetTrigger("Dodge");
+            playerHealth.SetInvincibleTimer(0.25f);
             audioSource.clip = dodgeAudio;
             audioSource.Play();
             StartCoroutine(DoDodge());
@@ -99,7 +115,7 @@ public class Player : MonoBehaviour
         while (dodgeTime > 0)
         {
             velocity = dodgeDir * dodgeSpeed * dodgeCurve.Evaluate(.5f - dodgeTime);
-            Debug.Log(velocity);
+            //Debug.Log(velocity);
 
             yield return null;
             dodgeTime -= Time.deltaTime;

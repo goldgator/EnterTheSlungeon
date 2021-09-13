@@ -850,7 +850,7 @@ public class FloorData
         return roomData.RoomAtPos(position);
     }
 
-    public CellData CellAtPos(Vector2 position)
+    public CellData CellDataAtPos(Vector2 position)
     {
         foreach (RoomData data in roomData)
         {
