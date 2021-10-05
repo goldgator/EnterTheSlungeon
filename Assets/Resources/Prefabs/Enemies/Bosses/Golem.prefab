@@ -422,7 +422,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 8
-  boxEnabled: 1
+  boxEnabled: 0
 --- !u!1 &883267220
 GameObject:
   m_ObjectHideFlags: 0
@@ -903,7 +903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flashMaterial: {fileID: 2100000, guid: f8e9112f0ae1ebc4cb5744a7d3e004e7, type: 2}
-  flashTime: 0.1
+  flashTime: 0.05
   flashAmount: 1
 --- !u!82 &6827554257619136191
 AudioSource:

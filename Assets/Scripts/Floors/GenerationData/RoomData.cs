@@ -18,7 +18,13 @@ public class RoomData
     public List<CellData> cellData = new List<CellData>();
     public int visits = 0;
     public Room roomObject;
-    public string selectedRoomContent = "NSEW";
+    public string RoomOpeningType {
+        get
+        {
+            return cellData[0].openings.CardinalListToString();
+            //return "NESW";
+        }
+    }
 
     public bool Shuffled
     {

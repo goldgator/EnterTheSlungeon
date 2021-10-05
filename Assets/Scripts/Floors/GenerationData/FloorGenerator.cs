@@ -100,7 +100,7 @@ public static class FloorGenerator
         roomData.Add(bossRoom);
 
         //Add opening in random direction
-        bossRoom.cellData[0].openings.Add((CardinalDir) Random.Range(0,4));
+        bossRoom.cellData[0].openings.Add((CardinalDir)RNGManager.GetWorldRand(0,4));
 
         //Add Generic room next to opening
         RoomData firstRoom = new RoomData(RoomData.RoomType.Generic, Utilities.CardinalDirToVector2(bossRoom.cellData[0].openings[0]));
@@ -125,11 +125,11 @@ public static class FloorGenerator
         do
         {
             //Select random room (not boss room)
-            int randInd = Random.Range(1, roomData.Count);
+            int randInd = RNGManager.GetWorldRand(1, roomData.Count);
             RoomData currentRoom = roomData[randInd];
 
             //Select a random cell and its position from that room
-            int randCellInt = Random.Range(0,currentRoom.cellData.Count);
+            int randCellInt = RNGManager.GetWorldRand(0,currentRoom.cellData.Count);
             Vector2 randCell = currentRoom.cellData[randCellInt].position;
 
             //Create a random offset from that cell

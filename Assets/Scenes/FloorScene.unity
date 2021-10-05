@@ -887,12 +887,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 452427626158695470, guid: a1279c945df1bdb4d874804479c614f4, type: 3}
+      propertyPath: seed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 452427626158695470, guid: a1279c945df1bdb4d874804479c614f4, type: 3}
       propertyPath: debug
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 452427626158695470, guid: a1279c945df1bdb4d874804479c614f4, type: 3}
       propertyPath: floorType
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 452427626158695470, guid: a1279c945df1bdb4d874804479c614f4, type: 3}
+      propertyPath: stringSeed
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 452427626158695470, guid: a1279c945df1bdb4d874804479c614f4, type: 3}
       propertyPath: patternSize
@@ -1152,7 +1160,7 @@ PrefabInstance:
     - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
       propertyPath: weaponDetails
       value: 
-      objectReference: {fileID: 11400000, guid: 9f8b8c211f610b5419b4c5f927a587ab, type: 2}
+      objectReference: {fileID: 11400000, guid: fd79fef0772450a4fa648c74713a48f4, type: 2}
     - target: {fileID: 4647335815002231099, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

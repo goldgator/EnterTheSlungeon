@@ -23,7 +23,7 @@ public class Door : MonoBehaviour
         {
             //Tell parent cell player is moving
             //Give direction
-            Debug.Log("Moving Player");
+            //Debug.Log("Moving Player");
             parentCell.MovePlayer(direction);
         }
     }

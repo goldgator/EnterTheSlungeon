@@ -13,6 +13,33 @@ public static class Utilities
     }
 
 
+    public static string CardinalListToString(this List<CardinalDir> dirs)
+    {
+        dirs.Sort();
+        string concat = "";
+        foreach(CardinalDir dir in dirs)
+        {
+            switch (dir)
+            {
+                case CardinalDir.North:
+                    concat += "N";
+                    break;
+                case CardinalDir.East:
+                    concat += "E";
+                    break;
+                case CardinalDir.South:
+                    concat += "S";
+                    break;
+                case CardinalDir.West:
+                    concat += "W";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return concat;
+    }
 
     public static Vector2 CardinalDirToVector2(CardinalDir direction)
     {
@@ -54,7 +81,7 @@ public static class Utilities
 
     public static CardinalDir GetRandomDir()
     {
-        return (CardinalDir) (UnityEngine.Random.Range(0, 4));
+        return (CardinalDir) (RNGManager.GetWorldRand(0, 4));
     }
 
     public static Vector2 GetRandomCardinalVector()

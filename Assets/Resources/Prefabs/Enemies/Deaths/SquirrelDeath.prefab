@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5919370034836082332}
   - component: {fileID: 5919370034836082333}
   - component: {fileID: 5919370034836082334}
-  - component: {fileID: 5919370034836082335}
   - component: {fileID: 5919370034836082328}
   m_Layer: 0
   m_Name: SquirrelDeath
@@ -104,21 +103,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!111 &5919370034836082335
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5919370034836082329}
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: d2184f02c81b8c74eb3974a499410b3a, type: 2}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!114 &5919370034836082328
 MonoBehaviour:
   m_ObjectHideFlags: 0

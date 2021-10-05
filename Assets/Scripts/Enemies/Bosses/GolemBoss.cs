@@ -26,7 +26,7 @@ public class GolemBoss : BaseEnemy
     {
         base.Start();
         MusicManager.Instance.PlaySong("Boss2");
-        stopTime = Random.Range(attackCooldown / 4f, attackCooldown / 2f);
+        stopTime = RNGManager.GetEventRand(attackCooldown / 4f, attackCooldown / 2f);
     }
 
     // Update is called once per frame
@@ -165,7 +165,7 @@ public class GolemBoss : BaseEnemy
     {
         //Play sound
         if (audioSource) {
-            Debug.Log("Play Attack");
+            //Debug.Log("Play Attack");
             audioSource.clip = attackSound;
             audioSource.loop = false;
             audioSource.Play();
@@ -177,7 +177,7 @@ public class GolemBoss : BaseEnemy
         //Play sound
         if (audioSource)
         {
-            Debug.Log("Play laser");
+            //Debug.Log("Play laser");
             audioSource.clip = laserSound;
             audioSource.loop = true;
             audioSource.Play();

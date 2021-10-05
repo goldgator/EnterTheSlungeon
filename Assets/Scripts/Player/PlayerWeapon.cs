@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerWeapon : MonoBehaviour
 {
-    public SpriteRenderer renderer;
+    public new SpriteRenderer renderer;
     public WeaponDetails weaponDetails;
     public Transform shotTransform;
     private AudioSource audioSource;
@@ -80,9 +80,27 @@ public class PlayerWeapon : MonoBehaviour
 
         //Weapon
         Vector3 direction = (worldMousePos - transform.position).normalized;
+        CorrectDirAndScale(direction);
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+
+    }
+
+
+
+    private void CorrectDirAndScale(Vector3 direction)
+    {
+        //Determine player and weapon scale
+        float aimX = Mathf.Sign(direction.x);
+        Player.Instance.transform.localScale = new Vector3(aimX, 1, 1);
+        transform.localScale = new Vector3(aimX, aimX, 1);
+    }
+
+    private void CorrectDirAndScale()
+    {
+        Vector3 worldMousePos = InputManager.Instance.MouseWorldPosition;
+        Vector3 direction = (worldMousePos - transform.position).normalized;
 
         //Determine player and weapon scale
         float aimX = Mathf.Sign(direction.x);
@@ -95,6 +113,8 @@ public class PlayerWeapon : MonoBehaviour
         if (fireTimer >= fireRate && pressed)
         {
             fireTimer = 0;
+            //Call ProcessAim once more to ensure scales and directions have been updated correctly before shot
+            ProcessAim();
 
             //Make Sound
             audioSource.Play();

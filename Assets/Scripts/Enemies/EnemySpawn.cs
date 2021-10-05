@@ -34,7 +34,7 @@ public class EnemySpawn : MonoBehaviour
         if (enemyName == "")
         {
             GameObject[] allEnemies = Resources.LoadAll<GameObject>(path);
-            GameObject chosenEnemy = allEnemies[Random.Range(0, allEnemies.Length)];
+            GameObject chosenEnemy = allEnemies[RNGManager.GetEventRand(0, allEnemies.Length)];
             Instantiate(chosenEnemy, transform.position, Quaternion.identity).GetComponent<BaseEnemy>().InstantiateEnemy(this);
         }
         else

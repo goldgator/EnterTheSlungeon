@@ -6,14 +6,16 @@ using UnityEngine;
 public class FlashSprite : MonoBehaviour
 {
     public Material flashMaterial;
-    public float flashTime;
+    private Material originalMat;
+    public float flashTime = 0.05f;
     public int flashAmount;
-    private SpriteRenderer renderer;
+    private new SpriteRenderer renderer;
 
     // Start is called before the first frame update
     void Start()
     {
         renderer = GetComponent<SpriteRenderer>();
+        originalMat = renderer.material;
     }
 
     public void Flash()
@@ -23,14 +25,13 @@ public class FlashSprite : MonoBehaviour
 
     public IEnumerator DoFlash()
     {
-        if (renderer.material == flashMaterial) yield break;
-        Material oldMat = renderer.material;
+        if (renderer.material != originalMat) yield break;
 
         for (int i = 0; i < flashAmount; i++)
         {
             renderer.material = flashMaterial;
             yield return new WaitForSeconds(flashTime);
-            renderer.material = oldMat;
+            renderer.material = originalMat;
             yield return new WaitForSeconds(flashTime);
         }
     }

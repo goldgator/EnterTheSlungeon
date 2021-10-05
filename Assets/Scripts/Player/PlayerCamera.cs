@@ -11,7 +11,7 @@ public class PlayerCamera : MonoBehaviour
     private float screenShakeMagnitude = 0;
     private float shakeTime;
 
-    private Camera camera;
+    private new Camera camera;
     private Transform cameraFocus;
     private Vector3 currentDrift = new Vector3();
     
@@ -72,7 +72,7 @@ public class PlayerCamera : MonoBehaviour
         shakeTime -= Time.deltaTime;
 
         //Get random Vector2
-        float randAngle = Random.Range(0, 360f) * Mathf.Deg2Rad;
+        float randAngle = RNGManager.GetEventRand(0, 360f) * Mathf.Deg2Rad;
         Vector2 direction = new Vector2(Mathf.Cos(randAngle), Mathf.Sin(randAngle));
 
         //Get currentStrength

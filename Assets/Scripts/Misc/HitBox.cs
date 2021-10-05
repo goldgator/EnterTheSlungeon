@@ -7,7 +7,7 @@ public class HitBox : MonoBehaviour
 {
     Collider2D hitbox;
     public float damage;
-    public bool boxEnabled = true;
+    public bool boxEnabled = false;
 
     // Start is called before the first frame update
     void Start()

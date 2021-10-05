@@ -21,7 +21,7 @@ public class BaseEnemy : MonoBehaviour
     protected Player target;
     protected Health health;
     protected Animator animator;
-    protected Collider2D collider;
+    protected new Collider2D collider;
     protected AudioSource audioSource;
     protected float stopTime = 0;
     protected EnemySpawn homeSpawner;

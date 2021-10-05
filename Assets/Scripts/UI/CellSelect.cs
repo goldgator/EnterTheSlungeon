@@ -64,11 +64,11 @@ public class CellSelect : MonoBehaviour
 
         if (InputManager.Instance.DodgeUpdate)
         {
-            Debug.Log("Attempting pull");
+            //Debug.Log("Attempting pull");
             OnPull(moveDir);
         } else
         {
-            Debug.Log("Attempting move");
+            //Debug.Log("Attempting move");
             OnMove(moveDir);
         }
         selectedCell.cellObject.GetRoom().UpdateCells();
