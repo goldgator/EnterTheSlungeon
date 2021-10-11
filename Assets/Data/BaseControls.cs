@@ -65,6 +65,14 @@ public class @BaseControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""NextWeapon"",
+                    ""type"": ""Value"",
+                    ""id"": ""f7239539-8100-4247-a20e-bf41477ce464"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -221,6 +229,17 @@ public class @BaseControls : IInputActionCollection, IDisposable
                     ""action"": ""Map"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f1708ec9-40ea-46c8-bf3a-6a1f1f2d41eb"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NextWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -235,6 +254,7 @@ public class @BaseControls : IInputActionCollection, IDisposable
         m_Controls_StickAim = m_Controls.FindAction("StickAim", throwIfNotFound: true);
         m_Controls_MousePos = m_Controls.FindAction("MousePos", throwIfNotFound: true);
         m_Controls_Map = m_Controls.FindAction("Map", throwIfNotFound: true);
+        m_Controls_NextWeapon = m_Controls.FindAction("NextWeapon", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -290,6 +310,7 @@ public class @BaseControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Controls_StickAim;
     private readonly InputAction m_Controls_MousePos;
     private readonly InputAction m_Controls_Map;
+    private readonly InputAction m_Controls_NextWeapon;
     public struct ControlsActions
     {
         private @BaseControls m_Wrapper;
@@ -300,6 +321,7 @@ public class @BaseControls : IInputActionCollection, IDisposable
         public InputAction @StickAim => m_Wrapper.m_Controls_StickAim;
         public InputAction @MousePos => m_Wrapper.m_Controls_MousePos;
         public InputAction @Map => m_Wrapper.m_Controls_Map;
+        public InputAction @NextWeapon => m_Wrapper.m_Controls_NextWeapon;
         public InputActionMap Get() { return m_Wrapper.m_Controls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -327,6 +349,9 @@ public class @BaseControls : IInputActionCollection, IDisposable
                 @Map.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMap;
                 @Map.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMap;
                 @Map.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnMap;
+                @NextWeapon.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnNextWeapon;
+                @NextWeapon.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnNextWeapon;
+                @NextWeapon.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnNextWeapon;
             }
             m_Wrapper.m_ControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -349,6 +374,9 @@ public class @BaseControls : IInputActionCollection, IDisposable
                 @Map.started += instance.OnMap;
                 @Map.performed += instance.OnMap;
                 @Map.canceled += instance.OnMap;
+                @NextWeapon.started += instance.OnNextWeapon;
+                @NextWeapon.performed += instance.OnNextWeapon;
+                @NextWeapon.canceled += instance.OnNextWeapon;
             }
         }
     }
@@ -361,5 +389,6 @@ public class @BaseControls : IInputActionCollection, IDisposable
         void OnStickAim(InputAction.CallbackContext context);
         void OnMousePos(InputAction.CallbackContext context);
         void OnMap(InputAction.CallbackContext context);
+        void OnNextWeapon(InputAction.CallbackContext context);
     }
 }

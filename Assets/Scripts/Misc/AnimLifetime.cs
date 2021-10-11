@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-[RequireComponent(typeof(Animation))]
+[RequireComponent(typeof(Animator))]
 public class AnimLifetime : MonoBehaviour
 {
     //private Animator animator;

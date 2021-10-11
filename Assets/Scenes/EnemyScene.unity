@@ -563,17 +563,29 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: weaponDetails
+      value: 
+      objectReference: {fileID: 11400000, guid: fd79fef0772450a4fa648c74713a48f4, type: 2}
+    - target: {fileID: 4647335815002231099, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4647335815002231099, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5941068773895197777, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5941068773895197777, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.93
+      value: 14.06
       objectReference: {fileID: 0}
     - target: {fileID: 5941068773895197777, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.86
+      value: 11.51
       objectReference: {fileID: 0}
     - target: {fileID: 5941068773895197777, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
       propertyPath: m_LocalPosition.z
@@ -742,9 +754,17 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2786933211979133345, guid: ea97f6ada9189d64c9a3369fbba2c63b, type: 3}
+      propertyPath: flashTime
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 5702017989284875080, guid: ea97f6ada9189d64c9a3369fbba2c63b, type: 3}
       propertyPath: m_Name
       value: Golem
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702017989284875080, guid: ea97f6ada9189d64c9a3369fbba2c63b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5702017989284875083, guid: ea97f6ada9189d64c9a3369fbba2c63b, type: 3}
       propertyPath: m_RootOrder

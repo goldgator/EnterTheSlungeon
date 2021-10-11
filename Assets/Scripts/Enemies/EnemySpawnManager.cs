@@ -37,6 +37,7 @@ public class EnemySpawnManager : MonoBehaviour, IRoomObject
 
     private void StartNextWave()
     {
+
         foreach (EnemySpawn spawn in waves[currentWave].spawners)
         {
             spawn.SpawnEnemy(waves[currentWave].hasParticles);
@@ -54,7 +55,7 @@ public class EnemySpawnManager : MonoBehaviour, IRoomObject
         {
             currentTime -= Time.deltaTime;
 
-            if (currentTime <= 0 || WaveCompleted(currentWave))
+            if (currentTime <= 0 || WaveCompleted(currentWave - 1))
             {
                 StartNextWave();
             }
@@ -71,6 +72,8 @@ public class EnemySpawnManager : MonoBehaviour, IRoomObject
 
     private bool WaveCompleted(int waveIndex)
     {
+        if (waveIndex < 0 || waveIndex >= waves.Count) return false;
+
         //Check if each enemy from spawners was killed
         foreach (EnemySpawn spawn in waves[waveIndex].spawners)
         {
@@ -78,6 +81,7 @@ public class EnemySpawnManager : MonoBehaviour, IRoomObject
         }
 
         //If passes through foreach loop, all spawns have had their enemy die
+        Debug.Log("Wave " + waveIndex + " completed");
         return true;
     }
 

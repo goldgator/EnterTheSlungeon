@@ -21,7 +21,7 @@ public class RangeEnemy : BaseEnemy
     protected override void Start()
     {
         base.Start();
-        stopTime = Random.Range(attackCooldown / 4f, attackCooldown / 2f);
+        stopTime = RNGManager.GetEventRand(attackCooldown / 4f, attackCooldown / 2f);
     }
 
     private void OnMove()
@@ -58,6 +58,6 @@ public class RangeEnemy : BaseEnemy
         //Create projectile
         Vector3 distance = target.transform.position - transform.position;
         GameObject newProjectile = Instantiate(projectile, transform.position, Quaternion.identity);
-        newProjectile.GetComponent<Projectile>().InstantiateProjectile(distance.normalized * shotSpeed, damage);
+        newProjectile.GetComponent<Projectile>().InstantiateProjectile(distance.normalized * shotSpeed, damage, 1);
     }
 }

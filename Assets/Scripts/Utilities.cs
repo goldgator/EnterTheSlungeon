@@ -13,6 +13,33 @@ public static class Utilities
     }
 
 
+    public static string CardinalListToString(this List<CardinalDir> dirs)
+    {
+        dirs.Sort();
+        string concat = "";
+        foreach(CardinalDir dir in dirs)
+        {
+            switch (dir)
+            {
+                case CardinalDir.North:
+                    concat += "N";
+                    break;
+                case CardinalDir.East:
+                    concat += "E";
+                    break;
+                case CardinalDir.South:
+                    concat += "S";
+                    break;
+                case CardinalDir.West:
+                    concat += "W";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return concat;
+    }
 
     public static Vector2 CardinalDirToVector2(CardinalDir direction)
     {
@@ -54,7 +81,7 @@ public static class Utilities
 
     public static CardinalDir GetRandomDir()
     {
-        return (CardinalDir) (UnityEngine.Random.Range(0, 4));
+        return (CardinalDir) (RNGManager.GetWorldRand(0, 4));
     }
 
     public static Vector2 GetRandomCardinalVector()
@@ -98,6 +125,24 @@ public static class Utilities
             return wantedComponent;
         }
     }
+
+    public static void GetAllChildren(this GameObject parent, out List<GameObject> childrenList, bool recursive = false)
+    {
+        childrenList = new List<GameObject>();
+        GetChildrenRecursive(parent, childrenList, recursive);
+    }
+
+    private static void GetChildrenRecursive(GameObject parent, List<GameObject> childrenList, bool recursive)
+    {
+        for (int i = 0; i < parent.transform.childCount; i++)
+        {
+            GameObject child = parent.transform.GetChild(i).gameObject;
+            childrenList.Add(child);
+
+            if (recursive) GetChildrenRecursive(child, childrenList, recursive);
+        }
+    }
+
 
 }
 

@@ -20,6 +20,8 @@ public class Floor : MonoBehaviour
     }
 
     [Header("GenerationStats")]
+    public string stringSeed;
+    public int seed;
     public FloorGenerator.FloorType floorType = FloorGenerator.FloorType.Expansive;
     public int patternSize;
     public bool debug = false;
@@ -57,9 +59,24 @@ public class Floor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SetRandomSeed();
         if (generatedFloor == null) generatedFloor = FloorGenerator.GenerateFloor(floorType, patternSize);
         InstantiateFloor();
-        Debug.Log(generatedFloor.FloorSize);
+        //Debug.Log(generatedFloor.FloorSize);
+    }
+
+    private void SetRandomSeed()
+    {
+        if (stringSeed != "")
+        {
+            Debug.Log("Seed: " + stringSeed);
+            RNGManager.SetSeed(stringSeed, true);
+        } else
+        {
+            if (seed == 0) seed = Random.Range(0, int.MaxValue);
+            Debug.Log("Seed: " + seed);
+            RNGManager.SetSeed(seed, true);
+        }
     }
 
     private void Update()
@@ -225,8 +242,9 @@ public class Floor : MonoBehaviour
         return new Vector2(posX, posY);
     }
 
-    public Cell FindCellInLine(Vector2 testPos, Vector2 stepOffset)
+    public Cell FindCellInLine(Vector2 testPos, Vector2 stepOffset, bool ignoreSelf = true)
     {
+        RoomData originRoom = CellDataAtPos(testPos).roomOwner;
         Cell foundCell = null;
         while (foundCell == null)
         {
@@ -235,9 +253,18 @@ public class Floor : MonoBehaviour
             //return null if out of bounds
             if (!generatedFloor.IsInBounds(testPos)) return null;
 
+            //Grab cellData, but set back to null if same as origin room and ignoreSelf is true
             CellData cellData = generatedFloor.CellDataAtPos(testPos);
-            if (cellData != null) foundCell = cellData.cellObject;
-
+            if (cellData != null)
+            {
+                if (cellData.roomOwner == originRoom && ignoreSelf)
+                {
+                    cellData = null;
+                }
+                else {
+                    foundCell = cellData.cellObject;
+                }
+            }
         }
         return foundCell;
     }

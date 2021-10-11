@@ -8,6 +8,7 @@ public class CellData
     public Vector2 startPosition;
     public RoomData roomOwner;
     public List<CardinalDir> openings = new List<CardinalDir>();
+    public List<CardinalDir> siblings = new List<CardinalDir>();
     public GameObject roomContent;
     public Cell cellObject;
 
@@ -34,7 +35,7 @@ public class CellData
         return concat;
     }
 
-    public void RemoveDir(CardinalDir direction)
+    public void RemoveConnDir(CardinalDir direction)
     {
         for (int i = 0; i < openings.Count; i++)
         {
@@ -46,9 +47,26 @@ public class CellData
         }
     }
 
-    public bool HasDir(CardinalDir direction)
+    public bool HasConnDir(CardinalDir direction)
     {
         return openings.Contains(direction);
+    }
+
+    public bool HasSibDir(CardinalDir direction)
+    {
+        return siblings.Contains(direction);
+    }
+
+    public void RemoveSibDir(CardinalDir direction)
+    {
+        for (int i = 0; i < siblings.Count; i++)
+        {
+            if (siblings[i] == direction)
+            {
+                siblings.RemoveAt(i);
+                break;
+            }
+        }
     }
 
     public List<CardinalDir> ReturnCellSiblingDirs()

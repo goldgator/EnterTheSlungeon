@@ -141,7 +141,7 @@ public class FloorData
         Vector2 yShuffle = new Vector2( roomMin.y - roomMinBound.y, roomMax.y - roomMaxBound.y );
 
         //Select random amount within each range to shift the pattern
-        Vector2 shuffle = new Vector2(Random.Range((int)xShuffle.x, (int)xShuffle.y + 1), Random.Range((int)yShuffle.x, (int)yShuffle.y + 1));
+        Vector2 shuffle = new Vector2(RNGManager.GetWorldRand((int)xShuffle.x, (int)xShuffle.y + 1), RNGManager.GetWorldRand((int)yShuffle.x, (int)yShuffle.y + 1));
 
         //Add that random amount to all rooms
         ShiftAllRooms(shuffle);
@@ -186,7 +186,7 @@ public class FloorData
         Vector2 yShuffle = new Vector2(roomMin.y - roomMinBound.y, roomMax.y - roomMaxBound.y);
 
         //Select random amount within each range to shift the pattern
-        Vector2 shuffle = new Vector2(Random.Range((int)xShuffle.x, (int)xShuffle.y + 1), Random.Range((int)yShuffle.x, (int)yShuffle.y + 1));
+        Vector2 shuffle = new Vector2(RNGManager.GetWorldRand((int)xShuffle.x, (int)xShuffle.y + 1), RNGManager.GetWorldRand((int)yShuffle.x, (int)yShuffle.y + 1));
 
         //Add that random amount to all rooms
         ShiftAllRooms(shuffle);
@@ -330,7 +330,7 @@ public class FloorData
                 }
             }
 
-            //If nextRoom is null by this point, no more shuffling necessary
+            //If nextRoom is null by this point, no more shuffling necessary or is impossible
             if (nextRoom == null) break;
 
             //Select nextRoom
@@ -371,7 +371,7 @@ public class FloorData
         if (openDirs.Count == 0) return;
 
         //Choose a random open direction, and set it to the original and currentDir
-        CardinalDir originalDir = openDirs[Random.Range(0, openDirs.Count)];
+        CardinalDir originalDir = openDirs[RNGManager.GetWorldRand(0, openDirs.Count)];
         CardinalDir unwantedDir = Utilities.GetRelativeDir(originalDir, 2);
         CardinalDir currentDir = originalDir;
         
@@ -399,7 +399,7 @@ public class FloorData
             if (openDirs.Count == 0) return;
 
             //Assign new currentDir
-            currentDir = openDirs[Random.Range(0, openDirs.Count)];
+            currentDir = openDirs[RNGManager.GetWorldRand(0, openDirs.Count)];
         }
     }
 
@@ -421,7 +421,7 @@ public class FloorData
                     {
                         //skip this dir if cell already has it
                         //If it failed for FindNextTarget, it would fail here too
-                        if (targetCell.HasDir(wantedDir)) continue;
+                        if (targetCell.HasConnDir(wantedDir)) continue;
                             
                         //Add direction to this cell
                         targetCell.openings.Add(wantedDir);
@@ -431,7 +431,7 @@ public class FloorData
                         //IF not, move to new dir
                         if (connectionData == null)
                         {
-                            targetCell.RemoveDir(wantedDir);
+                            targetCell.RemoveConnDir(wantedDir);
                             continue;
                         }
 
@@ -442,7 +442,7 @@ public class FloorData
                         if (success) return targetRoom;
 
                         //remove failed dir
-                        targetCell.RemoveDir(wantedDir);
+                        targetCell.RemoveConnDir(wantedDir);
                     }
                 }
             }
@@ -466,7 +466,7 @@ public class FloorData
                 //Choose random room to set to next room
                 do
                 {
-                    nextRoom = roomData[Random.Range(0, roomData.Count)];
+                    nextRoom = roomData[RNGManager.GetWorldRand(0, roomData.Count)];
                 } while (nextRoom == currentRoom);
                 break;
             }
@@ -543,7 +543,7 @@ public class FloorData
                 if (!adjacentRoom.HasOpening(adjacentCellPos, oppositeDir)) continue;
 
                 //TryMove found room
-                int randPush = Random.Range(1, maxPush);
+                int randPush = RNGManager.GetWorldRand(1, maxPush);
                 TryMoveRoom(adjacentRoom, currentDir, randPush);
             }
         }
@@ -622,7 +622,12 @@ public class FloorData
             }
         }
 
-        //If reached here, it is in the correct position
+        //If reached here, it is in the correct position, update visited cells
+        foreach (Vector2 visitedCell in newVisitedCells)
+        {
+            cells[(int)visitedCell.x, (int)visitedCell.y] = CellType.Visited;
+        }
+
         return true;
     }
 
@@ -749,7 +754,7 @@ public class FloorData
             //Attempt to grab room in direction
             RoomData adjacentRoom = FindAdjacentRoom(cell, direction);
             //IF room isn't null AND isn't same as current room
-            if (adjacentRoom != null) return false;
+            if (adjacentRoom != null && adjacentRoom != room) return false;
         }
 
         return true;
@@ -867,6 +872,17 @@ public class FloorData
         return (roomData.RoomAtPos(position) != null);
     }
 
+    public int UnshuffledRooms()
+    {
+        int count = 0;
+        foreach(RoomData room in roomData)
+        {
+            if (!room.Shuffled) count++;
+        }
+
+        return count;
+    }
+
     public bool IsValidPosition(Vector2 position)
     {
         if (HasRoomAtPos(position)) return false;
@@ -920,7 +936,7 @@ public class FloorData
         while (possibleSpots.Count > 0 && roomCount < amount)
         {
             //Choose random spot
-            Vector2 spot = possibleSpots[Random.Range(0, possibleSpots.Count)];
+            Vector2 spot = possibleSpots[RNGManager.GetWorldRand(0, possibleSpots.Count)];
 
             //Remove from list
             possibleSpots.Remove(spot);
@@ -944,7 +960,7 @@ public class FloorData
             possibleOpenings.OrderBy(a => rng.Next());
 
             //Remove a random amount from [0->(count-1)]
-            possibleOpenings.RemoveRange(0,Random.Range(0, possibleOpenings.Count));
+            possibleOpenings.RemoveRange(0, RNGManager.GetWorldRand(0, possibleOpenings.Count));
 
             //Create a room
             RoomData room = new RoomData(RoomData.RoomType.Generic, spot);

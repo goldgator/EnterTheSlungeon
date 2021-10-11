@@ -35,6 +35,10 @@ public class Room : MonoBehaviour
         get { return roomContents.Completed; }
     }
     public bool locked = false;
+    public Vector2 GridSize
+    {
+        get { return myRoomData.GetGridSize(); }
+    }
 
     public void InstantiateRoom(RoomData roomData)
     {
@@ -60,14 +64,16 @@ public class Room : MonoBehaviour
         //Add content if not boss room
         if (roomData.roomType != RoomData.RoomType.Boss)
         {
-            GameObject[] allRooms = Resources.LoadAll<GameObject>(CONTENT_PATH + myRoomData.selectedRoomContent);
-            roomContents = Instantiate(allRooms[Random.Range(0, allRooms.Length)], transform).GetComponent<RoomContent>();
+            GameObject[] allRooms = Resources.LoadAll<GameObject>(CONTENT_PATH + myRoomData.RoomContentPool);
+            //Debug.Log(CONTENT_PATH + myRoomData.RoomOpeningType);
+            //Debug.Log(allRooms[0]);
+            roomContents = Instantiate(allRooms[RNGManager.GetWorldRand(0, allRooms.Length)], transform).GetComponent<RoomContent>();
             roomContents.parentRoom = this;
         } else
         {
             string bossPath = "Prefabs/BossRooms/Golem";
             GameObject[] allRooms = Resources.LoadAll<GameObject>(bossPath);
-            roomContents = Instantiate(allRooms[Random.Range(0, allRooms.Length)], transform).GetComponent<RoomContent>();
+            roomContents = Instantiate(allRooms[RNGManager.GetWorldRand(0, allRooms.Length)], transform).GetComponent<RoomContent>();
             roomContents.parentRoom = this;
         }
         
@@ -142,4 +148,6 @@ public class Room : MonoBehaviour
     {
         roomContents.ForceComplete();
     }
+
+
 }

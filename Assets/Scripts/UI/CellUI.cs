@@ -19,14 +19,13 @@ public class CellUI : MonoBehaviour
         UpdateColor();
 
         //Change sprite to door if cell has opening (is a wall sprite by default)
+        //Remove sprite if sibling is in that direction
         for (int i = 0; i < 4; i++)
         {
             CardinalDir currentDir = (CardinalDir)i;
 
-            if (cellData.HasDir(currentDir))
-            {
-                wallImages[i].sprite = doorSprite;
-            } 
+            if (cellData.HasConnDir(currentDir)) wallImages[i].sprite = doorSprite;
+            if (cellData.HasSibDir(currentDir)) wallImages[i].gameObject.SetActive(false);
         }
     }
 
