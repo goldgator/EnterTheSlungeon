@@ -15,6 +15,7 @@ public class InputManager : MonoBehaviour
     public delegate void MoveDelegate(Vector2 position);
     public delegate void FireDelegate(bool pressed);
     public delegate void DodgeDelegate(bool pressed);
+    public delegate void ScrollDelegate(bool pressed);
 
     public event MoveDelegate moveStartEvent;
     public event MoveDelegate moveUpdateEvent;
@@ -27,6 +28,10 @@ public class InputManager : MonoBehaviour
     public event DodgeDelegate dodgeStartEvent;
     public event DodgeDelegate dodgeUpdateEvent;
     public event DodgeDelegate dodgeStopEvent;
+    
+    public event ScrollDelegate scrollStartEvent;
+    public event ScrollDelegate scrollUpdateEvent;
+    public event ScrollDelegate scrollStopEvent;
 
     #region Input Properties
     //Input values
@@ -124,6 +129,9 @@ public class InputManager : MonoBehaviour
 
         baseControls.Controls.Dodge.started += ctx => DodgeStart(ctx, ctx.ReadValueAsButton());
         baseControls.Controls.Dodge.canceled += ctx => DodgeStop(ctx, ctx.ReadValueAsButton());
+
+        baseControls.Controls.NextWeapon.started += ctx => ScrollStart(ctx, ctx.ReadValueAsButton());
+        baseControls.Controls.NextWeapon.canceled += ctx => ScrollStop(ctx, ctx.ReadValueAsButton());
     }
 
     void MoveStart(InputAction.CallbackContext context)
@@ -155,6 +163,16 @@ public class InputManager : MonoBehaviour
     void DodgeStop(InputAction.CallbackContext context, bool pressed)
     {
         dodgeStopEvent?.Invoke(pressed);
+    }
+
+    void ScrollStart(InputAction.CallbackContext context, bool pressed)
+    {
+        scrollStartEvent?.Invoke(pressed);
+    }
+
+    void ScrollStop(InputAction.CallbackContext context, bool pressed)
+    {
+        scrollStopEvent?.Invoke(pressed);
     }
 
     private void Update()

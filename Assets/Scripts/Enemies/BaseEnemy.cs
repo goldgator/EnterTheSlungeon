@@ -4,6 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Health))]
 [RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class BaseEnemy : MonoBehaviour
 {
     [Header("Enemy Stats")]
@@ -22,6 +23,7 @@ public class BaseEnemy : MonoBehaviour
     protected Health health;
     protected Animator animator;
     protected new Collider2D collider;
+    protected Rigidbody2D rb;
     protected AudioSource audioSource;
     protected float stopTime = 0;
     protected EnemySpawn homeSpawner;
@@ -29,6 +31,7 @@ public class BaseEnemy : MonoBehaviour
     protected virtual void Start()
     {
         collider = GetComponent<Collider2D>();
+        rb = GetComponent<Rigidbody2D>();
         target = Player.Instance;
         health = GetComponent<Health>();
         animator = GetComponent<Animator>();

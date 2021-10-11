@@ -13,6 +13,11 @@ public class RushEnemy : BaseEnemy
     // Update is called once per frame
     void Update()
     {
+        
+    }
+
+    private void FixedUpdate()
+    {
         stopTime -= Time.deltaTime;
         if (!health.HasDied && stopTime <= 0)
         {
@@ -33,7 +38,10 @@ public class RushEnemy : BaseEnemy
         Vector3 velocity = speed * distance.normalized;
 
         velocity = velocity * Time.deltaTime;
-        transform.position += velocity;
+        //rb.velocity = velocity;
+        rb.position = transform.position + velocity;
+        
+        //transform.position += velocity;
     }
 
     private void OnAttack()

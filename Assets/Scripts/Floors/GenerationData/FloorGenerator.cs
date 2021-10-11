@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class FloorGenerator
@@ -13,26 +14,46 @@ public static class FloorGenerator
 
     public static FloorData GenerateFloor(FloorType floorType, int patternSize)
     {
-        switch (floorType)
+        FloorData createdFloor = null;
+        do
         {
-            case FloorType.Expansive:
-                return ExpansiveFloor(patternSize);
-            case FloorType.Tight:
-                return TightFloor(patternSize);
-            case FloorType.ConstrainedExpansive:
-                return ConstrainedFloor(patternSize);
-        }
+            switch (floorType)
+            {
+                case FloorType.Expansive:
+                    createdFloor = ExpansiveFloor(patternSize);
+                    break;
+                case FloorType.Tight:
+                    createdFloor = TightFloor(patternSize);
+                    break;
+                case FloorType.ConstrainedExpansive:
+                    createdFloor = ConstrainedFloor(patternSize);
+                    break;
+            }
 
-        return null;
+        } while (!TestFloorQuality(createdFloor));
+
+        return createdFloor;
     }
+
+    public static bool TestFloorQuality(FloorData floorData)
+    {
+        //Don't even bother if floorData was not even created
+        if (floorData == null) return false;
+
+        //Determine how many rooms remain in their original spot
+        //Reject if over 1
+        if (floorData.UnshuffledRooms() > 1) return false;
+
+        //If never rejected, floor has good quality
+        return true;
+    }
+
+    
 
     public static FloorData ExpansiveFloor(int patternSize)
     {
         //Create base pattern
         List<RoomData> roomData = CreatePattern(patternSize);
-
-        //Assign doors to new pattern
-        AssignDoors(roomData);
 
         //Create FloorData to hold RoomData and other details
         FloorData floorData = new FloorData(roomData, FloorType.Expansive);
@@ -57,9 +78,6 @@ public static class FloorGenerator
     {
         //Create base pattern
         List<RoomData> roomData = CreatePattern(patternSize);
-
-        //Assign doors to new pattern
-        AssignDoors(roomData);
 
         //Create FloorData to hold RoomData and other details
         FloorData floorData = new FloorData(roomData, FloorType.Tight);
@@ -111,11 +129,94 @@ public static class FloorGenerator
         while (roomData.Count < (cellSize + 1))
         {
             TryPlaceRoom(roomData, cellSize);
-            //TODO implement big rooms
+        }
+
+        //Assign all openings
+        AssignDoors(roomData);
+
+        //Roll a chance to combine rooms into a large room
+        if (RNGManager.GetWorldRand(0, 100) < 30)
+        {
+            Debug.Log("Attempting big room");
+            AddBigRoom(roomData);
         }
 
         //Return populated RoomData List
         return roomData;
+    }
+
+    /// <summary>
+    /// Adds a big room to the pattern, assumes there is no others present
+    /// </summary>
+    /// <param name="roomData"></param>
+    private static void AddBigRoom(List<RoomData> roomData)
+    {
+        //TODO add L rooms
+
+        //Chose random room and take the cell
+        RoomData baseRoom = roomData[RNGManager.GetWorldRand(0, roomData.Count)];
+        CellData baseCell = baseRoom.cellData[0];
+
+        //Randomly determine how many extra cells there will be
+        //int extraCells = RNGManager.GetWorldRand(1, 2);
+        int extraCells = 1;
+        extraCells = Mathf.Min(baseCell.openings.Count, extraCells); //lower extra cell count if not enough openings
+
+        //Randomly grab additional cell from adjacent cell
+        List<RoomData> grabbedRooms = roomData.GrabRandAdjacentRooms(baseRoom, extraCells);
+
+        //IF successfully grabbed a room
+        List<CellData> grabbedCells = new List<CellData>();
+        if (grabbedRooms.Count > 0)
+        {
+            //Combine all CellData into one list and remove old RoomData from list
+            roomData.Remove(baseRoom);
+            grabbedCells.Add(baseCell);
+            foreach (RoomData room in grabbedRooms) {
+                grabbedCells.Add(room.cellData[0]);
+                roomData.Remove(room);
+            }
+
+            //Create new RoomData with CellData inside
+            RoomData newBigRoom = new RoomData(RoomData.RoomType.Generic, grabbedCells);
+
+            //Add new bigRoom to the list
+            roomData.Add(newBigRoom);
+            Debug.Log("Big room added");
+        }
+        //ELSE
+        else
+        {
+            //Throw exception saying bigroom failed
+            Debug.Log("Big room failed");
+        }
+
+    }
+
+    private static List<RoomData> GrabRandAdjacentRooms(this List<RoomData> allRooms, RoomData baseRoom, int extraCells, bool excludeBoss = true)
+    {
+        //Create a list of roomData
+        List<RoomData> grabbedRooms = new List<RoomData>();
+
+        //Copy list of directions and shuffle using world gen rand pool
+        List<CardinalDir> shuffleDir = new List<CardinalDir>(baseRoom.cellData[0].openings);
+        shuffleDir = shuffleDir.OrderBy(ctx => RNGManager.GetWorldRand()).ToList();
+
+        //Loop until out of directions or reached required rooms
+        foreach (CardinalDir dir in shuffleDir)
+        {
+            RoomData neighborRoom = allRooms.RoomAtPos(baseRoom.cellData[0].position + Utilities.CardinalDirToVector2(dir));
+            //Skip room if null or a boss room
+            if (neighborRoom == null || (excludeBoss && neighborRoom.roomType == RoomData.RoomType.Boss)) continue;
+
+            //Save room
+            grabbedRooms.Add(neighborRoom);
+
+            //Exit loop if found enough rooms
+            if (grabbedRooms.Count >= extraCells) break;
+        }
+
+        return grabbedRooms;
     }
 
     public static void TryPlaceRoom(List<RoomData> roomData, int cellSize)
@@ -150,11 +251,7 @@ public static class FloorGenerator
         roomData.Add(nextRoom);
     }
 
-    //TODO implement big rooms
-    public static void TryPlaceBigRoom()
-    {
 
-    }
 
     public static void AssignDoors(List<RoomData> roomData)
     {

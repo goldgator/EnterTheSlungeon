@@ -1158,9 +1158,49 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: gunSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 34b439bf70b80a6409eadecc6be92d68, type: 3}
+    - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: gunSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: fbf3c315af958ec49a332c2b98b48e33, type: 3}
+    - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: projectile
+      value: 
+      objectReference: {fileID: 6229470945475235130, guid: 119b20632921a004a9169ad642aa077b, type: 3}
+    - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
       propertyPath: weaponDetails
       value: 
-      objectReference: {fileID: 11400000, guid: fd79fef0772450a4fa648c74713a48f4, type: 2}
+      objectReference: {fileID: 11400000, guid: 9f8b8c211f610b5419b4c5f927a587ab, type: 2}
+    - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: stats.fireRate
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: stats.shotSize
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: stats.knockBack
+      value: 0.0001
+      objectReference: {fileID: 0}
+    - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: stats.shotSpeed
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: stats.shotDamage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: stats.overheatAddend
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1912062724, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: stats.overheatRecovery
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4647335815002231099, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1213,9 +1253,45 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5941068773895197779, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: startingWeapon
+      value: 
+      objectReference: {fileID: 5540495575679167429, guid: 6ba8688504ccea14bac7074807cfe7e3, type: 3}
+    - target: {fileID: 5941068773895197779, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: startingWeapons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5941068773895197779, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: startingWeapons.Array.data[0]
+      value: 
+      objectReference: {fileID: 5540495575679167429, guid: 6ba8688504ccea14bac7074807cfe7e3, type: 3}
+    - target: {fileID: 5941068773895197779, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: startingWeapons.Array.data[1]
+      value: 
+      objectReference: {fileID: 5540495575679167429, guid: e20b541f6a9d80641b0455b1ae328ef5, type: 3}
     - target: {fileID: 5941068773895197780, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7301175430608951069, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: allStats.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7301175430608951069, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: allStats.Array.data[0].statName
+      value: MoveSpeed
+      objectReference: {fileID: 0}
+    - target: {fileID: 7301175430608951069, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: allStats.Array.data[1].statName
+      value: DodgeSpeed
+      objectReference: {fileID: 0}
+    - target: {fileID: 7301175430608951069, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: allStats.Array.data[0].baseValue
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7301175430608951069, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: allStats.Array.data[1].baseValue
+      value: 16
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}

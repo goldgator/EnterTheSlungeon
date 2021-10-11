@@ -126,5 +126,23 @@ public static class Utilities
         }
     }
 
+    public static void GetAllChildren(this GameObject parent, out List<GameObject> childrenList, bool recursive = false)
+    {
+        childrenList = new List<GameObject>();
+        GetChildrenRecursive(parent, childrenList, recursive);
+    }
+
+    private static void GetChildrenRecursive(GameObject parent, List<GameObject> childrenList, bool recursive)
+    {
+        for (int i = 0; i < parent.transform.childCount; i++)
+        {
+            GameObject child = parent.transform.GetChild(i).gameObject;
+            childrenList.Add(child);
+
+            if (recursive) GetChildrenRecursive(child, childrenList, recursive);
+        }
+    }
+
+
 }
 

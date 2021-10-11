@@ -18,11 +18,28 @@ public class RoomData
     public List<CellData> cellData = new List<CellData>();
     public int visits = 0;
     public Room roomObject;
-    public string RoomOpeningType {
+    public string RoomContentPool {
         get
         {
-            return cellData[0].openings.CardinalListToString();
-            //return "NESW";
+            if (roomType == RoomType.Entry) return "ENTRY";
+
+            if (cellData.Count == 1)
+            {
+                return cellData[0].openings.CardinalListToString();
+                //return "NESW";
+            } else
+            {
+                //Only works with V and H currently
+                switch (GetGridSize().x)
+                {
+                    case 1:
+                        return "V";
+                    case 2:
+                        return "H";
+                    default:
+                        return "NULL";
+                }
+            }
         }
     }
 
@@ -52,12 +69,37 @@ public class RoomData
         }
     }
 
+    public RoomData(RoomType newType, List<CellData> newCells)
+    {
+        roomType = newType;
+        cellData = newCells;
+
+        //Change cell parent
+        foreach (CellData cell in cellData)
+        {
+            cell.roomOwner = this;
+        }
+    }
+
+
+
     public void UpdateCellData()
     {
-        foreach(CellData cell in cellData)
+        //Update start position and sibling connections
+        for (int i = 0; i < cellData.Count; i++)
         {
-            cell.UpdateStartPosition();
+            cellData[i].UpdateStartPosition();
+
+            for (int j = i + 1; j < cellData.Count; j++)
+            {
+                Vector2 diff = cellData[j].position - cellData[i].position;
+                CardinalDir dir = Utilities.Vector2ToCardinalDir(diff);
+
+                cellData[i].siblings.Add(dir);
+                cellData[j].siblings.Add(Utilities.GetRelativeDir(dir, 2));
+            }
         }
+
     }
 
     public void ShiftCells(Vector2 offset)
@@ -79,6 +121,25 @@ public class RoomData
             if (cell.position.y < yMin) yMin = (int)cell.position.y;
         }
         return new Vector2(xMin, yMin);
+    }
+
+    public Vector2 TopRightPos()
+    {
+        int xMax = int.MinValue;
+        int yMax = int.MinValue;
+
+        foreach (CellData cell in cellData)
+        {
+            if (cell.position.x > xMax) xMax = (int)cell.position.x;
+            if (cell.position.y > yMax) yMax = (int)cell.position.y;
+        }
+        return new Vector2(xMax, yMax);
+    }
+
+    public Vector2 GetGridSize()
+    {
+        //Add (1, 1) to the difference between TopRightPos and BottomLeftPos to make it 1 based
+        return (TopRightPos() - BottomLeftPos()) + new Vector2(1, 1);
     }
 
     public bool HasOpening(Vector2 cellPos, CardinalDir opening)

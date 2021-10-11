@@ -7,14 +7,17 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [Header("Movement Stats")]
-    public float baseSpeed = 6.0f;
-    public float dodgeSpeed = 12.0f;
+    //public float baseSpeed = 6.0f;
+    //public float dodgeSpeed = 12.0f;
     public AnimationCurve dodgeCurve;
 
 
     [Header("Components")]
-    public GameObject weaponPivot;
-    public GameObject weapon;
+    public List<GameObject> startingWeapons;
+    private Transform currentPivot { get { return weaponManager.CurrentPivot; } }
+    private BaseWeapon currentWeapon { get { return weaponManager.CurrentWeapon; } }
+    private StatBlock stats;
+    private WeaponManager weaponManager;
     private Animator animator;
     private Rigidbody2D rb;
     private AudioSource audioSource;
@@ -32,20 +35,32 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        stats = GetComponent<StatBlock>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         playerHealth = GetComponent<Health>();
+        weaponManager = GetComponentInChildren<WeaponManager>();
+
+        InstantiateGuns();
     }
     private void Start()
     {
         InputManager.Instance.dodgeStartEvent += Dodge;
     }
 
+    private void InstantiateGuns()
+    {
+        foreach(GameObject newWeapon in startingWeapons)
+        {
+            weaponManager.AddGun(newWeapon);
+        }
+    }
+
     public void OnPlayerDeath()
     {
         animator.SetBool("Death", true);
-        weaponPivot.SetActive(false);
+        currentPivot.gameObject.SetActive(false);
         playerEnabled = false;
         ForceStop();
         Floor.Instance.OnPlayerDeath();
@@ -83,7 +98,7 @@ public class Player : MonoBehaviour
     private void ProcessMove()
     {
         velocity = InputManager.Instance.PlayerMovement.normalized;
-        velocity *= baseSpeed;
+        velocity *= stats.GetStatValue("MoveSpeed");
 
         lastMoveDir = velocity.normalized;
     }
@@ -107,21 +122,21 @@ public class Player : MonoBehaviour
     {
         playerEnabled = false;
         float dodgeTime = 0.5f;
-        weapon.SetActive(false);
+        currentWeapon.gameObject.SetActive(false);
         Vector3 dodgeDir = lastMoveDir;
         if (dodgeDir.magnitude <= 0.1f) dodgeDir = new Vector3(transform.localScale.x, 0, 0);
         transform.localScale = new Vector3(Mathf.Sign(dodgeDir.x), 1, 1);
 
         while (dodgeTime > 0)
         {
-            velocity = dodgeDir * dodgeSpeed * dodgeCurve.Evaluate(.5f - dodgeTime);
+            velocity = dodgeDir * stats.GetStatValue("DodgeSpeed") * dodgeCurve.Evaluate(.5f - dodgeTime);
             //Debug.Log(velocity);
 
             yield return null;
             dodgeTime -= Time.deltaTime;
         }
 
-        weapon.SetActive(true);
+        currentWeapon.gameObject.SetActive(true);
         playerEnabled = true;
     }
 }

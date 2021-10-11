@@ -330,7 +330,7 @@ public class FloorData
                 }
             }
 
-            //If nextRoom is null by this point, no more shuffling necessary
+            //If nextRoom is null by this point, no more shuffling necessary or is impossible
             if (nextRoom == null) break;
 
             //Select nextRoom
@@ -421,7 +421,7 @@ public class FloorData
                     {
                         //skip this dir if cell already has it
                         //If it failed for FindNextTarget, it would fail here too
-                        if (targetCell.HasDir(wantedDir)) continue;
+                        if (targetCell.HasConnDir(wantedDir)) continue;
                             
                         //Add direction to this cell
                         targetCell.openings.Add(wantedDir);
@@ -431,7 +431,7 @@ public class FloorData
                         //IF not, move to new dir
                         if (connectionData == null)
                         {
-                            targetCell.RemoveDir(wantedDir);
+                            targetCell.RemoveConnDir(wantedDir);
                             continue;
                         }
 
@@ -442,7 +442,7 @@ public class FloorData
                         if (success) return targetRoom;
 
                         //remove failed dir
-                        targetCell.RemoveDir(wantedDir);
+                        targetCell.RemoveConnDir(wantedDir);
                     }
                 }
             }
@@ -622,7 +622,12 @@ public class FloorData
             }
         }
 
-        //If reached here, it is in the correct position
+        //If reached here, it is in the correct position, update visited cells
+        foreach (Vector2 visitedCell in newVisitedCells)
+        {
+            cells[(int)visitedCell.x, (int)visitedCell.y] = CellType.Visited;
+        }
+
         return true;
     }
 
@@ -749,7 +754,7 @@ public class FloorData
             //Attempt to grab room in direction
             RoomData adjacentRoom = FindAdjacentRoom(cell, direction);
             //IF room isn't null AND isn't same as current room
-            if (adjacentRoom != null) return false;
+            if (adjacentRoom != null && adjacentRoom != room) return false;
         }
 
         return true;
@@ -865,6 +870,17 @@ public class FloorData
     public bool HasRoomAtPos(Vector2 position)
     {
         return (roomData.RoomAtPos(position) != null);
+    }
+
+    public int UnshuffledRooms()
+    {
+        int count = 0;
+        foreach(RoomData room in roomData)
+        {
+            if (!room.Shuffled) count++;
+        }
+
+        return count;
     }
 
     public bool IsValidPosition(Vector2 position)

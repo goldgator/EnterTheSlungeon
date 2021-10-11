@@ -1,44 +1,45 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerWeapon : MonoBehaviour
+[RequireComponent(typeof(StatBlock))]
+public class BaseWeapon : MonoBehaviour
 {
-    public new SpriteRenderer renderer;
-    public WeaponDetails weaponDetails;
-    public Transform shotTransform;
-    private AudioSource audioSource;
 
-    private float fireRate;
-    private float shotDamage;
-    private float shotSize;
-    private float shotSpeed;
+    [Header("Components")]
+    public new SpriteRenderer renderer;
+    public Transform shotTransform;
+    protected AudioSource audioSource;
+
+    [Header("Assets")]
+    public Sprite gunSprite;
+    public GameObject projectile;
+    public AudioClip gunSound;
+
+    //[Header("Stats")]
+    //[SerializeField]
+    protected StatBlock stats;
     
 
-    private float fireTimer = 0;
+    //Misc Fields
+    protected float fireTimer = 0;
 
     private void Awake()
     {
+        stats = GetComponent<StatBlock>();
         audioSource = GetComponent<AudioSource>();
-        audioSource.clip = weaponDetails.gunSound;
+        audioSource.clip = gunSound;
+        renderer.sprite = gunSprite;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        fireRate = weaponDetails.fireRate;
-        shotDamage = weaponDetails.shotDamage;
-        shotSize = weaponDetails.shotSize;
-        shotSpeed = weaponDetails.shotSpeed;
-        renderer.sprite = weaponDetails.gunSprite;
-    }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         if (InputManager.Instance) InputManager.Instance.fireUpdateEvent += OnFire;
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         if (InputManager.Instance) InputManager.Instance.fireUpdateEvent -= OnFire;
     }
@@ -57,7 +58,7 @@ public class PlayerWeapon : MonoBehaviour
         }
     }
 
-    private void ProcessAim()
+    protected void ProcessAim()
     {
         if (InputManager.isGamepad)
         {
@@ -87,8 +88,6 @@ public class PlayerWeapon : MonoBehaviour
 
     }
 
-
-
     private void CorrectDirAndScale(Vector3 direction)
     {
         //Determine player and weapon scale
@@ -108,24 +107,35 @@ public class PlayerWeapon : MonoBehaviour
         transform.localScale = new Vector3(aimX, aimX, 1);
     }
 
-    void OnFire(bool pressed)
+    protected virtual void OnFire(bool pressed)
     {
-        if (fireTimer >= fireRate && pressed)
+        if (fireTimer >= stats.GetStatValue("FireRate") && pressed)
         {
-            fireTimer = 0;
-            //Call ProcessAim once more to ensure scales and directions have been updated correctly before shot
-            ProcessAim();
-
-            //Make Sound
-            audioSource.Play();
-
-            //Create projectile
-            GameObject newProjectile = Instantiate(weaponDetails.projectile, shotTransform.position, Quaternion.identity);
-            newProjectile.transform.localScale = new Vector3(shotSize, shotSize, shotSize);
-
-            //Add velocity
-            Vector3 velocity = shotSpeed * transform.right;
-            newProjectile.GetComponent<Projectile>().InstantiateProjectile(velocity, shotDamage);
+            Fire();
         }
+    }
+
+    protected virtual void Fire()
+    {
+        fireTimer = 0;
+        SpawnProjectile();
+    }
+
+    protected virtual void SpawnProjectile()
+    {
+        //Call ProcessAim once more to ensure scales and directions have been updated correctly before shot
+        ProcessAim();
+
+        //Make Sound
+        audioSource.Play();
+
+        //Create projectile
+        GameObject newProjectile = Instantiate(projectile, shotTransform.position, Quaternion.identity);
+        float size = stats.GetStatValue("ShotSize");
+        newProjectile.transform.localScale = new Vector3(size, size, size);
+
+        //Add velocity
+        Vector3 velocity = stats.GetStatValue("ShotSpeed") * transform.right;
+        newProjectile.GetComponent<Projectile>().InstantiateProjectile(velocity, stats.GetStatValue("ShotDamage"), stats.GetStatValue("KnockBack"));
     }
 }

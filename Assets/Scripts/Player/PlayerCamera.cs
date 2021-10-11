@@ -124,7 +124,8 @@ public class PlayerCamera : MonoBehaviour
             Room currentRoom = Floor.Instance.CurrentPlayerCell().GetRoom();
             //Create room bounds (CURRENTLY ONLY WORKS WITH SINGLE CELL ROOMS)
             Vector2 bottomLeft = new Vector2(currentRoom.transform.position.x, currentRoom.transform.position.y);
-            Vector2 size = new Vector2(Floor.CELL_SIZE, Floor.CELL_SIZE);
+            Vector2 size = currentRoom.GridSize * Floor.CELL_SIZE;
+
             xRange.x = bottomLeft.x + screenWidth / 2;
             xRange.y = bottomLeft.x + size.x - (screenWidth / 2);
 

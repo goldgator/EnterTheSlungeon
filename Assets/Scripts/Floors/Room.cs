@@ -35,6 +35,10 @@ public class Room : MonoBehaviour
         get { return roomContents.Completed; }
     }
     public bool locked = false;
+    public Vector2 GridSize
+    {
+        get { return myRoomData.GetGridSize(); }
+    }
 
     public void InstantiateRoom(RoomData roomData)
     {
@@ -60,7 +64,7 @@ public class Room : MonoBehaviour
         //Add content if not boss room
         if (roomData.roomType != RoomData.RoomType.Boss)
         {
-            GameObject[] allRooms = Resources.LoadAll<GameObject>(CONTENT_PATH + myRoomData.RoomOpeningType);
+            GameObject[] allRooms = Resources.LoadAll<GameObject>(CONTENT_PATH + myRoomData.RoomContentPool);
             //Debug.Log(CONTENT_PATH + myRoomData.RoomOpeningType);
             //Debug.Log(allRooms[0]);
             roomContents = Instantiate(allRooms[RNGManager.GetWorldRand(0, allRooms.Length)], transform).GetComponent<RoomContent>();
@@ -144,4 +148,6 @@ public class Room : MonoBehaviour
     {
         roomContents.ForceComplete();
     }
+
+
 }

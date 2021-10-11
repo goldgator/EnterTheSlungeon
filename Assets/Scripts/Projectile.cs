@@ -7,11 +7,13 @@ public class Projectile : MonoBehaviour
 {
     private Vector3 startVelocity;
     private float damage;
+    private float knockBack;
 
     public AudioClip hitFX;
 
-    public void InstantiateProjectile(Vector3 newStartVelocity, float newDamage)
+    public void InstantiateProjectile(Vector3 newStartVelocity, float newDamage, float newKnockBack)
     {
+        knockBack = newKnockBack;
         startVelocity = newStartVelocity;
         damage = newDamage;
     }
@@ -19,7 +21,9 @@ public class Projectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<Rigidbody2D>().velocity = startVelocity;
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        rb.velocity = startVelocity;
+        rb.mass = knockBack;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

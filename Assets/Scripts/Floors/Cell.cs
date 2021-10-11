@@ -5,6 +5,8 @@ using UnityEngine;
 public class Cell : MonoBehaviour
 {
     public Transform[] openingTransforms = new Transform[4];
+    public GameObject cornerTileMapParent;
+    private List<GameObject> cornerTiles;
     private Door[] doors = new Door[4];
     private const string PREFAB_PATH = "Prefabs/Rooms/Cell/";
 
@@ -32,22 +34,39 @@ public class Cell : MonoBehaviour
     public void InstantiateCell(CellData cellData, Room newRoomOwner)
     {
         myCellData = cellData;
+        cornerTileMapParent.GetAllChildren(out cornerTiles, false);
+        //Debug.Log(cornerTiles);
         cellData.cellObject = this;
 
         roomOwner = newRoomOwner;
 
         //Delete any transforms to neighboring cell siblings
-        List<CardinalDir> neighboringSiblingCells = cellData.ReturnCellSiblingDirs();
-        foreach(CardinalDir dir in neighboringSiblingCells) openingTransforms[(int)dir] = null;
+        //List<CardinalDir> neighboringSiblingCells = cellData.ReturnCellSiblingDirs();
+
+        foreach(CardinalDir dir in cellData.siblings) openingTransforms[(int)dir] = null;
 
         //Iterate through each transform, and Instantiate a wall and door prefab where applicable
         for (int i = 0; i < 4; i++)
         {
-            if (openingTransforms[i] == null) continue;
-
             CardinalDir currentDir = (CardinalDir)i;
 
-            if (cellData.openings.Contains(currentDir))
+            //Corner toggling
+            if (cellData.HasSibDir(currentDir))
+            {
+                //Disable two corner tiles maps, same index as dir and one previous
+                int currInd = (int)currentDir;
+                int prevInd = (currInd == 0) ? 3 : currInd - 1;
+
+                Debug.Log("Turning off tiles");
+                cornerTiles[currInd].SetActive(false);
+                cornerTiles[prevInd].SetActive(false);
+            }
+
+            //Continue if current openingTransform is null
+            if (openingTransforms[i] == null) continue;
+
+            //openings
+            if (cellData.HasConnDir(currentDir))
             {
                 //Door
                 Door newDoor = Instantiate(doorObject, openingTransforms[i]).GetComponent<Door>();
@@ -59,6 +78,8 @@ public class Cell : MonoBehaviour
                 //Wall
                 Instantiate(wallObject, openingTransforms[i]);
             }
+
+            
         }
     }
 
@@ -74,7 +95,7 @@ public class Cell : MonoBehaviour
             CellData neighborCell = Floor.Instance.CellDataAtPos(myCellData.position + Utilities.CardinalDirToVector2(currentDir));
             //Check if cell exists and has direction, and is not locked
             bool state = false;
-            if (neighborCell != null && neighborCell.HasDir(neededDir)) {
+            if (neighborCell != null && neighborCell.HasConnDir(neededDir)) {
                 if (neighborCell.cellObject)
                 {
                     if (neighborCell.cellObject.GetRoom())
@@ -102,7 +123,7 @@ public class Cell : MonoBehaviour
         {
             //Check if cell has direction
             CardinalDir takenDir = Utilities.GetRelativeDir(attemptedDir, 2);
-            if (targetCell.myCellData.HasDir(takenDir))
+            if (targetCell.myCellData.HasConnDir(takenDir))
             {
                 targetCell.TakePlayer(takenDir);
             } else

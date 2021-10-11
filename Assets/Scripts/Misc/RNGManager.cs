@@ -34,6 +34,11 @@ public static class RNGManager
         return worldRand.Next(min, max);
     }
 
+    public static int GetWorldRand()
+    {
+        return worldRand.Next();
+    }
+
     public static int GetItemRand(int min, int max)
     {
         return itemRand.Next(min, max);

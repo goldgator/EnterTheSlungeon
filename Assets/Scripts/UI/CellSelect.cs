@@ -77,52 +77,57 @@ public class CellSelect : MonoBehaviour
 
     private void OnPull(Vector2 moveDir)
     {
-        //Check if room doesn't have correct opening
-        if (!selectedCell.HasDir(Utilities.Vector2ToCardinalDir(moveDir)))
+        //Do for every Cell in selected room
+        foreach (CellData cell in selectedCell.roomOwner.cellData)
         {
-            //Play fail noise and leave method
-            audioSource.clip = roomBump;
-            audioSource.Play();
-            return;
-        }
-
-        //Find in direction
-        Cell foundCell = Floor.Instance.FindCellInLine(selectedCell.position, moveDir);
-        if (foundCell == null)
-        {
-            audioSource.clip = roomBump;
-            audioSource.Play();
-            return;
-        }
-
-        //Check if room can't be pulled
-        if (!foundCell.GetRoom().CanBePulled)
-        {
-            //Play fail noise and leave method
-            audioSource.clip = roomBump;
-            audioSource.Play();
-            return;
-        }
-
-        //IF if it has the right opening
-        CardinalDir wantedDir = Utilities.GetRelativeDir(Utilities.Vector2ToCardinalDir(moveDir), 2);
-        if (foundCell.GetData().openings.Contains(wantedDir))
-        {
-            //Move it one by one until it stops towards this cell
-            RoomData foundRoom = foundCell.GetData().roomOwner;
-            while (Floor.Instance.RoomCanMoveInDirection(foundRoom, wantedDir))
+            //Check if room doesn't have correct opening
+            if (!cell.HasConnDir(Utilities.Vector2ToCardinalDir(moveDir)))
             {
-                foundCell.GetRoom().MoveRoom(moveDir * -1, false);
+                //Play fail noise and leave method
+                audioSource.clip = roomBump;
+                audioSource.Play();
+                return;
             }
 
-            audioSource.clip = roomMove;
-            audioSource.Play();
+            //Find in direction
+            Cell foundCell = Floor.Instance.FindCellInLine(cell.position, moveDir);
+            if (foundCell == null)
+            {
+                audioSource.clip = roomBump;
+                audioSource.Play();
+                return;
+            }
 
-            floorUI.UpdateUI();
-        } else
-        {
-            audioSource.clip = roomBump;
-            audioSource.Play();
+            //Check if room can't be pulled
+            if (!foundCell.GetRoom().CanBePulled)
+            {
+                //Play fail noise and leave method
+                audioSource.clip = roomBump;
+                audioSource.Play();
+                return;
+            }
+
+            //IF if it has the right opening
+            CardinalDir wantedDir = Utilities.GetRelativeDir(Utilities.Vector2ToCardinalDir(moveDir), 2);
+            if (foundCell.GetData().openings.Contains(wantedDir))
+            {
+                //Move it one by one until it stops towards this cell
+                RoomData foundRoom = foundCell.GetData().roomOwner;
+                while (Floor.Instance.RoomCanMoveInDirection(foundRoom, wantedDir))
+                {
+                    foundCell.GetRoom().MoveRoom(moveDir * -1, false);
+                }
+
+                audioSource.clip = roomMove;
+                audioSource.Play();
+
+                floorUI.UpdateUI();
+            }
+            else
+            {
+                audioSource.clip = roomBump;
+                audioSource.Play();
+            }
         }
     }
 

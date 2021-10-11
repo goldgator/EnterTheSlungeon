@@ -54,7 +54,7 @@ public class FloorUI : MonoBehaviour
             newScale = targetSize / rectTransform.sizeDelta.y;
         }
 
-        Debug.Log(newScale);
+        //Debug.Log(newScale);
         rectTransform.localScale = new Vector3(newScale, newScale, newScale);
 
         //Iterate through each cell from bottom left, starting on rows
