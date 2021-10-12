@@ -25,7 +25,7 @@ public class ChargeWeapon : BaseWeapon
         //Add animations later
     }
 
-    private void FireRelease(bool released)
+    private void FireRelease()
     {
         if (chargeTime == 0) return;
         float maxChargeTime = stats.GetStatValue("ChargeTime");
@@ -54,6 +54,11 @@ public class ChargeWeapon : BaseWeapon
 
         //Make Sound
         audioSource.Play();
+
+        //reduce ammo
+        remainingAmmo--;
+        gunUI.UpdateAmmo();
+        AddOverheat();
 
         //Create projectile
         GameObject newProjectile = Instantiate(projectile, shotTransform.position, Quaternion.identity);

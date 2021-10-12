@@ -88,8 +88,12 @@ MonoBehaviour:
     baseValue: 20
   - statName: KnockBack
     baseValue: 1
+  - statName: ClipSize
+    baseValue: 8
+  - statName: ReloadSpeed
+    baseValue: 1.5
   - statName: OverheatAddend
-    baseValue: 2
+    baseValue: 5
   - statName: OverheatRecovery
     baseValue: 2
 --- !u!114 &3883987198682251389
