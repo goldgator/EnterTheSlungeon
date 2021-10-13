@@ -20,6 +20,4 @@ public class StatModifier
     public eModType modType;
     [SerializeField]
     public int order = 0;
-
-
 }

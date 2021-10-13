@@ -21,9 +21,10 @@ public class BaseWeapon : MonoBehaviour
     //[Header("Stats")]
     //[SerializeField]
     protected StatBlock stats;
-    
+
 
     //Misc Fields
+    protected bool equipped = false;
     protected float fireTimer = 0;
     protected int remainingAmmo = 0;
     protected bool isReloading = false;
@@ -40,6 +41,16 @@ public class BaseWeapon : MonoBehaviour
         remainingAmmo = (int)stats.GetStatValue("ClipSize");
     }
 
+    public void SetEquipped(bool newState)
+    {
+        equipped = newState;
+        renderer.enabled = newState;
+    }
+
+    public StatBlock GetStatBlock()
+    {
+        return stats;
+    }
 
     public int GetRemainingAmmo()
     {
@@ -83,7 +94,7 @@ public class BaseWeapon : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Player.Instance.GetPlayerEnabled())
+        if (Player.Instance.GetPlayerEnabled() && equipped)
         {
             ProcessAim();
         }
@@ -114,7 +125,7 @@ public class BaseWeapon : MonoBehaviour
         float progress = currentOverheat / maxOverheat;
 
         if (currentOverheat == 0) overheated = false;
-        gunUI.UpdateOverheat(overheated, progress);
+        if (equipped) gunUI.UpdateOverheat(overheated, progress);
     }
 
     protected void AddOverheat()
@@ -162,7 +173,7 @@ public class BaseWeapon : MonoBehaviour
 
     protected virtual void OnFire(bool pressed)
     {
-        if (fireTimer >= stats.GetStatValue("FireRate") && pressed && remainingAmmo > 0 && !isReloading && !overheated)
+        if (fireTimer >= stats.GetStatValue("FireRate") && pressed && remainingAmmo > 0 && !isReloading && !overheated && equipped)
         {
             Fire();
         }

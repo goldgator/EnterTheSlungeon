@@ -17,6 +17,8 @@ public class BaseEnemy : MonoBehaviour
     [Header("Details")]
     protected const string fxPath = "Prefabs/Enemies/Deaths/";
     public string deathFX;
+    public bool flipSprite = false;
+    protected int flipMod { get { return (flipSprite) ? -1 : 1; } }
 
     //Protected fields
     protected Player target;
@@ -42,9 +44,12 @@ public class BaseEnemy : MonoBehaviour
     public void Death()
     {
         //Create deathFX
-        GameObject fxObject = Resources.Load<GameObject>(fxPath + deathFX);
-        GameObject newFX = Instantiate(fxObject, transform.position, Quaternion.identity);
-        newFX.transform.localScale = transform.localScale;
+        if (deathFX != "")
+        {
+            GameObject fxObject = Resources.Load<GameObject>(fxPath + deathFX);
+            GameObject newFX = Instantiate(fxObject, transform.position, Quaternion.identity);
+            newFX.transform.localScale = transform.localScale;
+        }
         //Destroy this object
         homeSpawner?.EnemyDied();
         Destroy(gameObject);

@@ -9,6 +9,11 @@ public class Cell : MonoBehaviour
     private List<GameObject> cornerTiles;
     private Door[] doors = new Door[4];
     private const string PREFAB_PATH = "Prefabs/Rooms/Cell/";
+    private string levelFolder
+    {
+        //return level folder from floor level (F1, F2, F3, etc)
+        get { return "F" + Floor.Instance.floorLevel + "/"; }
+    }
 
     private CellData myCellData;
     private Room roomOwner;
@@ -17,8 +22,8 @@ public class Cell : MonoBehaviour
 
     private void Awake()
     {
-        doorObject = Resources.Load<GameObject>(PREFAB_PATH + "DoorWall");
-        wallObject = Resources.Load<GameObject>(PREFAB_PATH + "FullWall");
+        doorObject = Resources.Load<GameObject>(PREFAB_PATH + levelFolder + "DoorWall");
+        wallObject = Resources.Load<GameObject>(PREFAB_PATH + levelFolder + "FullWall");
     }
 
     public CellData GetData()

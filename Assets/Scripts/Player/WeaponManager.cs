@@ -6,6 +6,7 @@ public class WeaponManager : MonoBehaviour
 {
     public List<Transform> weaponPivots = new List<Transform>();
     private List<BaseWeapon> weapons = new List<BaseWeapon>();
+    private ItemManager itemManager;
 
     public GunUI gunUI;
 
@@ -31,9 +32,9 @@ public class WeaponManager : MonoBehaviour
         InputManager.Instance.scrollStartEvent -= SwapWeapon;
     }
 
-    private void Start()
+    private void Awake()
     {
-        //UpdateInfo();
+        itemManager = transform.parent.GetComponentInChildren<ItemManager>();
     }
 
     public void AddGun(GameObject newGun)
@@ -45,6 +46,7 @@ public class WeaponManager : MonoBehaviour
 
         BaseWeapon newWeapon = Instantiate(newGun).GetComponent<BaseWeapon>();
         newWeapon.transform.SetParent(newPivot.transform, false);
+        itemManager.AddTargetStatBlock(newWeapon.GetStatBlock());
         newWeapon.AddUI(gunUI);
         weapons.Add(newWeapon);
 
@@ -75,7 +77,6 @@ public class WeaponManager : MonoBehaviour
     private void SwapWeapon()
     {
         SwapToWeapon((currWeapon + 1) % weapons.Count);
-        gunUI.UpdateBasics();
     }
 
     private void SwapToWeapon(int index)
@@ -89,6 +90,6 @@ public class WeaponManager : MonoBehaviour
     private void SetGunState(int index, bool state)
     {
         //Debug.Log(index);
-        weapons[index].gameObject.SetActive(state);
+        weapons[index].SetEquipped(state);
     }
 }

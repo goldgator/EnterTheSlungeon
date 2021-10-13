@@ -13,8 +13,13 @@ public class Room : MonoBehaviour
     private RoomContent roomContents;
     private RoomData myRoomData;
 
-    private const string ROOM_PATH = "Prefabs/Rooms/";
+    private const string ROOM_PATH = "Prefabs/Rooms/Cell/";
     private const string CONTENT_PATH = "Prefabs/RoomContents/";
+    private string levelFolder
+    {
+        //return level folder from floor level (F1, F2, F3, etc)
+        get { return "F" + Floor.Instance.floorLevel + "/"; }
+    }
 
     public bool CanMove
     {
@@ -49,7 +54,8 @@ public class Room : MonoBehaviour
         transform.position = bottomLeftPos * Floor.CELL_SIZE;
 
         //Instantiate each cell based on their localPos
-        GameObject cellPrefab = Resources.Load<GameObject>(ROOM_PATH + "Cell/BaseCell");
+        string baseCellPath = ROOM_PATH + levelFolder + "BaseCell";
+        GameObject cellPrefab = Resources.Load<GameObject>(baseCellPath);
         foreach (CellData cellData in roomData.cellData) {
             GameObject newObject = Instantiate(cellPrefab, this.transform);
             Cell newCell = newObject.GetComponent<Cell>();
@@ -64,14 +70,16 @@ public class Room : MonoBehaviour
         //Add content if not boss room
         if (roomData.roomType != RoomData.RoomType.Boss)
         {
-            GameObject[] allRooms = Resources.LoadAll<GameObject>(CONTENT_PATH + myRoomData.RoomContentPool);
+            string contentPath = CONTENT_PATH + levelFolder + myRoomData.RoomContentPool;
+            GameObject[] allRooms = Resources.LoadAll<GameObject>(contentPath);
             //Debug.Log(CONTENT_PATH + myRoomData.RoomOpeningType);
             //Debug.Log(allRooms[0]);
             roomContents = Instantiate(allRooms[RNGManager.GetWorldRand(0, allRooms.Length)], transform).GetComponent<RoomContent>();
             roomContents.parentRoom = this;
         } else
         {
-            string bossPath = "Prefabs/BossRooms/Golem";
+            //Might throw a fit? slash at the end of this path
+            string bossPath = "Prefabs/BossRooms/" + levelFolder;
             GameObject[] allRooms = Resources.LoadAll<GameObject>(bossPath);
             roomContents = Instantiate(allRooms[RNGManager.GetWorldRand(0, allRooms.Length)], transform).GetComponent<RoomContent>();
             roomContents.parentRoom = this;

@@ -7,6 +7,7 @@ public class RushEnemy : BaseEnemy
 {
     [Header("Enemy Stats")]
     public bool hasAttack;
+    
 
     
 
@@ -32,7 +33,7 @@ public class RushEnemy : BaseEnemy
         Vector3 distance = target.transform.position - transform.position;
 
         //Orient sprite
-        transform.localScale = new Vector3(Mathf.Sign(distance.x), transform.localScale.y, transform.localScale.z);
+        transform.localScale = new Vector3(Mathf.Sign(distance.x) * flipMod, transform.localScale.y, transform.localScale.z);
         
         //if (distance.magnitude > attackRange)
         Vector3 velocity = speed * distance.normalized;
@@ -50,7 +51,7 @@ public class RushEnemy : BaseEnemy
         {
             Vector3 distance = target.transform.position - transform.position;
 
-            if (distance.magnitude < (attackRange * 0.7f))
+            if (distance.magnitude < (attackRange * 0.8f))
             {
                 animator.Play("Attack");
                 stopTime = attackCooldown;

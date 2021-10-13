@@ -910,6 +910,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 452427626158695470, guid: a1279c945df1bdb4d874804479c614f4, type: 3}
+      propertyPath: floorLevel
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 452427626158695470, guid: a1279c945df1bdb4d874804479c614f4, type: 3}
       propertyPath: stringSeed
       value: 
       objectReference: {fileID: 0}
@@ -1267,6 +1271,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5941068773895197779, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: startingWeapons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5941068773895197779, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: startingWeapons.Array.data[1]
+      value: 
+      objectReference: {fileID: 5540495575679167429, guid: aee8b87f75ecc6041a0aa4bf34cca9b9, type: 3}
+    - target: {fileID: 5941068773895197779, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
+      propertyPath: startingWeapons.Array.data[2]
+      value: 
+      objectReference: {fileID: 5540495575679167429, guid: aee8b87f75ecc6041a0aa4bf34cca9b9, type: 3}
     - target: {fileID: 5941068773895197780, guid: cb0ec7d939776b94c9efb2be0644a8ca, type: 3}
       propertyPath: m_Name
       value: Player
