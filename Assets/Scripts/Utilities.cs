@@ -145,7 +145,7 @@ public static class Utilities
 
     public static Vector2 GetUnitVector2(float angle)
     {
-        angle = Mathf.Deg2Rad;
+        angle *= Mathf.Deg2Rad;
         float x = Mathf.Cos(angle);
         float y = Mathf.Cos(angle);
 

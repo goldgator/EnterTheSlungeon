@@ -93,9 +93,9 @@ MonoBehaviour:
   - statName: ReloadSpeed
     baseValue: 2.5
   - statName: OverheatAddend
-    baseValue: 2
+    baseValue: 1
   - statName: OverheatRecovery
-    baseValue: 2
+    baseValue: 3
 --- !u!114 &3883987198682251389
 MonoBehaviour:
   m_ObjectHideFlags: 0

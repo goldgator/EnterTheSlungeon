@@ -24,11 +24,18 @@ public class BaseEnemy : MonoBehaviour
     protected Player target;
     protected Health health;
     protected Animator animator;
-    protected new Collider2D collider;
+    protected Collider2D collider;
+    protected SpriteRenderer renderer;
     protected Rigidbody2D rb;
     protected AudioSource audioSource;
     protected float stopTime = 0;
     protected EnemySpawn homeSpawner;
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
 
     protected virtual void Start()
     {
@@ -38,10 +45,23 @@ public class BaseEnemy : MonoBehaviour
         health = GetComponent<Health>();
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        renderer = GetComponent<SpriteRenderer>();
         if (audioSource) audioSource.clip = attackSound;
+
+        //Delay action if enemy starts with a Spawn animation
+        DelayAction();
     }
 
-    public void Death()
+    private void DelayAction()
+    {
+        //Check if it has a spawn anim
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Spawn"))
+        {
+            stopTime = animator.GetCurrentAnimatorStateInfo(0).length * 1.2f;
+        }
+    }
+
+    public virtual void Death()
     {
         //Create deathFX
         if (deathFX != "")

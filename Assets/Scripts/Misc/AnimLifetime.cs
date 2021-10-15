@@ -18,4 +18,9 @@ public class AnimLifetime : MonoBehaviour
         animator.Play(clipName);
         Destroy(gameObject, animator.GetCurrentAnimatorClipInfo(0)[0].clip.length);
     }
+
+    public void ForceDeath()
+    {
+        Destroy(gameObject);
+    }
 }

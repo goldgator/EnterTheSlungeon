@@ -171,7 +171,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 30, y: 0}
-  m_SizeDelta: {x: 400, y: 60}
+  m_SizeDelta: {x: 500, y: 60}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1106344575
 MonoBehaviour:
@@ -668,7 +668,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.023555525, b: 0, a: 0.54901963}
+  m_Color: {r: 1, g: 0.023555525, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -853,14 +853,50 @@ MonoBehaviour:
   weaponManager: {fileID: 6089979578158464746}
   ammoText: {fileID: 7782697354681137860}
   gunImage: {fileID: 7129149097893990629}
-  overheatImage: {fileID: 0}
+  overheatImage: {fileID: 2627026620833270071}
   reloadSlider: {fileID: 3140345412062600833}
   overheatMaxAlpha: 140
-  overheatPulseStrength: 15
-  overheatPulseSpeed: 1.2
+  overheatPulseStrength: 40
+  overheatPulseSpeed: 0.8
   pulseCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 7.0136867
+      outSlope: 7.0136867
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.13576612
+      value: 0.95222104
+      inSlope: -5.48203
+      outSlope: -5.48203
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.025774088
+    - serializedVersion: 3
+      time: 0.34717384
+      value: 0.0056719617
+      inSlope: -0.049790844
+      outSlope: -0.049790844
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.19105098
+    - serializedVersion: 3
+      time: 1.0023193
+      value: -0.003768921
+      inSlope: -0.056673817
+      outSlope: -0.056673817
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.060400847
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -1211,8 +1247,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   startingWeapons:
   - {fileID: 5540495575679167429, guid: 6622f2de70f32484ab314e39314b8064, type: 3}
-  - {fileID: 5540495575679167429, guid: e20b541f6a9d80641b0455b1ae328ef5, type: 3}
-  - {fileID: 5540495575679167429, guid: 6ba8688504ccea14bac7074807cfe7e3, type: 3}
   - {fileID: 5540495575679167429, guid: aee8b87f75ecc6041a0aa4bf34cca9b9, type: 3}
   dodgeAudio: {fileID: 8300000, guid: eb2ec8a100217b5469d715e324d5b227, type: 3}
 --- !u!95 &1003930773
@@ -1246,7 +1280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ee473a9d2b2ea469f365825ca33896, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 20
+  maxHealth: 30
   invinicibilityTime: 1.8
   hasRegen: 0
   regenTime: 2

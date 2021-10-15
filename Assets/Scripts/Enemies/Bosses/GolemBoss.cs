@@ -66,8 +66,7 @@ public class GolemBoss : BaseEnemy
 
             //Roll 0-2
             //Do laser if 2
-            System.Random rng = new System.Random();
-            if (rng.Next(3) == 2 || punches >= 3)
+            if (RNGManager.GetEventRand(0,3) == 2 || punches >= 3)
             {
                 //Do laser stuff 
                 ActivateLaser();
@@ -95,7 +94,6 @@ public class GolemBoss : BaseEnemy
         //Orient sprite
         transform.localScale = new Vector3(Mathf.Sign(distance.x), transform.localScale.y, transform.localScale.z);
 
-        //if (distance.magnitude > attackRange)
         Vector3 velocity = speed * distance.normalized;
 
         velocity = velocity * Time.deltaTime;

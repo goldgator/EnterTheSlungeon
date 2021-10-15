@@ -106,6 +106,7 @@ MonoBehaviour:
   attackCooldown: 0
   attackSound: {fileID: 0}
   deathFX: SlimeDeath
+  flipSprite: 0
   hasAttack: 0
 --- !u!114 &5702017989284875084
 MonoBehaviour:
@@ -167,7 +168,7 @@ Animator:
   m_GameObject: {fileID: 5702017989284875080}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 48fe22b859ba72d4ca1ce540c7c4bda7, type: 2}
+  m_Controller: {fileID: 9100000, guid: a20dda00a3367694fb1ed3f92d5959e1, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
