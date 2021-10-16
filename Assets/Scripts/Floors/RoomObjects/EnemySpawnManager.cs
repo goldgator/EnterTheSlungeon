@@ -77,7 +77,7 @@ public class EnemySpawnManager : MonoBehaviour, IRoomObject
         //Check if each enemy from spawners was killed
         foreach (EnemySpawn spawn in waves[waveIndex].spawners)
         {
-            if (!spawn.SpawnHasBeenKilled()) return false;
+            if (!spawn.SpawnsBeenKilled()) return false;
         }
 
         //If passes through foreach loop, all spawns have had their enemy die
@@ -91,7 +91,7 @@ public class EnemySpawnManager : MonoBehaviour, IRoomObject
         {
             foreach (EnemySpawn spawn in spawnWave.spawners)
             {
-                if (!spawn.SpawnHasBeenKilled()) return false;
+                if (!spawn.SpawnsBeenKilled()) return false;
             }
         }
         return true;

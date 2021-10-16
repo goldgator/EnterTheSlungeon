@@ -9,7 +9,9 @@ public class EnemySpawn : MonoBehaviour
     public bool isBoss = false;
     public string enemyName;
 
-    private int enemyDeathCount = 0;
+    private int enemyDeaths = 0;
+    private int totalDeathCount = 1;
+    private List<BaseEnemy> spawnedEnemies = new List<BaseEnemy>();
 
     public void SpawnEnemy(bool hasParticles)
     {
@@ -44,17 +46,24 @@ public class EnemySpawn : MonoBehaviour
         }
     }
 
+    public void AddTrackedEnemy(BaseEnemy newEnemy)
+    {
+        spawnedEnemies.Add(newEnemy);
+        totalDeathCount++;
+    }
+
     /// <summary>
     /// Called from the enemies when they die
     /// </summary>
-    public void EnemyDied()
+    public void EnemyDied(BaseEnemy deadEnemy)
     {
-        enemyDeathCount++;
+        spawnedEnemies.Remove(deadEnemy);
+        enemyDeaths++;
     }
 
-    public bool SpawnHasBeenKilled()
+    public bool SpawnsBeenKilled()
     {
-        return (enemyDeathCount > 0);
+        return (enemyDeaths >= totalDeathCount);
     }
 
     private void OnDrawGizmos()

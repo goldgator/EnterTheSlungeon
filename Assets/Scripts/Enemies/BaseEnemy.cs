@@ -52,6 +52,12 @@ public class BaseEnemy : MonoBehaviour
         DelayAction();
     }
 
+    public void ShareSpawner(BaseEnemy friendEnemy)
+    {
+        friendEnemy.homeSpawner = homeSpawner;
+        homeSpawner.AddTrackedEnemy(friendEnemy);
+    }
+
     private void DelayAction()
     {
         //Check if it has a spawn anim
@@ -71,7 +77,7 @@ public class BaseEnemy : MonoBehaviour
             newFX.transform.localScale = transform.localScale;
         }
         //Destroy this object
-        homeSpawner?.EnemyDied();
+        homeSpawner?.EnemyDied(this);
         Destroy(gameObject);
     }
 
