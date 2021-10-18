@@ -99,21 +99,25 @@ MonoBehaviour:
   - statName: FireRate
     baseValue: 0.4
   - statName: ShotDamage
-    baseValue: 3
+    baseValue: 4
   - statName: ShotSize
     baseValue: 0.3
   - statName: ShotSpeed
     baseValue: 20
   - statName: KnockBack
     baseValue: 0.2
+  - statName: ClipSize
+    baseValue: 4
+  - statName: ReloadSpeed
+    baseValue: 3
   - statName: OverheatAddend
-    baseValue: 2
+    baseValue: 10
   - statName: OverheatRecovery
     baseValue: 2
   - statName: ChargeTime
     baseValue: 2
   - statName: DamageMultiplier
-    baseValue: 3
+    baseValue: 4
   - statName: SizeMultiplier
     baseValue: 2
   - statName: KnockbackMultiplier

@@ -16,10 +16,10 @@ TagManager:
   - Enemy
   - EnemyWeapon
   - Untraversable
-  - 
-  - 
-  - 
-  - 
+  - PlayerFlying
+  - EnemyFlying
+  - Pit
+  - Boss
   - 
   - 
   - 

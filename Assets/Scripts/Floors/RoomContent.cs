@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RoomContent : MonoBehaviour
 {
+    
     public Room parentRoom = null;
 
     public delegate void RoomEvent();

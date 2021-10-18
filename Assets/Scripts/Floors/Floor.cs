@@ -20,6 +20,8 @@ public class Floor : MonoBehaviour
     }
 
     [Header("GenerationStats")]
+    [Range(1,3)]
+    public int floorLevel;
     public string stringSeed;
     public int seed;
     public FloorGenerator.FloorType floorType = FloorGenerator.FloorType.Expansive;

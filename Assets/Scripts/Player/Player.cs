@@ -106,9 +106,9 @@ public class Player : MonoBehaviour
         velocity = new Vector2(0, 0);
     }
 
-    private void Dodge(bool pressed)
+    private void Dodge()
     {
-        if (playerEnabled && pressed)
+        if (playerEnabled)
         {
             animator.SetTrigger("Dodge");
             playerHealth.SetInvincibleTimer(0.25f);
@@ -122,7 +122,8 @@ public class Player : MonoBehaviour
     {
         playerEnabled = false;
         float dodgeTime = 0.5f;
-        currentWeapon.gameObject.SetActive(false);
+        //currentWeapon.gameObject.SetActive(false);
+        currentWeapon.renderer.enabled = false;
         Vector3 dodgeDir = lastMoveDir;
         if (dodgeDir.magnitude <= 0.1f) dodgeDir = new Vector3(transform.localScale.x, 0, 0);
         transform.localScale = new Vector3(Mathf.Sign(dodgeDir.x), 1, 1);
@@ -136,7 +137,8 @@ public class Player : MonoBehaviour
             dodgeTime -= Time.deltaTime;
         }
 
-        currentWeapon.gameObject.SetActive(true);
+        //currentWeapon.gameObject.SetActive(true);
+        currentWeapon.renderer.enabled = true;
         playerEnabled = true;
     }
 }

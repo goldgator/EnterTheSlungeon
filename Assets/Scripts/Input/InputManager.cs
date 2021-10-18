@@ -13,25 +13,29 @@ public class InputManager : MonoBehaviour
 
     //Delegates and events
     public delegate void MoveDelegate(Vector2 position);
-    public delegate void FireDelegate(bool pressed);
-    public delegate void DodgeDelegate(bool pressed);
-    public delegate void ScrollDelegate(bool pressed);
+    public delegate void UpdateDelegate(bool pressed);
+    public delegate void EventDelegate();
+    
 
     public event MoveDelegate moveStartEvent;
     public event MoveDelegate moveUpdateEvent;
     public event MoveDelegate moveStopEvent;
 
-    public event FireDelegate fireStartEvent;
-    public event FireDelegate fireUpdateEvent;
-    public event FireDelegate fireStopEvent;
+    public event EventDelegate fireStartEvent;
+    public event UpdateDelegate fireUpdateEvent;
+    public event EventDelegate fireStopEvent;
 
-    public event DodgeDelegate dodgeStartEvent;
-    public event DodgeDelegate dodgeUpdateEvent;
-    public event DodgeDelegate dodgeStopEvent;
+    public event EventDelegate dodgeStartEvent;
+    public event UpdateDelegate dodgeUpdateEvent;
+    public event EventDelegate dodgeStopEvent;
     
-    public event ScrollDelegate scrollStartEvent;
-    public event ScrollDelegate scrollUpdateEvent;
-    public event ScrollDelegate scrollStopEvent;
+    public event EventDelegate scrollStartEvent;
+    public event UpdateDelegate scrollUpdateEvent;
+    public event EventDelegate scrollStopEvent;
+
+    public event EventDelegate reloadStartEvent;
+    public event UpdateDelegate reloadUpdateEvent;
+    public event EventDelegate reloadStopEvent;
 
     #region Input Properties
     //Input values
@@ -124,14 +128,17 @@ public class InputManager : MonoBehaviour
         baseControls.Controls.Move.started += ctx => MoveStart(ctx);
         baseControls.Controls.Move.canceled += ctx => MoveStop(ctx);
 
-        baseControls.Controls.Fire.started += ctx => FireStart(ctx, ctx.ReadValueAsButton());
-        baseControls.Controls.Fire.canceled += ctx => FireStop(ctx, ctx.ReadValueAsButton());
+        baseControls.Controls.Fire.started += ctx => FireStart(ctx);
+        baseControls.Controls.Fire.canceled += ctx => FireStop(ctx);
 
-        baseControls.Controls.Dodge.started += ctx => DodgeStart(ctx, ctx.ReadValueAsButton());
-        baseControls.Controls.Dodge.canceled += ctx => DodgeStop(ctx, ctx.ReadValueAsButton());
+        baseControls.Controls.Dodge.started += ctx => DodgeStart(ctx);
+        baseControls.Controls.Dodge.canceled += ctx => DodgeStop(ctx);
 
-        baseControls.Controls.NextWeapon.started += ctx => ScrollStart(ctx, ctx.ReadValueAsButton());
-        baseControls.Controls.NextWeapon.canceled += ctx => ScrollStop(ctx, ctx.ReadValueAsButton());
+        baseControls.Controls.NextWeapon.started += ctx => ScrollStart(ctx);
+        baseControls.Controls.NextWeapon.canceled += ctx => ScrollStop(ctx);
+
+        baseControls.Controls.Reload.started += ctx => ReloadStart(ctx);
+        baseControls.Controls.Reload.canceled += ctx => ReloadStop(ctx);
     }
 
     void MoveStart(InputAction.CallbackContext context)
@@ -145,34 +152,44 @@ public class InputManager : MonoBehaviour
         moveStopEvent?.Invoke(PlayerMovement);
     }
 
-    void FireStart(InputAction.CallbackContext context, bool pressed)
+    void FireStart(InputAction.CallbackContext context)
     {
-        fireStartEvent?.Invoke(pressed);
+        fireStartEvent?.Invoke();
     }
 
-    void FireStop(InputAction.CallbackContext context, bool pressed)
+    void FireStop(InputAction.CallbackContext context)
     {
-        fireStopEvent?.Invoke(pressed);
+        fireStopEvent?.Invoke();
     }
 
-    void DodgeStart(InputAction.CallbackContext context, bool pressed)
+    void DodgeStart(InputAction.CallbackContext context)
     {
-        dodgeStartEvent?.Invoke(pressed);
+        dodgeStartEvent?.Invoke();
     }
 
-    void DodgeStop(InputAction.CallbackContext context, bool pressed)
+    void DodgeStop(InputAction.CallbackContext context)
     {
-        dodgeStopEvent?.Invoke(pressed);
+        dodgeStopEvent?.Invoke();
     }
 
-    void ScrollStart(InputAction.CallbackContext context, bool pressed)
+    void ScrollStart(InputAction.CallbackContext context)
     {
-        scrollStartEvent?.Invoke(pressed);
+        scrollStartEvent?.Invoke();
     }
 
-    void ScrollStop(InputAction.CallbackContext context, bool pressed)
+    void ScrollStop(InputAction.CallbackContext context)
     {
-        scrollStopEvent?.Invoke(pressed);
+        scrollStopEvent?.Invoke();
+    }
+
+    void ReloadStart(InputAction.CallbackContext context)
+    {
+        reloadStartEvent?.Invoke();
+    }
+
+    void ReloadStop(InputAction.CallbackContext context)
+    {
+        reloadStopEvent?.Invoke();
     }
 
     private void Update()

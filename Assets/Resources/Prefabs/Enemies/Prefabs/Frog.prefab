@@ -103,10 +103,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0
   damage: 5
-  attackRange: 12
-  attackCooldown: 4
+  attackRange: 16
+  attackCooldown: 2.5
   attackSound: {fileID: 8300000, guid: 9e7e59915597f434d993f3baf108945d, type: 3}
   deathFX: FrogDeath
+  flipSprite: 0
   projectile: {fileID: 6229470945475235130, guid: b92f6bb7d6f6f7c48a880869064078e4, type: 3}
   shotSpeed: 8
 --- !u!114 &387799137263217886
