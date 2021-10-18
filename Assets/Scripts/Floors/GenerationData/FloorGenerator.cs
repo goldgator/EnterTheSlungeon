@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+
 public static class FloorGenerator
 {
     public enum FloorType
@@ -12,7 +13,7 @@ public static class FloorGenerator
         ConstrainedExpansive
     }
 
-    public static FloorData GenerateFloor(FloorType floorType, int patternSize)
+    public static FloorData GenerateFloor(FloorType floorType, int patternSize, bool seeded)
     {
         FloorData createdFloor = null;
         do
@@ -31,6 +32,12 @@ public static class FloorGenerator
             }
 
         } while (!TestFloorQuality(createdFloor));
+
+        //Add created floors to file
+        if (!seeded)
+        {
+            TrackData(createdFloor);
+        }
 
         return createdFloor;
     }
@@ -222,9 +229,11 @@ public static class FloorGenerator
     public static void TryPlaceRoom(List<RoomData> roomData, int cellSize)
     {
         //Create a Vector2 to hold a free space once found
+        bool failed = false;
         Vector2 tryPlace;
         do
         {
+            failed = false;
             //Select random room (not boss room)
             int randInd = RNGManager.GetWorldRand(1, roomData.Count);
             RoomData currentRoom = roomData[randInd];
@@ -241,17 +250,71 @@ public static class FloorGenerator
 
             //Find another position if cell would be placed at outermost border
             //This is to prevent patterns from being straight lines
-            if (Mathf.Abs(tryPlace.x) >= cellSize || Mathf.Abs(tryPlace.y) >= cellSize) continue;
+            if (Mathf.Abs(tryPlace.x) >= cellSize || Mathf.Abs(tryPlace.y) >= cellSize)
+            {
+                failed = true;
+                continue;
+            }
 
-        //Loop if there is already a room with that position
-        } while (roomData.HasRoomAtPos(tryPlace));
+            //Also reject if it would create a 2x2  (excluding boss room)
+            if (WouldCreateTwoByTwo(roomData, tryPlace))
+            {
+                failed = true;
+                
+                continue;
+            }
+
+        //Loop if there is already a room with that position, or failed checks
+        } while (roomData.HasRoomAtPos(tryPlace) || failed);
 
         //Add room at new found empty position.
         RoomData nextRoom = new RoomData(RoomData.RoomType.Generic, tryPlace);
         roomData.Add(nextRoom);
     }
 
+    /// <summary>
+    /// Method that tests if a new placement would create a 2x2 in the pattern.
+    /// Kinda gross but it works and should be faster than a brute force for loop
+    /// </summary>
+    /// <returns></returns>
+    private static bool WouldCreateTwoByTwo(List<RoomData> roomData, Vector2 testPosition)
+    {
+        //Test for a room above or below, if both false, method is false
+        if (roomData.HasRoomAtPos(testPosition + new Vector2(0,1)))
+        {
+            //Check left and right, if one is true, check corresponding diagnol, if both true, method is true
+            //left room
+            if (roomData.HasRoomAtPos(testPosition + new Vector2(-1, 0))) {
+                //top left corner
+                if (roomData.HasRoomAtPos(testPosition + new Vector2(-1, 1)))
+                {
+                    return true;
+                }
+            }
 
+            //right room
+            if (roomData.HasRoomAtPos(testPosition + new Vector2(-1, 0))) {
+                //top right corner
+                if (roomData.HasRoomAtPos(testPosition + new Vector2(1, 1))) return true; 
+            }
+        } else if (roomData.HasRoomAtPos(testPosition + new Vector2(0,-1))) {
+            //Check left and right, if one is true, check corresponding diagnol, if both true, method is true
+            //left room
+            if (roomData.HasRoomAtPos(testPosition + new Vector2(-1, 0)))
+            {
+                //bottom left corner
+                if (roomData.HasRoomAtPos(testPosition + new Vector2(-1, -1))) return true;
+            }
+
+            //right room
+            if (roomData.HasRoomAtPos(testPosition + new Vector2(-1, 0)))
+            {
+                //bottom right corner
+                if (roomData.HasRoomAtPos(testPosition + new Vector2(1, -1))) return true;
+            }
+        }
+        return false;
+    }
 
     public static void AssignDoors(List<RoomData> roomData)
     {
@@ -344,5 +407,21 @@ public static class FloorGenerator
         }
 
         return new Vector2[] { minBound, maxBound };
+    }
+
+    private static void TrackData(FloorData data)
+    {
+        //Load file
+        GenerationData genData = new GenerationData();
+
+        //Add to object
+        foreach(RoomData room in data.roomData)
+        {
+            genData.AddCount(room.RoomContentPool);
+        }
+
+        //Save file
+        string genString = JsonUtility.ToJson(genData, true);
+        System.IO.File.WriteAllText(Application.persistentDataPath + "/PotionData.json", genString);
     }
 }

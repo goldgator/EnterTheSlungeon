@@ -67,23 +67,14 @@ public class Room : MonoBehaviour
             cells.Add(newCell);
         }
 
-        //Add content if not boss room
-        if (roomData.roomType != RoomData.RoomType.Boss)
-        {
-            string contentPath = CONTENT_PATH + levelFolder + myRoomData.RoomContentPool;
-            GameObject[] allRooms = Resources.LoadAll<GameObject>(contentPath);
-            //Debug.Log(CONTENT_PATH + myRoomData.RoomOpeningType);
-            //Debug.Log(allRooms[0]);
-            roomContents = Instantiate(allRooms[RNGManager.GetWorldRand(0, allRooms.Length)], transform).GetComponent<RoomContent>();
-            roomContents.parentRoom = this;
-        } else
-        {
-            //Might throw a fit? slash at the end of this path
-            string bossPath = "Prefabs/BossRooms/" + levelFolder;
-            GameObject[] allRooms = Resources.LoadAll<GameObject>(bossPath);
-            roomContents = Instantiate(allRooms[RNGManager.GetWorldRand(0, allRooms.Length)], transform).GetComponent<RoomContent>();
-            roomContents.parentRoom = this;
-        }
+        
+        string contentPath = CONTENT_PATH + levelFolder + myRoomData.RoomContentPool;
+        GameObject[] allRooms = Resources.LoadAll<GameObject>(contentPath);
+        //Debug.Log(CONTENT_PATH + myRoomData.RoomOpeningType);
+        //Debug.Log(allRooms[0]);
+        roomContents = Instantiate(allRooms[RNGManager.GetWorldRand(0, allRooms.Length)], transform).GetComponent<RoomContent>();
+        roomContents.parentRoom = this;
+        
         
 
         //Teleport player to room if entry room, and update cells

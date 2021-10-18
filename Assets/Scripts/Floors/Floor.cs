@@ -48,7 +48,7 @@ public class Floor : MonoBehaviour
             {
                 instance = FindObjectOfType<Floor>();
                 if (instance == null) return null;
-                instance.generatedFloor = FloorGenerator.GenerateFloor(instance.floorType, instance.patternSize);
+                
             }
             return instance;
         }
@@ -61,24 +61,38 @@ public class Floor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SetRandomSeed();
-        if (generatedFloor == null) generatedFloor = FloorGenerator.GenerateFloor(floorType, patternSize);
-        InstantiateFloor();
+        StartFloor();
         //Debug.Log(generatedFloor.FloorSize);
     }
 
-    private void SetRandomSeed()
+    private void StartFloor()
     {
+        bool seeded = SetRandomSeed();
+        if (generatedFloor == null) generatedFloor = FloorGenerator.GenerateFloor(floorType, patternSize, seeded);
+        InstantiateFloor();
+    }
+
+    private bool SetRandomSeed()
+    {
+        bool seeded = false;
         if (stringSeed != "")
         {
             Debug.Log("Seed: " + stringSeed);
             RNGManager.SetSeed(stringSeed, true);
+            seeded = true;
         } else
         {
-            if (seed == 0) seed = Random.Range(0, int.MaxValue);
+            if (seed == 0) {
+                seed = Random.Range(0, int.MaxValue);
+            } else
+            {
+                seeded = true;
+            }
             Debug.Log("Seed: " + seed);
             RNGManager.SetSeed(seed, true);
         }
+
+        return seeded;
     }
 
     private void Update()

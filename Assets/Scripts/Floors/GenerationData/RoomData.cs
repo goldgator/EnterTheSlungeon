@@ -21,7 +21,25 @@ public class RoomData
     public string RoomContentPool {
         get
         {
-            if (roomType == RoomType.Entry) return "ENTRY";
+            switch (roomType)
+            {
+                case RoomType.Boss:
+                    return "BOSS";
+                    break;
+                case RoomType.Entry:
+                    return "ENTRY";
+                    break;
+                case RoomType.Drill:
+                    return "DRILL";
+                    break;
+                case RoomType.Item:
+                    return "ITEM";
+                    break;
+                default:
+                    //do nothing
+                    break;
+            }
+
 
             if (cellData.Count == 1)
             {
