@@ -25,16 +25,12 @@ public class RoomData
             {
                 case RoomType.Boss:
                     return "BOSS";
-                    break;
                 case RoomType.Entry:
                     return "ENTRY";
-                    break;
                 case RoomType.Drill:
                     return "DRILL";
-                    break;
                 case RoomType.Item:
                     return "ITEM";
-                    break;
                 default:
                     //do nothing
                     break;

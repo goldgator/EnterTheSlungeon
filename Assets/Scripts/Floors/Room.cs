@@ -70,8 +70,7 @@ public class Room : MonoBehaviour
         
         string contentPath = CONTENT_PATH + levelFolder + myRoomData.RoomContentPool;
         GameObject[] allRooms = Resources.LoadAll<GameObject>(contentPath);
-        //Debug.Log(CONTENT_PATH + myRoomData.RoomOpeningType);
-        //Debug.Log(allRooms[0]);
+
         roomContents = Instantiate(allRooms[RNGManager.GetWorldRand(0, allRooms.Length)], transform).GetComponent<RoomContent>();
         roomContents.parentRoom = this;
         
