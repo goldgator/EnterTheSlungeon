@@ -24,12 +24,12 @@ public class WeaponManager : MonoBehaviour
 
     private void OnEnable()
     {
-        InputManager.Instance.scrollStartEvent += SwapWeapon;
+        if (InputManager.Instance != null) InputManager.Instance.scrollStartEvent += SwapWeapon;
     }
 
     private void OnDisable()
     {
-        InputManager.Instance.scrollStartEvent -= SwapWeapon;
+        if (InputManager.Instance != null) InputManager.Instance.scrollStartEvent -= SwapWeapon;
     }
 
     private void Awake()

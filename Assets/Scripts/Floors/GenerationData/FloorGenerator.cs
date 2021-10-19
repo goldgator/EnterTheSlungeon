@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Newtonsoft.Json;
 
 
 public static class FloorGenerator
@@ -73,7 +74,7 @@ public static class FloorGenerator
 
         //Sprinkle rooms
         int sprinkleAmount = (int)(patternSize * .8f);
-        floorData.AddSprinkleRooms(sprinkleAmount);
+        floorData.AddSprinkleRooms2(sprinkleAmount);
 
         //Assign Room Contents
 
@@ -97,7 +98,7 @@ public static class FloorGenerator
 
         //Sprinkle rooms
         int sprinkleAmount = (int)(patternSize * .5f);
-        floorData.AddSprinkleRooms(sprinkleAmount);
+        floorData.AddSprinkleRooms2(sprinkleAmount);
 
         //Assign Room Contents
 
@@ -293,7 +294,7 @@ public static class FloorGenerator
             }
 
             //right room
-            if (roomData.HasRoomAtPos(testPosition + new Vector2(-1, 0))) {
+            if (roomData.HasRoomAtPos(testPosition + new Vector2(1, 0))) {
                 //top right corner
                 if (roomData.HasRoomAtPos(testPosition + new Vector2(1, 1))) return true; 
             }
@@ -307,7 +308,7 @@ public static class FloorGenerator
             }
 
             //right room
-            if (roomData.HasRoomAtPos(testPosition + new Vector2(-1, 0)))
+            if (roomData.HasRoomAtPos(testPosition + new Vector2(1, 0)))
             {
                 //bottom right corner
                 if (roomData.HasRoomAtPos(testPosition + new Vector2(1, -1))) return true;
@@ -412,7 +413,8 @@ public static class FloorGenerator
     private static void TrackData(FloorData data)
     {
         //Load file
-        GenerationData genData = new GenerationData();
+        string genDataJSON = System.IO.File.ReadAllText(Application.persistentDataPath + "/FloorData.json");
+        GenerationData genData = JsonConvert.DeserializeObject<GenerationData>(genDataJSON);
 
         //Add to object
         foreach(RoomData room in data.roomData)
@@ -421,7 +423,7 @@ public static class FloorGenerator
         }
 
         //Save file
-        string genString = JsonUtility.ToJson(genData, true);
-        System.IO.File.WriteAllText(Application.persistentDataPath + "/PotionData.json", genString);
+        string genString = JsonConvert.SerializeObject(genData, Formatting.Indented);
+        System.IO.File.WriteAllText(Application.persistentDataPath + "/FloorData.json", genString);
     }
 }
