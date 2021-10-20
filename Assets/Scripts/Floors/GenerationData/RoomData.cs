@@ -95,6 +95,14 @@ public class RoomData
         }
     }
 
+    public RoomData(RoomType newType, CellData newCell)
+    {
+        roomType = newType;
+        cellData = new List<CellData>();
+        cellData.Add(newCell);
+        newCell.roomOwner = this;
+    }
+
 
 
     public void UpdateCellData()

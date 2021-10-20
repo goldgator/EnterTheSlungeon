@@ -32,6 +32,7 @@ public class CellUI : MonoBehaviour
     public void UpdateColor()
     {
         if (cellData.roomOwner.roomType == RoomData.RoomType.Boss) background.color = Color.red;
+        if (cellData.roomOwner.roomType == RoomData.RoomType.Item) background.color = Color.cyan;
         if (cellData.cellObject.GetRoom().Completed) background.color = Color.green;
     }
 

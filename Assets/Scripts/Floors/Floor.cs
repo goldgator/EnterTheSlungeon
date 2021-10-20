@@ -21,12 +21,14 @@ public class Floor : MonoBehaviour
 
     [Header("GenerationStats")]
     [Range(1,3)]
-    public int floorLevel;
+    public int floorLevel = 1;
+    public FloorGenerator.FloorType floorType = FloorGenerator.FloorType.Expansive;
+    public int patternSize = 7;
     public string stringSeed;
     public int seed;
-    public FloorGenerator.FloorType floorType = FloorGenerator.FloorType.Expansive;
-    public int patternSize;
     public bool debug = false;
+    private int currentGenData = 0;
+    
 
     [Header("Components")]
     public GameObject floorCanvas;
@@ -39,7 +41,7 @@ public class Floor : MonoBehaviour
     private Room bossRoom;
 
     private bool gameOver = false;
-
+    
 
     private static Floor instance;
     public static Floor Instance { get
@@ -58,6 +60,15 @@ public class Floor : MonoBehaviour
         instance = this;
     }
 
+    public void SetFloorAttributes()
+    {
+        currentGenData++;
+
+        floorLevel = FloorGenerator.floorGenSequence[currentGenData].floorLevel;
+        floorType = FloorGenerator.floorGenSequence[currentGenData].floorType;
+        patternSize = FloorGenerator.floorGenSequence[currentGenData].patternSize;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,9 +76,10 @@ public class Floor : MonoBehaviour
         //Debug.Log(generatedFloor.FloorSize);
     }
 
+    static bool seeded = false;
     private void StartFloor()
     {
-        bool seeded = SetRandomSeed();
+        if (floorLevel == 1) seeded = SetRandomSeed();
         if (generatedFloor == null) generatedFloor = FloorGenerator.GenerateFloor(floorType, patternSize, seeded);
         InstantiateFloor();
     }
@@ -107,10 +119,10 @@ public class Floor : MonoBehaviour
         }
 
         //Check if game won
-        if (bossRoom.Completed)
+        /*if (bossRoom.Completed)
         {
             OnFloorFinish();
-        }
+        }*/
 
         if (gameOver)
         {

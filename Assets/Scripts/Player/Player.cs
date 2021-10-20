@@ -30,11 +30,23 @@ public class Player : MonoBehaviour
     private Vector3 lastMoveDir;
     private Vector3 velocity;
 
-    public static Player Instance { get; set; }
+
+    private const string PLAYER_PATH = "Prefabs/Player/Player";
+    private static Player instance;
+    public static Player Instance { get { 
+            if (instance == null)
+            {
+                GameObject newPlayer = Instantiate(Resources.Load<GameObject>(PLAYER_PATH));
+                return newPlayer.GetComponent<Player>();
+            }
+
+            return instance;
+        }
+    }
 
     private void Awake()
     {
-        Instance = this;
+        instance = this;
         stats = GetComponent<StatBlock>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -42,10 +54,12 @@ public class Player : MonoBehaviour
         playerHealth = GetComponent<Health>();
         weaponManager = GetComponentInChildren<WeaponManager>();
 
-        InstantiateGuns();
+        //Ensure player info carries to future floors
+        DontDestroyOnLoad(gameObject);
     }
     private void Start()
     {
+        InstantiateGuns();
         InputManager.Instance.dodgeStartEvent += Dodge;
     }
 

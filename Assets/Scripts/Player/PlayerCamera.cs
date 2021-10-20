@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerCamera : MonoBehaviour
 {
@@ -28,7 +29,26 @@ public class PlayerCamera : MonoBehaviour
     public static PlayerCamera Instance { get; set; }
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        } else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
+
+
+
+    private void InstantiateFocus()
+    {
+        if (cameraFocus == null) cameraFocus = Instantiate(new GameObject(), target.position, Quaternion.identity).transform;
+        cameraFocus.localPosition = new Vector3(0, 0, -20);
+        transform.position = cameraFocus.position;
+
+        DontDestroyOnLoad(cameraFocus.gameObject);
     }
 
     // Start is called before the first frame update
@@ -37,9 +57,7 @@ public class PlayerCamera : MonoBehaviour
         camera = GetComponent<Camera>();
         GetScreenWorldSize();
         if (target == null) target = Player.Instance.transform;
-        if (cameraFocus == null) cameraFocus = Instantiate(new GameObject(), target.position, Quaternion.identity).transform;
-        cameraFocus.localPosition = new Vector3(0, 0, -20);
-        transform.position = cameraFocus.position;
+        InstantiateFocus();
         GetNewBounds();
     }
 

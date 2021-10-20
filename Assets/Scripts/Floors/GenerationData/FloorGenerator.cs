@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Newtonsoft.Json;
-
+using System;
 
 public static class FloorGenerator
 {
@@ -13,6 +13,28 @@ public static class FloorGenerator
         Tight,
         ConstrainedExpansive
     }
+
+    [Serializable]
+    public struct FloorGenData
+    {
+        public int floorLevel;
+        public int patternSize;
+        public FloorType floorType;
+
+        public FloorGenData(int newLevel, int newSize, FloorType newType)
+        {
+            floorLevel = newLevel;
+            patternSize = newSize;
+            floorType = newType;
+        }
+    }
+
+    //First one is default, values in inspector will take priority
+    public static FloorGenData[] floorGenSequence = {
+            new FloorGenData(1, 7, FloorType.Expansive),
+            new FloorGenData(2, 7, FloorType.Tight),
+            new FloorGenData(3, 7, FloorType.ConstrainedExpansive)
+        };
 
     public static FloorData GenerateFloor(FloorType floorType, int patternSize, bool seeded)
     {
@@ -68,9 +90,11 @@ public static class FloorGenerator
         floorData.UpdateOriginalPositions();
 
         //Shuffle rooms in floor Data
-        RoomData lastShuffledRoom = floorData.Shuffle(5, 4);
-        //Set last shuffled room as the entry rooms
-        lastShuffledRoom.roomType = RoomData.RoomType.Entry;
+        //Old return not needed anymore
+        floorData.Shuffle(5, 4);
+
+        //Assign roomTypes
+        floorData.AssignRoomTypes();
 
         //Sprinkle rooms
         int sprinkleAmount = (int)(patternSize * .8f);
@@ -92,9 +116,11 @@ public static class FloorGenerator
         floorData.UpdateOriginalPositions();
 
         //Shuffle rooms in floor Data
-        RoomData lastShuffledRoom = floorData.Shuffle(5, 4);
-        //Set last shuffled room as the entry rooms
-        lastShuffledRoom.roomType = RoomData.RoomType.Entry;
+        //Old return not needed anymore
+        floorData.Shuffle(5, 4);
+
+        //Set room assignments
+        floorData.AssignRoomTypes();
 
         //Sprinkle rooms
         int sprinkleAmount = (int)(patternSize * .5f);
@@ -143,7 +169,7 @@ public static class FloorGenerator
         AssignDoors(roomData);
 
         //Roll a chance to combine rooms into a large room
-        if (RNGManager.GetWorldRand(0, 100) < 30)
+        if (RNGManager.GetWorldRand(0, 100) < 40)
         {
             Debug.Log("Attempting big room");
             AddBigRoom(roomData);
@@ -369,6 +395,8 @@ public static class FloorGenerator
             }
         }
     }
+
+    
 
     public static RoomData RoomAtPos(this List<RoomData> roomData, Vector2 position)
     {

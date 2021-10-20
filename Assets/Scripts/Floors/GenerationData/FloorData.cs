@@ -5,6 +5,7 @@ using UnityEngine;
 public class FloorData
 {
     public List<RoomData> roomData;
+    private List<RoomData> roomInteractOrder;
     public List<ResourceData> resourceData;
     public CellType[,] cells;
     public List<Vector2> originalSpots = new List<Vector2>();
@@ -228,6 +229,10 @@ public class FloorData
         //If reached this point, all cells are valid, Shift cells
         room.ShiftCells(offset);
 
+        //Move in front of interact order
+        int index = roomInteractOrder.FindIndex(ctx => ctx == room);
+        roomInteractOrder.MoveIndexToFront(index);
+
         return true;
     }
 
@@ -258,10 +263,60 @@ public class FloorData
 
                 cells[(int)cell.position.x, (int)cell.position.y] = CellType.Visited;
             }
+
+            //Move in front of interact order
+            int index = roomInteractOrder.FindIndex(ctx => ctx == room);
+            roomInteractOrder.MoveIndexToFront(index);
         }
 
         //Was able to move the full distance
         return true;
+    }
+
+    public void AssignRoomTypes()
+    {
+        //Assign item room (last single room thats not boss room in interact order)
+        RoomData itemRoom = roomInteractOrder.FindLast(ctx => ctx.cellData.Count == 1 && ctx.roomType != RoomData.RoomType.Boss);
+        itemRoom.roomType = RoomData.RoomType.Item;
+
+        //Assign Entry room, (first room in interact order)
+        if (roomInteractOrder[0].cellData.Count > 1)
+        {
+            //if first room is a big room, split the room, save the cell to find the old entry position
+            Debug.Log("Split Big room");
+            CellData startCell = roomInteractOrder[0].cellData[0];
+            SplitBigRoom(roomInteractOrder[0]);
+            startCell.roomOwner.roomType = RoomData.RoomType.Entry;
+            RandomRetreat(startCell.roomOwner, 3);
+        } else
+        {
+            roomInteractOrder[0].roomType = RoomData.RoomType.Entry;
+        }
+
+
+    }
+
+    private void SplitBigRoom(RoomData bigRoom)
+    {
+        //Grab all of the old cells
+        List<CellData> oldCells = new List<CellData>(bigRoom.cellData);
+
+        //Remove bigroom from previous data
+        int prevIndex1 = roomData.IndexOf(bigRoom);
+        roomData.RemoveAt(prevIndex1);
+
+        int prevIndex2 = roomInteractOrder.IndexOf(bigRoom);
+        roomInteractOrder.RemoveAt(prevIndex2);
+
+        //Create a room for each cell created
+        foreach(CellData cell in oldCells)
+        {
+            //cell.openings.AddRange(cell.siblings);
+            cell.siblings.Clear();
+            RoomData newRoom = new RoomData(RoomData.RoomType.Generic, cell);
+            roomData.Insert(prevIndex1, newRoom);
+            roomInteractOrder.Insert(prevIndex2, newRoom);
+        }
     }
     #endregion
 
@@ -273,6 +328,9 @@ public class FloorData
     /// <param name="maxPush"> Must be >0 </param>
     public RoomData Shuffle(int maxVisits, int maxPush)
     {
+        //Keep track of room shuffle order
+        roomInteractOrder = new List<RoomData>(roomData);
+
         //Select the first room (room connected to boss)
         RoomData currentRoom = roomData[1];
 

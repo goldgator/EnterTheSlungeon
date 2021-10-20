@@ -44,6 +44,11 @@ public static class RNGManager
         return itemRand.Next(min, max);
     }
 
+    public static float GetItemRand(float min, float max)
+    {
+        return (float) itemRand.NextDouble() * (max - min) + min;
+    }
+
     public static int GetEventRand(int min, int max)
     {
         return eventRand.Next(min, max);

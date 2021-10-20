@@ -45,6 +45,11 @@ public class Room : MonoBehaviour
         get { return myRoomData.GetGridSize(); }
     }
 
+    private void Start()
+    {
+        if (myRoomData.roomType == RoomData.RoomType.Entry) TakePlayer();
+    }
+
     public void InstantiateRoom(RoomData roomData)
     {
         myRoomData = roomData;

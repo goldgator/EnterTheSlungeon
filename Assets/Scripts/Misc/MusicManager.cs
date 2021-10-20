@@ -12,7 +12,13 @@ public class MusicManager : MonoBehaviour
     public static MusicManager Instance { get; set; }
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        } else
+        {
+            Destroy(gameObject);
+        }
     }
     private void Start()
     {

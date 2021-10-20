@@ -152,6 +152,12 @@ public static class Utilities
         return new Vector2(x,y);
     }
 
+    public static void MoveIndexToFront<T>(this List<T> list, int index)
+    {
+        T item = list[index];
+        list.RemoveAt(index);
+        list.Insert(0, item);
+    }
 
 }
 
