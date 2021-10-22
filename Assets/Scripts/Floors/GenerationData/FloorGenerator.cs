@@ -98,7 +98,8 @@ public static class FloorGenerator
 
         //Sprinkle rooms
         int sprinkleAmount = (int)(patternSize * .8f);
-        floorData.AddSprinkleRooms2(sprinkleAmount);
+        floorData.AddSprinkleRooms(sprinkleAmount);
+        floorData.AddMineRoom();
 
         //Assign Room Contents
 
@@ -124,7 +125,8 @@ public static class FloorGenerator
 
         //Sprinkle rooms
         int sprinkleAmount = (int)(patternSize * .5f);
-        floorData.AddSprinkleRooms2(sprinkleAmount);
+        floorData.AddSprinkleRooms(sprinkleAmount);
+        floorData.AddMineRoom();
 
         //Assign Room Contents
 
@@ -187,8 +189,8 @@ public static class FloorGenerator
     {
         //TODO add L rooms
 
-        //Chose random room and take the cell
-        RoomData baseRoom = roomData[RNGManager.GetWorldRand(0, roomData.Count)];
+        //Chose random room and take the cell (exluding boss room)
+        RoomData baseRoom = roomData[RNGManager.GetWorldRand(1, roomData.Count)];
         CellData baseCell = baseRoom.cellData[0];
 
         //Randomly determine how many extra cells there will be

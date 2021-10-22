@@ -73,7 +73,6 @@ public class Floor : MonoBehaviour
     void Start()
     {
         StartFloor();
-        //Debug.Log(generatedFloor.FloorSize);
     }
 
     static bool seeded = false;

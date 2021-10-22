@@ -9,7 +9,7 @@ public class RoomData
         Generic,
         Boss,
         Entry,
-        Drill,
+        Mine,
         Item
     }
     
@@ -27,8 +27,8 @@ public class RoomData
                     return "BOSS";
                 case RoomType.Entry:
                     return "ENTRY";
-                case RoomType.Drill:
-                    return "DRILL";
+                case RoomType.Mine:
+                    return "MINE";
                 case RoomType.Item:
                     return "ITEM";
                 default:

@@ -8,17 +8,18 @@ public class FloorUI : MonoBehaviour
 {
     
     private FloorData floorData;
-    private GridLayout gridLayout;
+    private GridLayoutGroup gridLayout;
     private RectTransform rectTransform;
 
     private List<CellUI> cellUIs = new List<CellUI>();
     private List<GameObject> blankCells = new List<GameObject>();
+    private List<Image> patternImages = new List<Image>();
 
     // Start is called before the first frame update
     private void OnEnable()
     {
         if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
-        if (gridLayout == null) gridLayout = GetComponent<GridLayout>();
+        if (gridLayout == null) gridLayout = GetComponent<GridLayoutGroup>();
         //Adjust parent size
         RectTransform parent = ((RectTransform)transform.parent);
         parent.sizeDelta = new Vector2(Screen.width * .9f, Screen.height *.9f);
@@ -33,9 +34,18 @@ public class FloorUI : MonoBehaviour
     
     private void InstantiateUI()
     {
+        FixScale();
+        CreateCells();
+        AddStaticImages();
+    }
+
+    private void FixScale()
+    {
         //Change width and height of rectTransform based on floor size
-        Vector2 floorSize = floorData.FloorSize;
-        rectTransform.sizeDelta = floorSize * 100;
+        Vector2 floorSize = floorData.FloorSize * 100;
+        floorSize.x += gridLayout.padding.left + gridLayout.padding.right;
+        floorSize.y += gridLayout.padding.top + gridLayout.padding.bottom;
+        rectTransform.sizeDelta = floorSize;
 
         //Change scale to maximize screenspace
         //Choose smallest scale between each axis, so it doesn't expand too much.
@@ -48,7 +58,8 @@ public class FloorUI : MonoBehaviour
         {
             float targetSize = parentTransform.sizeDelta.x * .9f;
             newScale = targetSize / rectTransform.sizeDelta.x;
-        } else
+        }
+        else
         {
             float targetSize = parentTransform.sizeDelta.y * .9f;
             newScale = targetSize / rectTransform.sizeDelta.y;
@@ -56,8 +67,12 @@ public class FloorUI : MonoBehaviour
 
         //Debug.Log(newScale);
         rectTransform.localScale = new Vector3(newScale, newScale, newScale);
+    }
 
+    private void CreateCells()
+    {
         //Iterate through each cell from bottom left, starting on rows
+        Vector2 floorSize = floorData.FloorSize;
         CellUI cellPrefab = Resources.Load<GameObject>("Prefabs/UI/CellUI").GetComponent<CellUI>();
         GameObject blankCellPrefab = Resources.Load<GameObject>("Prefabs/UI/BlankCellUI");
 
@@ -66,7 +81,7 @@ public class FloorUI : MonoBehaviour
             for (int x = 0; x < floorSize.x; x++)
             {
                 //If position has cell
-                CellData cell = floorData.CellDataAtPos(new Vector2(x,y));
+                CellData cell = floorData.CellDataAtPos(new Vector2(x, y));
                 if (cell != null)
                 {
                     //Place RoomUI
@@ -81,20 +96,35 @@ public class FloorUI : MonoBehaviour
                     //Place blank roomUI
                     GameObject newBlankCell = Instantiate(blankCellPrefab, rectTransform);
                     blankCells.Add(newBlankCell);
-                    if (Floor.Instance.IsOriginalPosition(new Vector2(x,y)))
-                    {
-                        newBlankCell.GetComponent<Image>().color = Color.red;
-                    }
-                    else
-                    {
-                        newBlankCell.GetComponent<Image>().color = Color.gray;
-                    }
+                    newBlankCell.GetComponent<Image>().color = Color.gray;
+                    
                 }
             }
         }
 
-        GameObject newSelectObject = Instantiate(Resources.Load<GameObject>("Prefabs/UI/CellSelect"), transform);
-        //newSelectObject.GetComponent<CellSelect>().floorUI = this;
+        Instantiate(Resources.Load<GameObject>("Prefabs/UI/CellSelect"), transform);
+    }
+
+    private void AddStaticImages()
+    {
+        for (int i = 1; i < floorData.originalSpots.Count; i++)
+        {
+            //Create an image for each pattern pos in floorData
+            Image newImage = new GameObject().AddComponent<Image>();
+            Color newColor = new Color(1, 0, 0, .6f);
+            newImage.color = newColor;
+            patternImages.Add(newImage);
+
+            newImage.transform.SetParent(GetCellUIAtPos(floorData.originalSpots[i]).transform, false);
+        }
+    }
+
+    private void UpdateStaticImages()
+    {
+        for (int i = 1; i < floorData.originalSpots.Count; i++)
+        {
+            patternImages[i-1].transform.SetParent(GetCellUIAtPos(floorData.originalSpots[i]).transform, false);
+        }
     }
 
     public GameObject GetCellUIAtPos(Vector2 position)
@@ -119,6 +149,12 @@ public class FloorUI : MonoBehaviour
     public void UpdateUI()
     {
         //Order the cellUIs based on child index
+        UpdateCellPos();
+        UpdateStaticImages();
+    }
+
+    private void UpdateCellPos()
+    {
         cellUIs = cellUIs.OrderBy(ctx => CellPosToChildIndex(ctx.GetCellPos())).ToList();
 
         int cellIndex = 0;
@@ -136,64 +172,27 @@ public class FloorUI : MonoBehaviour
                     int childInd = CellPosToChildIndex(position);
                     cellUIs[cellIndex].transform.SetSiblingIndex(childInd);
                     cellIndex++;
-                } else
-                {
-                    int childInd = CellPosToChildIndex(position);
-                    blankCells[blankIndex].transform.SetSiblingIndex(childInd);
-
-                    if (Floor.Instance.IsOriginalPosition(position))
-                    {
-                        blankCells[blankIndex].GetComponent<Image>().color = Color.red;
-                    } else
-                    {
-                        blankCells[blankIndex].GetComponent<Image>().color = Color.gray;
-                    }
-
-                    blankIndex++;
-                }
-            }
-        }
-    }
-
-
-    public IEnumerator UpdateUITest()
-    {
-        cellUIs.OrderBy(ctx => CellPosToChildIndex(ctx.GetCellPos()));
-
-        int cellIndex = 0;
-        int blankIndex = 0;
-
-        bool fullContinue = false;
-        //bool pressedBefore = false;
-        for (int y = 0; y < floorData.FloorSize.y; y++)
-        {
-            for (int x = 0; x < floorData.FloorSize.x; x++)
-            {
-                Vector2 position = new Vector2(x, y);
-                bool hasCell = floorData.HasRoomAtPos(position);
-
-                if (hasCell)
-                {
-                    int childInd = CellPosToChildIndex(position);
-                    cellUIs[cellIndex].transform.SetSiblingIndex(childInd);
-                    cellIndex++;
                 }
                 else
                 {
                     int childInd = CellPosToChildIndex(position);
                     blankCells[blankIndex].transform.SetSiblingIndex(childInd);
+
+                    /*if (Floor.Instance.IsOriginalPosition(position))
+                    {
+                        blankCells[blankIndex].GetComponent<Image>().color = Color.red;
+                    }
+                    else
+                    {
+                        blankCells[blankIndex].GetComponent<Image>().color = Color.gray;
+                    }*/
+
                     blankIndex++;
                 }
-
-                fullContinue = (InputManager.Instance.Dodge || fullContinue);
-
-                /*bool stepContinue = (!pressedBefore && InputManager.Instance.Fire);
-                pressedBefore = (InputManager.Instance.Fire);*/
-
-                while (!InputManager.Instance.baseControls.Controls.Fire.triggered && !fullContinue) yield return null;
-
-                
             }
         }
     }
+
+
+
 }

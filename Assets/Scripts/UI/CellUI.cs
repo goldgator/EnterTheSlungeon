@@ -11,6 +11,8 @@ public class CellUI : MonoBehaviour
     public Sprite doorSprite;
     private CellData cellData;
 
+    private string ICON_PATH = "Textures/Icons/";
+
 
     public void InstantiateCellUI(CellData cell)
     {
@@ -27,12 +29,52 @@ public class CellUI : MonoBehaviour
             if (cellData.HasConnDir(currentDir)) wallImages[i].sprite = doorSprite;
             if (cellData.HasSibDir(currentDir)) wallImages[i].gameObject.SetActive(false);
         }
+
+        AddIcon();
+    }
+
+    public void ColorWalls(Color newColor)
+    {
+        foreach(Image image in wallImages)
+        {
+            image.color = newColor;
+        }
+    }
+
+    private void AddIcon()
+    {
+        RoomData.RoomType type = cellData.roomOwner.roomType;
+
+        Sprite icon = Resources.Load<Sprite>(ICON_PATH + type.ToString());
+
+        if (icon == null) return;
+
+        GameObject newObject = new GameObject();
+        Image newImage = newObject.AddComponent<Image>();
+        newObject.transform.SetParent(transform, false);
+
+        newImage.sprite = icon;
+        newImage.rectTransform.sizeDelta = new Vector2(60, 60);
+
+        //Setting icon color
+        switch (type)
+        {
+            case RoomData.RoomType.Boss:
+                newImage.color = Color.blue;
+                break;
+            case RoomData.RoomType.Mine:
+                newImage.color = Color.magenta;
+                break;
+            case RoomData.RoomType.Item:
+                newImage.color = Color.yellow;
+                break;
+        }
     }
 
     public void UpdateColor()
     {
         if (cellData.roomOwner.roomType == RoomData.RoomType.Boss) background.color = Color.red;
-        if (cellData.roomOwner.roomType == RoomData.RoomType.Item) background.color = Color.cyan;
+        //if (cellData.roomOwner.roomType == RoomData.RoomType.Item) background.color = Color.cyan;
         if (cellData.cellObject.GetRoom().Completed) background.color = Color.green;
     }
 

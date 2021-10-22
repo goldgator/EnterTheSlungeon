@@ -10,6 +10,7 @@ public class FloorData
     public CellType[,] cells;
     public List<Vector2> originalSpots = new List<Vector2>();
     public FloorGenerator.FloorType floorType;
+    private int sprinkleRoomsAdded = 0;
 
     public Vector2 roomMin;
     public Vector2 roomMax;
@@ -120,7 +121,7 @@ public class FloorData
         while (randDir4 == randDir1 || randDir4 == randDir2 || randDir4 == randDir3) randDir4 = Utilities.GetRelativeDir(randDir4, 1);
 
         //Expand each direction until volume is at least 6 times the starting room count
-        while (FloorVolume < (roomData.Count * 6))
+        while (FloorVolume < (roomData.Count * 5.5))
         {
             ExpandInDirection(randDir3, 1);
 
@@ -165,7 +166,7 @@ public class FloorData
         } while (randDir2 == randDir1);
 
         //Expand each direction until volume is at least 2.5 times the starting room count
-        while (FloorVolume < (roomData.Count * 2.5))
+        while (FloorVolume < (roomData.Count * 3))
         {
             ExpandInDirection(randDir1, 1);
 
@@ -986,61 +987,8 @@ public class FloorData
     #endregion
 
     #region Sprinkle rooms
+    
     public void AddSprinkleRooms(int amount)
-    {
-        //Find all spaces a sprinkle room can be placed
-        List<Vector2> possibleSpots = new List<Vector2>();
-        for (int i = 0; i < cells.GetLength(0); i++)
-        {
-            for (int j = 0; j < cells.GetLength(1); j++)
-            {
-                if (cells[i, j] == CellType.Unvisited) possibleSpots.Add(new Vector2(i, j));
-            }
-        }
-
-        //loop while there are spots in the list and haven't made enough rooms
-        
-        int roomCount = 0;
-        while (possibleSpots.Count > 0 && roomCount < amount)
-        {
-            //Choose random spot
-            Vector2 spot = possibleSpots[RNGManager.GetWorldRand(0, possibleSpots.Count)];
-
-            //Remove from list
-            possibleSpots.Remove(spot);
-
-            //Create a list of all possible openings
-            List<CardinalDir> possibleOpenings = new List<CardinalDir>();
-            for (int i = 0; i < 4; i++)
-            {
-                CardinalDir currentDir = (CardinalDir)i;
-
-                if (IsValidPosition(spot + Utilities.CardinalDirToVector2(currentDir)))
-                {
-                    possibleOpenings.Add(currentDir);
-                }
-            }
-
-            //If no openings, remove from list and continue loop
-            if (possibleOpenings.Count <= 0) continue;
-
-            //Shuffle list
-            possibleOpenings.OrderBy(a => RNGManager.GetWorldRand());
-
-            //Remove a random amount from [0->(count-1)]
-            possibleOpenings.RemoveRange(0, RNGManager.GetWorldRand(0, possibleOpenings.Count));
-
-            //Create a room
-            RoomData room = new RoomData(RoomData.RoomType.Generic, spot);
-            roomData.Add(room);
-
-            //Add openings to its cell
-            room.cellData[0].openings = possibleOpenings;
-            roomCount++;
-        }
-    }
-
-    public void AddSprinkleRooms2(int amount)
     {
         //Grab all rooms besides boss room
         List<RoomData> roomLoop = new List<RoomData>();
@@ -1051,11 +999,10 @@ public class FloorData
 
         //Try to add a shuffle room to each room one at a time
         int roomsAdded = 0;
-        bool loopWorked = false;
         List<CardinalDir> dirs;
         foreach (RoomData room in roomLoop)
         {
-            loopWorked = false;
+            if (roomsAdded >= amount) break;
             //Do for each cell
             foreach (CellData cell in room.cellData)
             {
@@ -1065,47 +1012,119 @@ public class FloorData
                 //shuffle openings
                 dirs.OrderBy(ctx => RNGManager.GetWorldRand());
 
+
                 //Try to add shuffle room in a direction
+                List<Vector2> goodPositions = new List<Vector2>();
+                CardinalDir goodDir = CardinalDir.North;
                 foreach(CardinalDir dir in dirs)
                 {
-                    Vector2 position = cell.position;
+                    goodDir = dir;
+                    Vector2 checkPos = cell.position;
                     Vector2 checkVec = Utilities.CardinalDirToVector2(dir);
 
-                    position += checkVec;
-
-                    //Check if slot has a room already, continue if so
-                    if (HasRoomAtPos(position)) continue;
-
-                    //Check if unvisited
-                    if (CheckCellState(CellType.Unvisited, position))
+                    do
                     {
-                        //Place shuffle room with corresponding dir, and potentially other random ones
-                        RoomData newRoom = new RoomData(RoomData.RoomType.Generic, position);
+                        checkPos += checkVec;
 
-                        CellData newCell = newRoom.cellData[0];
-                        newCell.openings.Add(Utilities.GetRelativeDir(dir, 2));
+                        if (checkPos.x < 0 || checkPos.x >= FloorSize.x) break;
+                        if (checkPos.y < 0 || checkPos.y >= FloorSize.y) break;
 
-                        //Try to add every opening with a 50% chance
-                        for (int i = 0; i < 4; i++)
+                        //Check if unvisited
+                        if (CheckCellState(CellType.Unvisited, checkPos))
                         {
-                            CardinalDir newDir = (CardinalDir)i;
-                            bool doesAdd = RNGManager.GetWorldRand(0,2) == 1;
-                            if (doesAdd && !newCell.HasConnDir(newDir)) newCell.openings.Add(newDir);
+                            //Add spot to sprinkle room list
+                            goodPositions.Add(checkPos);
                         }
 
-                        roomData.Add(newRoom);
-                        roomsAdded++;
-                        loopWorked = true;
-                        break;
-                    }
+                    } while (!HasRoomAtPos(checkPos));
 
-                    if (loopWorked) break;
+                    if (goodPositions.Count > 0) break;
                 }
 
-                if (roomsAdded >= amount) break;
+                //if found good positions, choose a random one out of the list
+                if (goodPositions.Count == 0) continue;
+                Vector2 position = goodPositions[RNGManager.GetWorldRand(0, goodPositions.Count)];
+
+                //Place shuffle room with corresponding dir, and potentially other random ones
+                RoomData newRoom = new RoomData(RoomData.RoomType.Generic, position);
+
+                CellData newCell = newRoom.cellData[0];
+                newCell.openings.Add(Utilities.GetRelativeDir(goodDir, 2));
+
+                //Try to add every opening with a 50% chance
+                for (int i = 0; i < 4; i++)
+                {
+                    CardinalDir newDir = (CardinalDir)i;
+                    bool doesAdd = RNGManager.GetWorldRand(0, 2) == 1;
+                    if (doesAdd && !newCell.HasConnDir(newDir)) newCell.openings.Add(newDir);
+                }
+
+                roomData.Add(newRoom);
+                roomsAdded++;
+                break;
             }
         }
 
+        sprinkleRoomsAdded = roomsAdded;
+    }
+    #endregion
+
+    #region Misc
+    public void AddMineRoom()
+    {
+        //Get a list of all successfully added sprinkle rooms (back of the roomData list)
+        List<RoomData> sprinkleRooms = roomData.GetRange(roomData.Count - sprinkleRoomsAdded, sprinkleRoomsAdded);
+        //Find the room with the most connected unvisited cells within a radius of 3
+        RoomData mineRoom = sprinkleRooms.OrderByDescending(ctx => CountConnectedCells(CellType.Unvisited, ctx.cellData[0].position, 3)).FirstOrDefault();
+
+        mineRoom.roomType = RoomData.RoomType.Mine;
+    }
+
+    private int CountConnectedCells(CellType cellType, Vector2 startPos, int stepCount)
+    {
+        List<Vector2> countedCells = new List<Vector2>();
+        int count = 0;
+        
+        for (int i = 0; i < 4; i++)
+        {
+            CardinalDir dir = (CardinalDir)i;
+            Vector2 newPos = startPos + Utilities.CardinalDirToVector2(dir);
+            count += CountConnectedCells(cellType, newPos, stepCount, 0, countedCells);
+        }
+
+        return count;
+    }
+
+    private int CountConnectedCells(CellType cellType, Vector2 currentPos, int stepCount, int currentStep, List<Vector2> countedCells)
+    {
+        //increment step, and return 0 if over stepCount
+        currentStep++;
+        if (currentStep > stepCount) return 0;
+
+        //Check cellState
+        bool state = CheckCellState(cellType, currentPos);
+
+        //if true, call method in every dir and add up totals
+        if (state)
+        {
+            int count = 1;
+            countedCells.Add(currentPos);
+            for (int i = 0; i < 4; i++)
+            {
+                CardinalDir dir = (CardinalDir)i;
+                Vector2 newPos = currentPos + Utilities.CardinalDirToVector2(dir);
+                //continue of position is in counted cells
+                if (countedCells.Contains(newPos)) continue;
+
+                count += CountConnectedCells(cellType, newPos, stepCount, currentStep, countedCells);
+            }
+            return count;
+        } else
+        {
+            return 0;
+        }
+
+        
     }
     #endregion
 
