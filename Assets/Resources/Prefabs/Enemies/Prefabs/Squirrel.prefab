@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 3703142487900455237}
   - component: {fileID: -4007178114014732358}
   - component: {fileID: 7497831369302546803}
+  - component: {fileID: 5605732546338420414}
   m_Layer: 8
   m_Name: Squirrel
   m_TagString: Untagged
@@ -107,6 +108,7 @@ MonoBehaviour:
   attackCooldown: 1
   attackSound: {fileID: 8300000, guid: 303d44c8d6ec943a38df8ec10b19d9c7, type: 3}
   deathFX: SquirrelDeath
+  flipSprite: 0
   hasAttack: 1
 --- !u!114 &8954729865920170510
 MonoBehaviour:
@@ -127,21 +129,6 @@ MonoBehaviour:
   regenAmount: 1
   parentHealth: {fileID: 0}
   parentAddHealth: 0
-  deathEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8954729865920170511}
-        m_TargetAssemblyTypeName: BaseEnemy, Assembly-CSharp
-        m_MethodName: Death
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   subEventThreshold: 0
   subtractEvent:
     m_PersistentCalls:
@@ -325,3 +312,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &5605732546338420414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8954729865920170506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36d5e818ff954a94386d60c0081028ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quartzPrefab: {fileID: 2284714550500931354, guid: 3ae79b1c832a6e24fa97549bb096e3b1, type: 3}
+  quartzMin: 1
+  quartzMax: 3
+  uniformDrop: 1

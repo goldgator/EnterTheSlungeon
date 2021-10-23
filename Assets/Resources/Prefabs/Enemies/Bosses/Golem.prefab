@@ -707,6 +707,7 @@ GameObject:
   - component: {fileID: 5702017989284875081}
   - component: {fileID: 5702017989284875086}
   - component: {fileID: 2786933211979133345}
+  - component: {fileID: 5912133988542408185}
   - component: {fileID: 6827554257619136191}
   - component: {fileID: 1736930308777253907}
   m_Layer: 8
@@ -801,6 +802,7 @@ MonoBehaviour:
   attackCooldown: 2
   attackSound: {fileID: 8300000, guid: 4808a661b3872c84087d1c3c08e636a7, type: 3}
   deathFX: GolemDeath
+  flipSprite: 0
   laserSound: {fileID: 8300000, guid: b47937426fd334cbb9bcd463e67e5744, type: 3}
   laserOrigin: {fileID: 2024583339}
   laserHitBox: {fileID: 520281578}
@@ -906,6 +908,22 @@ MonoBehaviour:
   flashMaterial: {fileID: 2100000, guid: f8e9112f0ae1ebc4cb5744a7d3e004e7, type: 2}
   flashTime: 0.05
   flashAmount: 1
+--- !u!114 &5912133988542408185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5702017989284875080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36d5e818ff954a94386d60c0081028ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quartzPrefab: {fileID: 2284714550500931354, guid: 3ae79b1c832a6e24fa97549bb096e3b1, type: 3}
+  quartzMin: 20
+  quartzMax: 25
+  uniformDrop: 0
 --- !u!82 &6827554257619136191
 AudioSource:
   m_ObjectHideFlags: 0

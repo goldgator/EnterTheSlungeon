@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IHealthDeath
 {
     [Header("Movement Stats")]
     //public float baseSpeed = 6.0f;
@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     private bool playerEnabled = true;
     private Vector3 lastMoveDir;
     private Vector3 velocity;
+    private Wallet playerWallet = new Wallet();
 
 
     private const string PLAYER_PATH = "Prefabs/Player/Player";
@@ -154,5 +155,15 @@ public class Player : MonoBehaviour
         //currentWeapon.gameObject.SetActive(true);
         currentWeapon.renderer.enabled = true;
         playerEnabled = true;
+    }
+
+    public void AddQuartz(ResourceType type, int amount)
+    {
+        playerWallet.AddQuartz(type, amount);
+    }
+
+    public void OnDeath()
+    {
+        OnPlayerDeath();
     }
 }

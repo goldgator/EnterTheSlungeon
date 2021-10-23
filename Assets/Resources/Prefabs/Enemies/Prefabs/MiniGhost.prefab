@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5702017989284875086}
   - component: {fileID: 2786933211979133345}
   - component: {fileID: 242915775873532911}
+  - component: {fileID: 4345513398842408686}
   m_Layer: 12
   m_Name: MiniGhost
   m_TagString: Untagged
@@ -127,21 +128,6 @@ MonoBehaviour:
   regenAmount: 1
   parentHealth: {fileID: 0}
   parentAddHealth: 0
-  deathEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5702017989284875085}
-        m_TargetAssemblyTypeName: BaseEnemy, Assembly-CSharp
-        m_MethodName: Death
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   subEventThreshold: 0
   subtractEvent:
     m_PersistentCalls:
@@ -229,3 +215,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &4345513398842408686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5702017989284875080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36d5e818ff954a94386d60c0081028ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quartzPrefab: {fileID: 2284714550500931354, guid: 3ae79b1c832a6e24fa97549bb096e3b1, type: 3}
+  quartzMin: 0
+  quartzMax: 1
+  uniformDrop: 1

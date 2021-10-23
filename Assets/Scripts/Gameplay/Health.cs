@@ -20,7 +20,7 @@ public class Health : MonoBehaviour
     public bool HasDied { get { return hasDied; } }
     private bool hasDied = false;
 
-    public UnityEvent deathEvent;
+    //public UnityEvent deathEvent;
 
     public float subEventThreshold = 1f;
     public UnityEvent subtractEvent;
@@ -88,9 +88,16 @@ public class Health : MonoBehaviour
 
         if (currentHealth <= 0 && !hasDied)
         {
-            deathEvent?.Invoke();
+            InvokeDeathMethods();
             hasDied = true;
         }
+    }
+
+    private void InvokeDeathMethods()
+    {
+        IHealthDeath[] healthDeaths = GetComponents<IHealthDeath>();
+
+        foreach (IHealthDeath death in healthDeaths) death.OnDeath();
     }
 
 }

@@ -6,7 +6,7 @@ public class FloorData
 {
     public List<RoomData> roomData;
     private List<RoomData> roomInteractOrder;
-    public List<ResourceData> resourceData;
+    public List<ResourceData> resourceData = new List<ResourceData>();
     public CellType[,] cells;
     public List<Vector2> originalSpots = new List<Vector2>();
     public FloorGenerator.FloorType floorType;
@@ -72,6 +72,17 @@ public class FloorData
         {
             room.UpdateCellData();
 
+            foreach (CellData cell in room.cellData)
+            {
+                cells[(int)cell.position.x, (int)cell.position.y] = CellType.Visited;
+            }
+        }
+    }
+
+    private void UpdateCellVisitState()
+    {
+        foreach (RoomData room in roomData)
+        {
             foreach (CellData cell in room.cellData)
             {
                 cells[(int)cell.position.x, (int)cell.position.y] = CellType.Visited;
@@ -1066,6 +1077,7 @@ public class FloorData
         }
 
         sprinkleRoomsAdded = roomsAdded;
+        UpdateCellVisitState();
     }
     #endregion
 
@@ -1074,13 +1086,54 @@ public class FloorData
     {
         //Get a list of all successfully added sprinkle rooms (back of the roomData list)
         List<RoomData> sprinkleRooms = roomData.GetRange(roomData.Count - sprinkleRoomsAdded, sprinkleRoomsAdded);
-        //Find the room with the most connected unvisited cells within a radius of 3
-        RoomData mineRoom = sprinkleRooms.OrderByDescending(ctx => CountConnectedCells(CellType.Unvisited, ctx.cellData[0].position, 3)).FirstOrDefault();
+        if (sprinkleRooms.Count == 0) {
+            Debug.LogError("Failed to add Mine room");
+            return;
+        };
+
+        RoomData mineRoom = sprinkleRooms[0];
+        List<Vector2> connectedCells = CountConnectedCells(CellType.Unvisited, mineRoom.cellData[0].position, 3);
+        for (int i = 1; i < sprinkleRooms.Count; i++)
+        {
+            RoomData otherRoom = sprinkleRooms[i];
+            List<Vector2> otherCells = CountConnectedCells(CellType.Unvisited, otherRoom.cellData[0].position, 3);
+
+            //Update mineRoom and connected cells if new room has more space
+            if (otherCells.Count > connectedCells.Count)
+            {
+                mineRoom = otherRoom;
+                connectedCells = otherCells;
+            }
+        }
 
         mineRoom.roomType = RoomData.RoomType.Mine;
+
+        AddResources(connectedCells);
     }
 
-    private int CountConnectedCells(CellType cellType, Vector2 startPos, int stepCount)
+    private void AddResources(List<Vector2> places)
+    {
+        if (places.Count < 2)
+        {
+            Debug.LogError("No space for resources");
+            return;
+        }
+
+        ResourceType firstType = (ResourceType)RNGManager.GetWorldRand(0, 3);
+        ResourceType secondType = (ResourceType)RNGManager.GetWorldRand(0, 3);
+        while (secondType == firstType) secondType = (ResourceType)RNGManager.GetWorldRand(0, 3);
+
+        //Assign random spot to each
+        Vector2 firstSpot = places[RNGManager.GetWorldRand(0, places.Count)];
+        places.Remove(firstSpot);
+
+        Vector2 secondSpot = places[RNGManager.GetWorldRand(0, places.Count)];
+
+        resourceData.Add(new ResourceData(firstType, firstSpot));
+        resourceData.Add(new ResourceData(secondType, secondSpot));
+    }
+
+    private List<Vector2> CountConnectedCells(CellType cellType, Vector2 startPos, int stepCount)
     {
         List<Vector2> countedCells = new List<Vector2>();
         int count = 0;
@@ -1089,17 +1142,17 @@ public class FloorData
         {
             CardinalDir dir = (CardinalDir)i;
             Vector2 newPos = startPos + Utilities.CardinalDirToVector2(dir);
-            count += CountConnectedCells(cellType, newPos, stepCount, 0, countedCells);
+            CountConnectedCells(cellType, newPos, stepCount, 0, countedCells);
         }
 
-        return count;
+        return countedCells;
     }
 
-    private int CountConnectedCells(CellType cellType, Vector2 currentPos, int stepCount, int currentStep, List<Vector2> countedCells)
+    private void CountConnectedCells(CellType cellType, Vector2 currentPos, int stepCount, int currentStep, List<Vector2> countedCells)
     {
         //increment step, and return 0 if over stepCount
         currentStep++;
-        if (currentStep > stepCount) return 0;
+        if (currentStep > stepCount) return;
 
         //Check cellState
         bool state = CheckCellState(cellType, currentPos);
@@ -1107,7 +1160,6 @@ public class FloorData
         //if true, call method in every dir and add up totals
         if (state)
         {
-            int count = 1;
             countedCells.Add(currentPos);
             for (int i = 0; i < 4; i++)
             {
@@ -1116,12 +1168,13 @@ public class FloorData
                 //continue of position is in counted cells
                 if (countedCells.Contains(newPos)) continue;
 
-                count += CountConnectedCells(cellType, newPos, stepCount, currentStep, countedCells);
+                CountConnectedCells(cellType, newPos, stepCount, currentStep, countedCells);
             }
-            return count;
+
+            return;
         } else
         {
-            return 0;
+            return;
         }
 
         

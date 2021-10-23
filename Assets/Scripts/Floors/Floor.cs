@@ -202,6 +202,14 @@ public class Floor : MonoBehaviour
     public void UpdateBossRoomState()
     {
         //Check each original spot and see if it has a cell (skip boss original spot)
+        bool patternFinished = PatternState();
+
+        //If none are empty, set the lock to false
+        bossRoom.locked = !patternFinished;
+    }
+
+    public bool PatternState()
+    {
         for (int i = 1; i < generatedFloor.originalSpots.Count; i++)
         {
             Cell cell = CellAtPos(generatedFloor.originalSpots[i]);
@@ -210,20 +218,20 @@ public class Floor : MonoBehaviour
             if (cell == null)
             {
                 bossRoom.locked = true;
-                return;
-            } else
+                return false;
+            }
+            else
             {
                 //Check if cell's room has not been completed
                 if (!cell.GetRoom().Completed)
                 {
                     bossRoom.locked = true;
-                    return;
+                    return false;
                 }
             }
         }
 
-        //If none are empty, set the lock to false
-        bossRoom.locked = false;
+        return true;
     }
 
     public Cell CurrentPlayerCell()

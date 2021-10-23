@@ -14,6 +14,11 @@ public class FloorUI : MonoBehaviour
     private List<CellUI> cellUIs = new List<CellUI>();
     private List<GameObject> blankCells = new List<GameObject>();
     private List<Image> patternImages = new List<Image>();
+    private List<Image> resourceImages = new List<Image>();
+
+    //Colors
+    Color patternColor = new Color(1, 0, 0, .6f);
+    Color patternFinishColor = new Color(0, 1, 0, .6f);
 
     // Start is called before the first frame update
     private void OnEnable()
@@ -36,7 +41,8 @@ public class FloorUI : MonoBehaviour
     {
         FixScale();
         CreateCells();
-        AddStaticImages();
+        AddPatternImages();
+        AddResourceImages();
     }
 
     private void FixScale()
@@ -105,13 +111,13 @@ public class FloorUI : MonoBehaviour
         Instantiate(Resources.Load<GameObject>("Prefabs/UI/CellSelect"), transform);
     }
 
-    private void AddStaticImages()
+    private void AddPatternImages()
     {
         for (int i = 1; i < floorData.originalSpots.Count; i++)
         {
             //Create an image for each pattern pos in floorData
-            Image newImage = new GameObject().AddComponent<Image>();
-            Color newColor = new Color(1, 0, 0, .6f);
+            Image newImage = new GameObject("PatternHighlight").AddComponent<Image>();
+            Color newColor = patternColor;
             newImage.color = newColor;
             patternImages.Add(newImage);
 
@@ -119,11 +125,36 @@ public class FloorUI : MonoBehaviour
         }
     }
 
-    private void UpdateStaticImages()
+    private void AddResourceImages()
+    {
+        for (int i = 0; i < floorData.resourceData.Count; i++)
+        {
+            //Create an image for each pattern pos in floorData
+            Image newImage = new GameObject("Resource").AddComponent<Image>();
+            newImage.sprite = Quartz.GetQuartzSprite(floorData.resourceData[i].resourceType, true);
+            newImage.rectTransform.sizeDelta = new Vector2(60, 60);
+            resourceImages.Add(newImage);
+
+            newImage.transform.SetParent(GetCellUIAtPos(floorData.resourceData[i].position).transform, false);
+        }
+    }
+
+    private void UpdatePatternImages()
     {
         for (int i = 1; i < floorData.originalSpots.Count; i++)
         {
             patternImages[i-1].transform.SetParent(GetCellUIAtPos(floorData.originalSpots[i]).transform, false);
+
+            //Set color based on floor status
+            patternImages[i - 1].color = (Floor.Instance.PatternState()) ? patternFinishColor : patternColor;
+        }
+    }
+
+    private void UpdateResourceImages()
+    {
+        for (int i = 0; i < floorData.resourceData.Count; i++)
+        {
+            resourceImages[i].transform.SetParent(GetCellUIAtPos(floorData.resourceData[i].position).transform, false);
         }
     }
 
@@ -150,7 +181,8 @@ public class FloorUI : MonoBehaviour
     {
         //Order the cellUIs based on child index
         UpdateCellPos();
-        UpdateStaticImages();
+        UpdatePatternImages();
+        UpdateResourceImages();
     }
 
     private void UpdateCellPos()

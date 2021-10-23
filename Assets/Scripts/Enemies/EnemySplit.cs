@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeathDrops : MonoBehaviour
+public class EnemySplit : MonoBehaviour
 {
     public List<GameObject> deathDrops;
     public float splitStrength = 5.0f;

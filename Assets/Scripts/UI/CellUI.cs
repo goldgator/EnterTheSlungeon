@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class CellUI : MonoBehaviour
 {
     public Image[] wallImages = new Image[4];
+    public Transform baseUI;
     public Image background;
     public Sprite wallSprite;
     public Sprite doorSprite;
@@ -49,9 +50,9 @@ public class CellUI : MonoBehaviour
 
         if (icon == null) return;
 
-        GameObject newObject = new GameObject();
+        GameObject newObject = new GameObject("Icon");
         Image newImage = newObject.AddComponent<Image>();
-        newObject.transform.SetParent(transform, false);
+        newObject.transform.SetParent(baseUI, false);
 
         newImage.sprite = icon;
         newImage.rectTransform.sizeDelta = new Vector2(60, 60);
