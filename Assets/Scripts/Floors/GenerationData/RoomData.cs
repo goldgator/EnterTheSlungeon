@@ -9,7 +9,7 @@ public class RoomData
         Generic,
         Boss,
         Entry,
-        Drill,
+        Mine,
         Item
     }
     
@@ -21,7 +21,21 @@ public class RoomData
     public string RoomContentPool {
         get
         {
-            if (roomType == RoomType.Entry) return "ENTRY";
+            switch (roomType)
+            {
+                case RoomType.Boss:
+                    return "BOSS";
+                case RoomType.Entry:
+                    return "ENTRY";
+                case RoomType.Mine:
+                    return "MINE";
+                case RoomType.Item:
+                    return "ITEM";
+                default:
+                    //do nothing
+                    break;
+            }
+
 
             if (cellData.Count == 1)
             {
@@ -79,6 +93,14 @@ public class RoomData
         {
             cell.roomOwner = this;
         }
+    }
+
+    public RoomData(RoomType newType, CellData newCell)
+    {
+        roomType = newType;
+        cellData = new List<CellData>();
+        cellData.Add(newCell);
+        newCell.roomOwner = this;
     }
 
 

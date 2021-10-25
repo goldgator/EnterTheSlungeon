@@ -21,12 +21,14 @@ public class Floor : MonoBehaviour
 
     [Header("GenerationStats")]
     [Range(1,3)]
-    public int floorLevel;
+    public int floorLevel = 1;
+    public FloorGenerator.FloorType floorType = FloorGenerator.FloorType.Expansive;
+    public int patternSize = 7;
     public string stringSeed;
     public int seed;
-    public FloorGenerator.FloorType floorType = FloorGenerator.FloorType.Expansive;
-    public int patternSize;
     public bool debug = false;
+    private int currentGenData = 0;
+    
 
     [Header("Components")]
     public GameObject floorCanvas;
@@ -39,7 +41,7 @@ public class Floor : MonoBehaviour
     private Room bossRoom;
 
     private bool gameOver = false;
-
+    
 
     private static Floor instance;
     public static Floor Instance { get
@@ -48,7 +50,7 @@ public class Floor : MonoBehaviour
             {
                 instance = FindObjectOfType<Floor>();
                 if (instance == null) return null;
-                instance.generatedFloor = FloorGenerator.GenerateFloor(instance.floorType, instance.patternSize);
+                
             }
             return instance;
         }
@@ -58,27 +60,51 @@ public class Floor : MonoBehaviour
         instance = this;
     }
 
+    public void SetFloorAttributes()
+    {
+        currentGenData++;
+
+        floorLevel = FloorGenerator.floorGenSequence[currentGenData].floorLevel;
+        floorType = FloorGenerator.floorGenSequence[currentGenData].floorType;
+        patternSize = FloorGenerator.floorGenSequence[currentGenData].patternSize;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        SetRandomSeed();
-        if (generatedFloor == null) generatedFloor = FloorGenerator.GenerateFloor(floorType, patternSize);
-        InstantiateFloor();
-        //Debug.Log(generatedFloor.FloorSize);
+        StartFloor();
     }
 
-    private void SetRandomSeed()
+    static bool seeded = false;
+    private void StartFloor()
     {
+        if (!RNGManager.instantiated) seeded = SetRandomSeed();
+        if (generatedFloor == null) generatedFloor = FloorGenerator.GenerateFloor(floorType, patternSize, seeded);
+        InstantiateFloor();
+    }
+
+    private bool SetRandomSeed()
+    {
+        bool seeded = false;
         if (stringSeed != "")
         {
             Debug.Log("Seed: " + stringSeed);
             RNGManager.SetSeed(stringSeed, true);
+            seeded = true;
         } else
         {
-            if (seed == 0) seed = Random.Range(0, int.MaxValue);
+            if (seed == 0) {
+                seed = Random.Range(0, int.MaxValue);
+            } else
+            {
+                seeded = true;
+            }
             Debug.Log("Seed: " + seed);
             RNGManager.SetSeed(seed, true);
         }
+
+        RNGManager.instantiated = true;
+        return seeded;
     }
 
     private void Update()
@@ -93,10 +119,10 @@ public class Floor : MonoBehaviour
         }
 
         //Check if game won
-        if (bossRoom.Completed)
+        /*if (bossRoom.Completed)
         {
             OnFloorFinish();
-        }
+        }*/
 
         if (gameOver)
         {
@@ -177,6 +203,14 @@ public class Floor : MonoBehaviour
     public void UpdateBossRoomState()
     {
         //Check each original spot and see if it has a cell (skip boss original spot)
+        bool patternFinished = PatternState();
+
+        //If none are empty, set the lock to false
+        bossRoom.locked = !patternFinished;
+    }
+
+    public bool PatternState()
+    {
         for (int i = 1; i < generatedFloor.originalSpots.Count; i++)
         {
             Cell cell = CellAtPos(generatedFloor.originalSpots[i]);
@@ -185,20 +219,20 @@ public class Floor : MonoBehaviour
             if (cell == null)
             {
                 bossRoom.locked = true;
-                return;
-            } else
+                return false;
+            }
+            else
             {
                 //Check if cell's room has not been completed
                 if (!cell.GetRoom().Completed)
                 {
                     bossRoom.locked = true;
-                    return;
+                    return false;
                 }
             }
         }
 
-        //If none are empty, set the lock to false
-        bossRoom.locked = false;
+        return true;
     }
 
     public Cell CurrentPlayerCell()

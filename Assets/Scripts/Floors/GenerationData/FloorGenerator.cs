@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Newtonsoft.Json;
+using System;
 
 public static class FloorGenerator
 {
@@ -12,7 +14,29 @@ public static class FloorGenerator
         ConstrainedExpansive
     }
 
-    public static FloorData GenerateFloor(FloorType floorType, int patternSize)
+    [Serializable]
+    public struct FloorGenData
+    {
+        public int floorLevel;
+        public int patternSize;
+        public FloorType floorType;
+
+        public FloorGenData(int newLevel, int newSize, FloorType newType)
+        {
+            floorLevel = newLevel;
+            patternSize = newSize;
+            floorType = newType;
+        }
+    }
+
+    //First one is default, values in inspector will take priority
+    public static FloorGenData[] floorGenSequence = {
+            new FloorGenData(1, 7, FloorType.Expansive),
+            new FloorGenData(2, 7, FloorType.Tight),
+            new FloorGenData(3, 7, FloorType.ConstrainedExpansive)
+        };
+
+    public static FloorData GenerateFloor(FloorType floorType, int patternSize, bool seeded)
     {
         FloorData createdFloor = null;
         do
@@ -32,6 +56,12 @@ public static class FloorGenerator
 
         } while (!TestFloorQuality(createdFloor));
 
+        //Add created floors to file
+        if (!seeded)
+        {
+            TrackData(createdFloor);
+        }
+
         return createdFloor;
     }
 
@@ -42,7 +72,19 @@ public static class FloorGenerator
 
         //Determine how many rooms remain in their original spot
         //Reject if over 1
-        if (floorData.UnshuffledRooms() > 1) return false;
+        if (floorData.UnshuffledRooms() > 1)
+        {
+            Debug.LogError("Generated floor rejected for: poor shuffling");
+            return false;
+        }
+
+        //Determine if they added resource data
+        //Reject if it didn't
+        if (floorData.resourceData.Count < 2)
+        {
+            Debug.LogError("Generated floor rejected for: no resources");
+            return false;
+        }
 
         //If never rejected, floor has good quality
         return true;
@@ -60,13 +102,16 @@ public static class FloorGenerator
         floorData.UpdateOriginalPositions();
 
         //Shuffle rooms in floor Data
-        RoomData lastShuffledRoom = floorData.Shuffle(5, 4);
-        //Set last shuffled room as the entry rooms
-        lastShuffledRoom.roomType = RoomData.RoomType.Entry;
+        //Old return not needed anymore
+        floorData.Shuffle(5, 4);
+
+        //Assign roomTypes
+        floorData.AssignRoomTypes();
 
         //Sprinkle rooms
         int sprinkleAmount = (int)(patternSize * .8f);
         floorData.AddSprinkleRooms(sprinkleAmount);
+        floorData.AddMineRoom();
 
         //Assign Room Contents
 
@@ -84,13 +129,16 @@ public static class FloorGenerator
         floorData.UpdateOriginalPositions();
 
         //Shuffle rooms in floor Data
-        RoomData lastShuffledRoom = floorData.Shuffle(5, 4);
-        //Set last shuffled room as the entry rooms
-        lastShuffledRoom.roomType = RoomData.RoomType.Entry;
+        //Old return not needed anymore
+        floorData.Shuffle(5, 4);
+
+        //Set room assignments
+        floorData.AssignRoomTypes();
 
         //Sprinkle rooms
         int sprinkleAmount = (int)(patternSize * .5f);
         floorData.AddSprinkleRooms(sprinkleAmount);
+        floorData.AddMineRoom();
 
         //Assign Room Contents
 
@@ -135,7 +183,7 @@ public static class FloorGenerator
         AssignDoors(roomData);
 
         //Roll a chance to combine rooms into a large room
-        if (RNGManager.GetWorldRand(0, 100) < 30)
+        if (RNGManager.GetWorldRand(0, 100) < 40)
         {
             Debug.Log("Attempting big room");
             AddBigRoom(roomData);
@@ -153,8 +201,8 @@ public static class FloorGenerator
     {
         //TODO add L rooms
 
-        //Chose random room and take the cell
-        RoomData baseRoom = roomData[RNGManager.GetWorldRand(0, roomData.Count)];
+        //Chose random room and take the cell (exluding boss room)
+        RoomData baseRoom = roomData[RNGManager.GetWorldRand(1, roomData.Count)];
         CellData baseCell = baseRoom.cellData[0];
 
         //Randomly determine how many extra cells there will be
@@ -222,9 +270,11 @@ public static class FloorGenerator
     public static void TryPlaceRoom(List<RoomData> roomData, int cellSize)
     {
         //Create a Vector2 to hold a free space once found
+        bool failed = false;
         Vector2 tryPlace;
         do
         {
+            failed = false;
             //Select random room (not boss room)
             int randInd = RNGManager.GetWorldRand(1, roomData.Count);
             RoomData currentRoom = roomData[randInd];
@@ -241,17 +291,71 @@ public static class FloorGenerator
 
             //Find another position if cell would be placed at outermost border
             //This is to prevent patterns from being straight lines
-            if (Mathf.Abs(tryPlace.x) >= cellSize || Mathf.Abs(tryPlace.y) >= cellSize) continue;
+            if (Mathf.Abs(tryPlace.x) >= cellSize || Mathf.Abs(tryPlace.y) >= cellSize)
+            {
+                failed = true;
+                continue;
+            }
 
-        //Loop if there is already a room with that position
-        } while (roomData.HasRoomAtPos(tryPlace));
+            //Also reject if it would create a 2x2  (excluding boss room)
+            if (WouldCreateTwoByTwo(roomData, tryPlace))
+            {
+                failed = true;
+                
+                continue;
+            }
+
+        //Loop if there is already a room with that position, or failed checks
+        } while (roomData.HasRoomAtPos(tryPlace) || failed);
 
         //Add room at new found empty position.
         RoomData nextRoom = new RoomData(RoomData.RoomType.Generic, tryPlace);
         roomData.Add(nextRoom);
     }
 
+    /// <summary>
+    /// Method that tests if a new placement would create a 2x2 in the pattern.
+    /// Kinda gross but it works and should be faster than a brute force for loop
+    /// </summary>
+    /// <returns></returns>
+    private static bool WouldCreateTwoByTwo(List<RoomData> roomData, Vector2 testPosition)
+    {
+        //Test for a room above or below, if both false, method is false
+        if (roomData.HasRoomAtPos(testPosition + new Vector2(0,1)))
+        {
+            //Check left and right, if one is true, check corresponding diagnol, if both true, method is true
+            //left room
+            if (roomData.HasRoomAtPos(testPosition + new Vector2(-1, 0))) {
+                //top left corner
+                if (roomData.HasRoomAtPos(testPosition + new Vector2(-1, 1)))
+                {
+                    return true;
+                }
+            }
 
+            //right room
+            if (roomData.HasRoomAtPos(testPosition + new Vector2(1, 0))) {
+                //top right corner
+                if (roomData.HasRoomAtPos(testPosition + new Vector2(1, 1))) return true; 
+            }
+        } else if (roomData.HasRoomAtPos(testPosition + new Vector2(0,-1))) {
+            //Check left and right, if one is true, check corresponding diagnol, if both true, method is true
+            //left room
+            if (roomData.HasRoomAtPos(testPosition + new Vector2(-1, 0)))
+            {
+                //bottom left corner
+                if (roomData.HasRoomAtPos(testPosition + new Vector2(-1, -1))) return true;
+            }
+
+            //right room
+            if (roomData.HasRoomAtPos(testPosition + new Vector2(1, 0)))
+            {
+                //bottom right corner
+                if (roomData.HasRoomAtPos(testPosition + new Vector2(1, -1))) return true;
+            }
+        }
+        return false;
+    }
 
     public static void AssignDoors(List<RoomData> roomData)
     {
@@ -306,6 +410,8 @@ public static class FloorGenerator
         }
     }
 
+    
+
     public static RoomData RoomAtPos(this List<RoomData> roomData, Vector2 position)
     {
         foreach (RoomData data in roomData)
@@ -344,5 +450,22 @@ public static class FloorGenerator
         }
 
         return new Vector2[] { minBound, maxBound };
+    }
+
+    private static void TrackData(FloorData data)
+    {
+        //Load file
+        string genDataJSON = System.IO.File.ReadAllText(Application.persistentDataPath + "/FloorData.json");
+        GenerationData genData = JsonConvert.DeserializeObject<GenerationData>(genDataJSON);
+
+        //Add to object
+        foreach(RoomData room in data.roomData)
+        {
+            genData.AddCount(room.RoomContentPool);
+        }
+
+        //Save file
+        string genString = JsonConvert.SerializeObject(genData, Formatting.Indented);
+        System.IO.File.WriteAllText(Application.persistentDataPath + "/FloorData.json", genString);
     }
 }

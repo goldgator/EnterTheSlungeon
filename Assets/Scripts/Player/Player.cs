@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IHealthDeath
 {
     [Header("Movement Stats")]
     //public float baseSpeed = 6.0f;
@@ -29,12 +29,25 @@ public class Player : MonoBehaviour
     private bool playerEnabled = true;
     private Vector3 lastMoveDir;
     private Vector3 velocity;
+    private Wallet playerWallet = new Wallet();
 
-    public static Player Instance { get; set; }
+
+    private const string PLAYER_PATH = "Prefabs/Player/Player";
+    private static Player instance;
+    public static Player Instance { get { 
+            if (instance == null)
+            {
+                GameObject newPlayer = Instantiate(Resources.Load<GameObject>(PLAYER_PATH));
+                return newPlayer.GetComponent<Player>();
+            }
+
+            return instance;
+        }
+    }
 
     private void Awake()
     {
-        Instance = this;
+        instance = this;
         stats = GetComponent<StatBlock>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -42,10 +55,12 @@ public class Player : MonoBehaviour
         playerHealth = GetComponent<Health>();
         weaponManager = GetComponentInChildren<WeaponManager>();
 
-        InstantiateGuns();
+        //Ensure player info carries to future floors
+        DontDestroyOnLoad(gameObject);
     }
     private void Start()
     {
+        InstantiateGuns();
         InputManager.Instance.dodgeStartEvent += Dodge;
     }
 
@@ -140,5 +155,15 @@ public class Player : MonoBehaviour
         //currentWeapon.gameObject.SetActive(true);
         currentWeapon.renderer.enabled = true;
         playerEnabled = true;
+    }
+
+    public void AddQuartz(ResourceType type, int amount)
+    {
+        playerWallet.AddQuartz(type, amount);
+    }
+
+    public void OnDeath()
+    {
+        OnPlayerDeath();
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 [RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class BaseEnemy : MonoBehaviour
+public class BaseEnemy : MonoBehaviour, IHealthDeath
 {
     [Header("Enemy Stats")]
     public float speed = 0;
@@ -84,5 +84,10 @@ public class BaseEnemy : MonoBehaviour
     public void InstantiateEnemy(EnemySpawn newSpawn)
     {
         homeSpawner = newSpawn;
+    }
+
+    public void OnDeath()
+    {
+        Death();
     }
 }

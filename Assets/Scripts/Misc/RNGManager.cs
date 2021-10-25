@@ -7,6 +7,7 @@ public static class RNGManager
 {
     public static string stringSeed;
     public static int seed;
+    public static bool instantiated;
 
     //ALL OF THESE ARE System.Random classes, NOT UnityEngine.Random
     private static Random worldRand;
@@ -42,6 +43,11 @@ public static class RNGManager
     public static int GetItemRand(int min, int max)
     {
         return itemRand.Next(min, max);
+    }
+
+    public static float GetItemRand(float min, float max)
+    {
+        return (float) itemRand.NextDouble() * (max - min) + min;
     }
 
     public static int GetEventRand(int min, int max)

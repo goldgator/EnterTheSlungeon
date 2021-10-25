@@ -66,7 +66,7 @@ public class EnemySpawnManager : MonoBehaviour, IRoomObject
         while (!AllWavesCompleted()) yield return null;
 
         //If outside of both while loops, all waves have been completed
-        Debug.Log("Waves Completed");
+        //Debug.Log("Waves Completed");
         wavesCompleted = true;
     }
 
@@ -81,7 +81,7 @@ public class EnemySpawnManager : MonoBehaviour, IRoomObject
         }
 
         //If passes through foreach loop, all spawns have had their enemy die
-        Debug.Log("Wave " + waveIndex + " completed");
+        //Debug.Log("Wave " + waveIndex + " completed");
         return true;
     }
 

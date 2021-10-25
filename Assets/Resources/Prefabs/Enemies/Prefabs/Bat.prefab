@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8954729865920170511}
   - component: {fileID: 8954729865920170510}
   - component: {fileID: 8954729865920170507}
+  - component: {fileID: 4723912287014646997}
   - component: {fileID: 8954729865920170508}
   - component: {fileID: 3703142487900455237}
   - component: {fileID: -4007178114014732358}
@@ -178,6 +179,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &4723912287014646997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8954729865920170506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36d5e818ff954a94386d60c0081028ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quartzPrefab: {fileID: 2284714550500931354, guid: 3ae79b1c832a6e24fa97549bb096e3b1, type: 3}
+  quartzMin: 1
+  quartzMax: 4
+  uniformDrop: 1
 --- !u!58 &8954729865920170508
 CircleCollider2D:
   m_ObjectHideFlags: 0

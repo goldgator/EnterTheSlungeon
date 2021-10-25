@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 5350309772949235605}
   - component: {fileID: 741479986986390612}
   - component: {fileID: 5122852081272558356}
+  - component: {fileID: 3237663561075997468}
   m_Layer: 8
   m_Name: Frog
   m_TagString: Untagged
@@ -327,3 +328,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &3237663561075997468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387799137263217882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36d5e818ff954a94386d60c0081028ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quartzPrefab: {fileID: 2284714550500931354, guid: 3ae79b1c832a6e24fa97549bb096e3b1, type: 3}
+  quartzMin: 2
+  quartzMax: 3
+  uniformDrop: 1

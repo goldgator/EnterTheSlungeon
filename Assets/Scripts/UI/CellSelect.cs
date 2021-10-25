@@ -11,6 +11,7 @@ public class CellSelect : MonoBehaviour
     AudioClip roomBump;
 
     CellData selectedCell;
+    CellUI selectedUI;
 
     private void OnEnable()
     {
@@ -27,6 +28,9 @@ public class CellSelect : MonoBehaviour
         GameObject newParent = floorUI.GetCellUIAtPos(playerPos);
         transform.SetParent(newParent.transform, false);
 
+        selectedUI = newParent.GetComponent<CellUI>();
+        selectedUI.ColorWalls(Color.blue);
+
         //Subscribe to movement start
         if (InputManager.Instance) InputManager.Instance.moveStartEvent += OnMoveInp;
     }
@@ -34,6 +38,7 @@ public class CellSelect : MonoBehaviour
     private void OnDisable()
     {
         //Unsubscribe from movement start
+        selectedUI.ColorWalls(Color.white);
         if (InputManager.Instance) InputManager.Instance.moveStartEvent -= OnMoveInp;
     }
     
