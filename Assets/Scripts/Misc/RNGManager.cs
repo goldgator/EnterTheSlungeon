@@ -7,6 +7,7 @@ public static class RNGManager
 {
     public static string stringSeed;
     public static int seed;
+    public static bool instantiated;
 
     //ALL OF THESE ARE System.Random classes, NOT UnityEngine.Random
     private static Random worldRand;

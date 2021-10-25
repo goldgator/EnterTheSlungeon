@@ -1115,7 +1115,7 @@ public class FloorData
     {
         if (places.Count < 2)
         {
-            Debug.LogError("No space for resources");
+            //Debug.LogError("No space for resources");
             return;
         }
 

@@ -72,7 +72,19 @@ public static class FloorGenerator
 
         //Determine how many rooms remain in their original spot
         //Reject if over 1
-        if (floorData.UnshuffledRooms() > 1) return false;
+        if (floorData.UnshuffledRooms() > 1)
+        {
+            Debug.LogError("Generated floor rejected for: poor shuffling");
+            return false;
+        }
+
+        //Determine if they added resource data
+        //Reject if it didn't
+        if (floorData.resourceData.Count < 2)
+        {
+            Debug.LogError("Generated floor rejected for: no resources");
+            return false;
+        }
 
         //If never rejected, floor has good quality
         return true;

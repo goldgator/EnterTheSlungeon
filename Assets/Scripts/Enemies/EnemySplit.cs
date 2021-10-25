@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemySplit : MonoBehaviour
+public class EnemySplit : MonoBehaviour, IHealthDeath
+
 {
     public List<GameObject> deathDrops;
     public float splitStrength = 5.0f;
@@ -36,5 +37,10 @@ public class EnemySplit : MonoBehaviour
                 rb.velocity = direction * splitStrength;
             }
         }
+    }
+
+    public void OnDeath()
+    {
+        DeathDrop();
     }
 }

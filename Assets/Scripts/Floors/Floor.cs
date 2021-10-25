@@ -78,7 +78,7 @@ public class Floor : MonoBehaviour
     static bool seeded = false;
     private void StartFloor()
     {
-        if (floorLevel == 1) seeded = SetRandomSeed();
+        if (!RNGManager.instantiated) seeded = SetRandomSeed();
         if (generatedFloor == null) generatedFloor = FloorGenerator.GenerateFloor(floorType, patternSize, seeded);
         InstantiateFloor();
     }
@@ -103,6 +103,7 @@ public class Floor : MonoBehaviour
             RNGManager.SetSeed(seed, true);
         }
 
+        RNGManager.instantiated = true;
         return seeded;
     }
 

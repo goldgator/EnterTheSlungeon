@@ -34,6 +34,7 @@ public class FloorUI : MonoBehaviour
         };
 
         UpdateColor();
+        UpdatePatternImages();
     }
 
     

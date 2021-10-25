@@ -121,40 +121,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ee473a9d2b2ea469f365825ca33896, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 24
+  maxHealth: 18
   invinicibilityTime: 0
   hasRegen: 0
   regenTime: 2
   regenAmount: 1
   parentHealth: {fileID: 0}
   parentAddHealth: 0
-  deathEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5702017989284875085}
-        m_TargetAssemblyTypeName: BaseEnemy, Assembly-CSharp
-        m_MethodName: Death
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1038179115}
-        m_TargetAssemblyTypeName: DeathDrops, Assembly-CSharp
-        m_MethodName: DeathDrop
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   subEventThreshold: 0
   subtractEvent:
     m_PersistentCalls:
