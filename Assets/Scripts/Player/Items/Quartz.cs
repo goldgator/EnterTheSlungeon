@@ -29,6 +29,23 @@ public class Quartz : MonoBehaviour
         return Resources.Load<Sprite>(path + type.ToString());
     }
 
+    public static Color GetQuartzColor(ResourceType type)
+    {
+        switch (type)
+        {
+            case ResourceType.Time:
+                return new Color(.9f, .9f, .9f);
+            case ResourceType.Space:
+                return new Color(1f, .3f, .5f);
+            case ResourceType.Void:
+                return new Color(0f, 0f, 0f);
+            case ResourceType.Valuable:
+                return new Color(1f, 0f, 1f);
+            default:
+                return new Color(0f, .5f, 0f);
+        }
+    }
+
     public void SetType(ResourceType newType)
     {
         type = newType;

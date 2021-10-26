@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class Floor : MonoBehaviour
 {
@@ -233,6 +234,29 @@ public class Floor : MonoBehaviour
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Gets the resource of the tile the player is in
+    /// </summary>
+    /// <returns></returns>
+    public ResourceData GetCurrentResource()
+    {
+        Vector2 pos = CurrentPlayerCell().GetData().position;
+
+        return GetResource(pos);
+    }
+
+    /// <summary>
+    /// Gets resource of the tile at position
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    public ResourceData GetResource(Vector2 pos)
+    {
+        ResourceData data = generatedFloor.resourceData.Where(ctx => ctx.position == pos).FirstOrDefault();
+
+        return data;
     }
 
     public Cell CurrentPlayerCell()

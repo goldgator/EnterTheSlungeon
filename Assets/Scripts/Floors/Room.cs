@@ -115,11 +115,13 @@ public class Room : MonoBehaviour
         }
     }
 
-    public void RoomFinished()
+    public void UpdateRoomCompletion()
     {
         Floor.Instance.UpdateBossRoomState();
         UpdateCells();
     }
+
+   
 
     public void TakePlayer()
     {
@@ -139,7 +141,7 @@ public class Room : MonoBehaviour
         }
     }
 
-    private void CloseAllDoors()
+    public void CloseAllDoors()
     {
         foreach (Cell cell in cells)
         {

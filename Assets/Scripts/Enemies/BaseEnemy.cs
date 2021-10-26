@@ -84,6 +84,7 @@ public class BaseEnemy : MonoBehaviour, IHealthDeath
     public void InstantiateEnemy(EnemySpawn newSpawn)
     {
         homeSpawner = newSpawn;
+        newSpawn.AddTrackedEnemy(this);
     }
 
     public void OnDeath()

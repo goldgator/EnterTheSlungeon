@@ -54,16 +54,17 @@ public class RoomContent : MonoBehaviour
     {
         completed = true;
         roomFinishEvent?.Invoke();
-        parentRoom.RoomFinished();
+        parentRoom.UpdateRoomCompletion();
     }
 
-    void ActivateRoom()
+
+
+    public void ActivateRoom()
     {
-        if (!completed)
-        {
-            roomActivateEvent?.Invoke();
-            StartCoroutine(CheckForCompletion());
-        }
+        completed = false;
+        roomActivateEvent?.Invoke();
+        parentRoom.CloseAllDoors();
+        StartCoroutine(CheckForCompletion());
     }
 
     void FindAllSubscribers()

@@ -7,11 +7,37 @@ public class EnemySpawn : MonoBehaviour
     public const string PREFAB_PATH = "Prefabs/Enemies/Prefabs/";
     public const string BOSS_PATH = "Prefabs/Enemies/Bosses/";
     public bool isBoss = false;
+    public bool dropsQuartz = true;
     public string enemyName;
 
     private int enemyDeaths = 0;
-    private int totalDeathCount = 1;
+    private int totalDeathCount = 0;
     private List<BaseEnemy> spawnedEnemies = new List<BaseEnemy>();
+
+    public delegate void EnemyDeath();
+    public event EnemyDeath onEnemyDeath;
+
+    private static GameObject enemySpawnPrefab;
+    public static GameObject EnemySpawnPrefab { 
+        get
+        {
+            if (enemySpawnPrefab == null)
+            {
+                enemySpawnPrefab = Resources.Load<GameObject>("Prefabs/Misc/Spawner");
+            }
+
+            return enemySpawnPrefab;
+        }
+    }
+
+    public static EnemySpawn CreateSpawner(string newEnemyName, bool willDropQuartz = true)
+    {
+        EnemySpawn newSpawner = Instantiate(EnemySpawnPrefab).GetComponent<EnemySpawn>();
+
+        newSpawner.enemyName = newEnemyName;
+        newSpawner.dropsQuartz = willDropQuartz;
+        return newSpawner;
+    }
 
     public void SpawnEnemy(bool hasParticles)
     {
@@ -22,6 +48,12 @@ public class EnemySpawn : MonoBehaviour
         {
             OnSpawnEnemy();
         }
+    }
+
+    public void SpawnEnemy(string newEnemyName, bool hasParticles)
+    {
+        enemyName = newEnemyName;
+        SpawnEnemy(hasParticles);
     }
 
     private void SpawnEnemyWithAnim()
@@ -52,6 +84,8 @@ public class EnemySpawn : MonoBehaviour
         totalDeathCount++;
     }
 
+
+
     /// <summary>
     /// Called from the enemies when they die
     /// </summary>
@@ -59,11 +93,25 @@ public class EnemySpawn : MonoBehaviour
     {
         spawnedEnemies.Remove(deadEnemy);
         enemyDeaths++;
+        onEnemyDeath?.Invoke();
     }
 
     public bool SpawnsBeenKilled()
     {
-        return (enemyDeaths >= totalDeathCount);
+        return (enemyDeaths >= totalDeathCount || totalDeathCount == 0);
+    }
+
+    public void DestroySpawner(bool destroyEnemies)
+    {
+        if (destroyEnemies)
+        {
+            for (int i = 0; spawnedEnemies.Count > 0; i = 0)
+            {
+                spawnedEnemies[0].Death();
+            }
+        }
+
+        Destroy(gameObject);
     }
 
     private void OnDrawGizmos()

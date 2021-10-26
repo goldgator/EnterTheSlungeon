@@ -81,6 +81,14 @@ public class @BaseControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Value"",
+                    ""id"": ""c79ad595-50c7-4a2c-9fa2-ed9b86baadcf"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -259,6 +267,17 @@ public class @BaseControls : IInputActionCollection, IDisposable
                     ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""85f9ff67-98a5-4042-9d02-947ead83185d"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -275,6 +294,7 @@ public class @BaseControls : IInputActionCollection, IDisposable
         m_Controls_Map = m_Controls.FindAction("Map", throwIfNotFound: true);
         m_Controls_NextWeapon = m_Controls.FindAction("NextWeapon", throwIfNotFound: true);
         m_Controls_Reload = m_Controls.FindAction("Reload", throwIfNotFound: true);
+        m_Controls_Interact = m_Controls.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -332,6 +352,7 @@ public class @BaseControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Controls_Map;
     private readonly InputAction m_Controls_NextWeapon;
     private readonly InputAction m_Controls_Reload;
+    private readonly InputAction m_Controls_Interact;
     public struct ControlsActions
     {
         private @BaseControls m_Wrapper;
@@ -344,6 +365,7 @@ public class @BaseControls : IInputActionCollection, IDisposable
         public InputAction @Map => m_Wrapper.m_Controls_Map;
         public InputAction @NextWeapon => m_Wrapper.m_Controls_NextWeapon;
         public InputAction @Reload => m_Wrapper.m_Controls_Reload;
+        public InputAction @Interact => m_Wrapper.m_Controls_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Controls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -377,6 +399,9 @@ public class @BaseControls : IInputActionCollection, IDisposable
                 @Reload.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnReload;
                 @Reload.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnReload;
                 @Reload.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnReload;
+                @Interact.started -= m_Wrapper.m_ControlsActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_ControlsActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_ControlsActionsCallbackInterface.OnInteract;
             }
             m_Wrapper.m_ControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -405,6 +430,9 @@ public class @BaseControls : IInputActionCollection, IDisposable
                 @Reload.started += instance.OnReload;
                 @Reload.performed += instance.OnReload;
                 @Reload.canceled += instance.OnReload;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
             }
         }
     }
@@ -419,5 +447,6 @@ public class @BaseControls : IInputActionCollection, IDisposable
         void OnMap(InputAction.CallbackContext context);
         void OnNextWeapon(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
 }

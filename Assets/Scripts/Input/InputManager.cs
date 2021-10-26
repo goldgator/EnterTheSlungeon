@@ -37,6 +37,10 @@ public class InputManager : MonoBehaviour
     public event UpdateDelegate reloadUpdateEvent;
     public event EventDelegate reloadStopEvent;
 
+    public event EventDelegate interactStartEvent;
+    public event UpdateDelegate interactUpdateEvent;
+    public event EventDelegate interactStopEvent;
+
     #region Input Properties
     //Input values
     public Vector2 PlayerMovement
@@ -102,6 +106,14 @@ public class InputManager : MonoBehaviour
             return baseControls.Controls.Map.triggered;
         }
     }
+
+    public bool Interact
+    {
+        get
+        {
+            return baseControls.Controls.Interact.triggered;
+        }
+    }
     #endregion
 
     #region Event Subscription
@@ -145,6 +157,9 @@ public class InputManager : MonoBehaviour
 
         baseControls.Controls.Reload.started += ctx => ReloadStart(ctx);
         baseControls.Controls.Reload.canceled += ctx => ReloadStop(ctx);
+
+        baseControls.Controls.Interact.started += ctx => InteractStart(ctx);
+        baseControls.Controls.Interact.canceled += ctx => InteractStop(ctx);
     }
 
     void MoveStart(InputAction.CallbackContext context)
@@ -198,6 +213,16 @@ public class InputManager : MonoBehaviour
         reloadStopEvent?.Invoke();
     }
 
+    void InteractStart(InputAction.CallbackContext context)
+    {
+        interactStartEvent?.Invoke();
+    }
+
+    void InteractStop(InputAction.CallbackContext context)
+    {
+        interactStopEvent?.Invoke();
+    }
+
     private void Update()
     {
         moveUpdateEvent?.Invoke(PlayerMovement);
@@ -205,5 +230,7 @@ public class InputManager : MonoBehaviour
         fireUpdateEvent?.Invoke(Fire);
 
         dodgeUpdateEvent?.Invoke(DodgeUpdate);
+
+        interactUpdateEvent?.Invoke(Interact);
     }
 }
