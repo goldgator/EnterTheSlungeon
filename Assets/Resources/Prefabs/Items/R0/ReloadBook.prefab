@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7395589331477722408}
   - component: {fileID: 7395589331477722409}
   - component: {fileID: 7395589331477722410}
+  - component: {fileID: 2155270716830723889}
   m_Layer: 0
   m_Name: ReloadBook
   m_TagString: Untagged
@@ -99,7 +100,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1
 --- !u!114 &7395589331477722410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,8 +114,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSprite: {fileID: 21300000, guid: c99b9da9f808e3b43ae9ee009729da84, type: 3}
+  name: Reload Guide
+  desc: Speedy reloads
   statMods:
   - targetStat: ReloadSpeed
     modValue: 0.7
     modType: 2
     order: 1
+--- !u!114 &2155270716830723889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7395589331477722411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 168299cb4b7b06f42be398be773b168f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isOn: 1
+  interactEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  inRangeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  leaveRangeEvent:
+    m_PersistentCalls:
+      m_Calls: []

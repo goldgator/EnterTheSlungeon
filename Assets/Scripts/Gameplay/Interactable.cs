@@ -9,10 +9,14 @@ using UnityEngine.UI;
 public class Interactable : MonoBehaviour
 {
     public bool isOn = true;
+
+    private static float borderThickness = .15f;
+    [Header("Events")]
     [SerializeField]
     private UnityEvent interactEvent;
-
+    [SerializeField]
     private UnityEvent inRangeEvent;
+    [SerializeField]
     private UnityEvent leaveRangeEvent;
     
     private Material outlineMaterial;
@@ -28,8 +32,23 @@ public class Interactable : MonoBehaviour
         renderer = GetComponent<SpriteRenderer>();
         collider = GetComponent<Collider2D>();
 
+        
+
         //Create outline and hide
         CreateOutline();
+        FindInterfaces();
+    }
+
+    private void FindInterfaces()
+    {
+        IInteractEvent[] interactEvents = GetComponents<IInteractEvent>();
+
+        foreach (IInteractEvent interactable in interactEvents)
+        {
+            interactEvent.AddListener(new UnityAction(interactable.OnInteract));
+            inRangeEvent.AddListener(new UnityAction(interactable.OnInteractEnter));
+            leaveRangeEvent.AddListener(new UnityAction(interactable.OnInteractLeave));
+        }
     }
 
     private void CreateOutline()
@@ -40,9 +59,24 @@ public class Interactable : MonoBehaviour
         outlineRenderer.sprite = renderer.sprite;
         outlineRenderer.sortingOrder = renderer.sortingOrder - 1;
         outlineRenderer.material = outlineMaterial;
-        outline.transform.localScale = new Vector3(1.02f, 1.02f);
+
+
+        outline.transform.localScale = DetermineScale();
 
         outline.SetActive(false);
+    }
+
+    private Vector3 DetermineScale()
+    {
+        //Find the base sprite bounds (copies the bounds)
+        Bounds targetBounds = renderer.bounds;
+
+        //Create a thickness off the bounds, based on each axis
+        float xLength = targetBounds.size.x + borderThickness;
+        float yLength = targetBounds.size.y + borderThickness;
+
+        //Return a vector that represents the relative scaling
+        return new Vector3(xLength / targetBounds.size.x, yLength / targetBounds.size.y, 1);
     }
 
     private void OnInteract() {
@@ -56,6 +90,8 @@ public class Interactable : MonoBehaviour
             InteractEnter();
         }
     }
+
+    
 
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -72,6 +108,9 @@ public class Interactable : MonoBehaviour
 
         //Show outline
         outline.SetActive(true);
+
+        //Update outline size
+        outline.transform.localScale = DetermineScale();
 
         //Create Prompt
         InteractPrompt.Instance.ShowPrompt();

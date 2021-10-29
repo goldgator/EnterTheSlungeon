@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class QuartzDrops : MonoBehaviour, IHealthDeath
 {
-    [SerializeField]
-    private GameObject quartzPrefab;
+
     [SerializeField]
     private int quartzMin;
     [SerializeField]
     private int quartzMax;
     [SerializeField]
     private bool uniformDrop;
+
+    private void Start()
+    {
+        
+    }
 
     private void DropQuartz()
     {
@@ -24,7 +28,7 @@ public class QuartzDrops : MonoBehaviour, IHealthDeath
         for (int i = 0; i < quartzNum; i++)
         {
             //Instantiate a quartz
-            Quartz newQuartz = Instantiate(quartzPrefab, transform.position, Quaternion.identity).GetComponent<Quartz>();
+            Quartz newQuartz = Instantiate(Quartz.QuartzPrefab, transform.position, Quaternion.identity).GetComponent<Quartz>();
             newQuartz.SetType(newType);
 
             //if not uniform drop, roll a new resource type

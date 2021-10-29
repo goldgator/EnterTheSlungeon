@@ -178,12 +178,21 @@ public class FloorUI : MonoBehaviour
         }
     }
 
+    public void UpdateIcons()
+    {
+        foreach (CellUI cell in cellUIs)
+        {
+            cell.UpdateIcon();
+        }
+    }
+
     public void UpdateUI()
     {
         //Order the cellUIs based on child index
         UpdateCellPos();
         UpdatePatternImages();
         UpdateResourceImages();
+        UpdateIcons();
     }
 
     private void UpdateCellPos()

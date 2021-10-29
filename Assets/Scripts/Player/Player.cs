@@ -110,6 +110,11 @@ public class Player : MonoBehaviour, IHealthDeath
         }
     }
 
+    public Wallet GetWallet()
+    {
+        return playerWallet;
+    }
+
     private void ProcessMove()
     {
         velocity = InputManager.Instance.PlayerMovement.normalized;

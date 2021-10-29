@@ -9,7 +9,7 @@ public class FlashSprite : MonoBehaviour
     private Material originalMat;
     public float flashTime = 0.05f;
     public int flashAmount;
-    private new SpriteRenderer renderer;
+    private SpriteRenderer renderer;
 
     // Start is called before the first frame update
     void Start()

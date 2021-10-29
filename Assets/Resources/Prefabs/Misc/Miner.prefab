@@ -43,7 +43,11 @@ GameObject:
   m_Component:
   - component: {fileID: 5460398220239156921}
   - component: {fileID: 7439216782462871249}
-  m_Layer: 0
+  - component: {fileID: 7714836024214804832}
+  - component: {fileID: 227384805523247884}
+  - component: {fileID: 2736238165787067765}
+  - component: {fileID: 2447914298974906396}
+  m_Layer: 8
   m_Name: Quartz
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +109,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 202
-  m_Sprite: {fileID: 21300000, guid: 4118533213dd522409fbdff72f170def, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 414a0983e0c5d2a4a9cacfd3e8055ad0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -116,6 +120,108 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 2
   m_SpriteSortPoint: 0
+--- !u!114 &7714836024214804832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4128926794739636014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccc286dc27463bb4c93c30aab00dd1ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quartzMin: 25
+  quartzMax: 30
+--- !u!114 &227384805523247884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4128926794739636014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80ee473a9d2b2ea469f365825ca33896, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 10
+  invinicibilityTime: 0
+  hasRegen: 0
+  regenTime: 2
+  regenAmount: 1
+  parentHealth: {fileID: 0}
+  parentAddHealth: 0
+  subEventThreshold: 0.1
+  subtractEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2736238165787067765}
+        m_TargetAssemblyTypeName: FlashSprite, Assembly-CSharp
+        m_MethodName: Flash
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7714836024214804832}
+        m_TargetAssemblyTypeName: QuartzChunk, Assembly-CSharp
+        m_MethodName: Fragment
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2736238165787067765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4128926794739636014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f008f05dda3bfe447804f08489c742a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashMaterial: {fileID: 2100000, guid: f8e9112f0ae1ebc4cb5744a7d3e004e7, type: 2}
+  flashTime: 0.05
+  flashAmount: 1
+--- !u!61 &2447914298974906396
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4128926794739636014}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 0.6666667, y: 0.6666667}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &4281420078682150959
 GameObject:
   m_ObjectHideFlags: 0
@@ -175,6 +281,7 @@ MonoBehaviour:
   revealParent: {fileID: 5150842533474334126}
   particles: {fileID: 4618572298388336423}
   quartzRenderer: {fileID: 7439216782462871249}
+  quartzCollider: {fileID: 2447914298974906396}
 --- !u!114 &3744326712838101821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,18 +298,6 @@ MonoBehaviour:
   interactEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3424309609411386099}
-        m_TargetAssemblyTypeName: FlashSprite, Assembly-CSharp
-        m_MethodName: Flash
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 7902280257290944352}
         m_TargetAssemblyTypeName: QuartzMiner, Assembly-CSharp
         m_MethodName: StartMineEvent
@@ -308,7 +403,7 @@ GameObject:
   - component: {fileID: 5135480118757455414}
   - component: {fileID: 4618572298388336423}
   - component: {fileID: 2224321119337814638}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5110,7 +5205,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5150842533474334126}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RevealParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5247,7 +5342,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6042798900733862250}
   - component: {fileID: 5490257210346731365}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Quartz
   m_TagString: Untagged
   m_Icon: {fileID: 0}

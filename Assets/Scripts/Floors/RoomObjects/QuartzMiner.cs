@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuartzMiner : MonoBehaviour, IRoomObject
+public class QuartzMiner : MonoBehaviour, IRoomObject, IInteractEvent
 {
     private bool active = false;
     private bool canMine = true;
@@ -34,6 +34,8 @@ public class QuartzMiner : MonoBehaviour, IRoomObject
     private ParticleSystem particles;
     [SerializeField]
     private SpriteRenderer quartzRenderer;
+    [SerializeField]
+    private Collider2D quartzCollider;
     private Interactable interactable;
     private ResourceData currentResource;
     private List<EnemySpawn> spawners = new List<EnemySpawn>();
@@ -51,7 +53,7 @@ public class QuartzMiner : MonoBehaviour, IRoomObject
     {
         currentResource = Floor.Instance.GetCurrentResource();
 
-        interactable.SetInteractable(currentResource != null || (!active && canMine));
+        interactable.SetInteractable(currentResource != null && (!active && canMine));
     }
 
     public bool ContentPassed()
@@ -74,12 +76,16 @@ public class QuartzMiner : MonoBehaviour, IRoomObject
     public void StartMineEvent()
     {
         active = true;
+        canMine = false;
         startPos = revealParent.localPosition;
         targetPos = startPos + new Vector3(0, 1.0f, 0);
 
         quartzRenderer.sprite = Quartz.GetQuartzSprite(currentResource.resourceType, true);
         particles.startColor = Quartz.GetQuartzColor(currentResource.resourceType);
         particles.Play();
+
+        //Assign type to QuartzChunk
+        quartzRenderer.GetComponent<QuartzChunk>().SetType(currentResource.resourceType);
 
         //Change music
         MusicManager.Instance.PlaySong("Boss2");
@@ -95,8 +101,8 @@ public class QuartzMiner : MonoBehaviour, IRoomObject
     public void StopMineEvent()
     {
         active = false;
-        canMine = false;
-        revealParent.gameObject.SetActive(false);
+        //revealParent.gameObject.SetActive(false);
+        particles.emissionRate = 0;
 
         //Remove all spawners
         foreach (EnemySpawn spawn in spawners)
@@ -104,8 +110,17 @@ public class QuartzMiner : MonoBehaviour, IRoomObject
             spawn.DestroySpawner(true);
         }
 
+        //Enable quartz collider
+        quartzCollider.enabled = true;
+
         //Change music
         MusicManager.Instance.PlaySong("Floor3");
+
+        //Clear floor resource data
+        Floor.Instance.GetFloorData().resourceData.Clear();
+
+        //Change room type back to generic (updates map)
+        Floor.Instance.CurrentPlayerCell().GetData().roomOwner.roomType = RoomData.RoomType.Generic;
     }
 
 
@@ -124,7 +139,6 @@ public class QuartzMiner : MonoBehaviour, IRoomObject
                 timer += Time.deltaTime;
                 particles.emissionRate = 20;
             }
-            
 
             //Count enemyDefeatedTimer down
             enemyDefeatedTimer -= Time.deltaTime;
@@ -197,6 +211,8 @@ public class QuartzMiner : MonoBehaviour, IRoomObject
         newSpawner.onEnemyDeath += EnemyDied;
         //Rename spawner to find in hierarchy
         newSpawner.gameObject.name = "EventSpawner";
+        //Turn off quartz drops
+        newSpawner.dropsQuartz = false;
 
         spawners.Add(newSpawner);
 
@@ -234,5 +250,20 @@ public class QuartzMiner : MonoBehaviour, IRoomObject
         }
 
         return false;
+    }
+
+    public void OnInteract()
+    {
+        StartMineEvent();
+    }
+
+    public void OnInteractEnter()
+    {
+        //Not needed
+    }
+
+    public void OnInteractLeave()
+    {
+        //Not needed
     }
 }

@@ -65,17 +65,21 @@ public class EnemySpawn : MonoBehaviour
     {
         string path = (isBoss) ? BOSS_PATH : PREFAB_PATH;
 
+        BaseEnemy spawnedEnemy;
         if (enemyName == "")
         {
             GameObject[] allEnemies = Resources.LoadAll<GameObject>(path);
             GameObject chosenEnemy = allEnemies[RNGManager.GetEventRand(0, allEnemies.Length)];
-            Instantiate(chosenEnemy, transform.position, Quaternion.identity).GetComponent<BaseEnemy>().InstantiateEnemy(this);
+            spawnedEnemy = Instantiate(chosenEnemy, transform.position, Quaternion.identity).GetComponent<BaseEnemy>();
         }
         else
         {
             GameObject enemy = Resources.Load<GameObject>(path + enemyName);
-            Instantiate(enemy, transform.position, Quaternion.identity).GetComponent<BaseEnemy>().InstantiateEnemy(this);
+            spawnedEnemy = Instantiate(enemy, transform.position, Quaternion.identity).GetComponent<BaseEnemy>();
         }
+
+        spawnedEnemy.InstantiateEnemy(this);
+        if (!dropsQuartz) Destroy(spawnedEnemy.GetComponent<QuartzDrops>());
     }
 
     public void AddTrackedEnemy(BaseEnemy newEnemy)
@@ -111,7 +115,7 @@ public class EnemySpawn : MonoBehaviour
             }
         }
 
-        Destroy(gameObject);
+        if (gameObject != null) Destroy(gameObject);
     }
 
     private void OnDrawGizmos()
