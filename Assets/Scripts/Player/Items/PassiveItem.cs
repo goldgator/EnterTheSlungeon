@@ -14,6 +14,7 @@ public class PassiveItem : BaseItem
         foreach(StatModifier mod in statMods)
         {
             managerParent.AttachMod(mod);
+            
         }
     }
 }

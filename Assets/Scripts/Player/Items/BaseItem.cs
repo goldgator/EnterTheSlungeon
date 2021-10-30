@@ -9,11 +9,15 @@ public abstract class BaseItem : MonoBehaviour, IInteractEvent
 
     [Header("Base Info")]
     [SerializeField]
-    private Sprite itemSprite;
+    protected Sprite itemSprite;
     [SerializeField]
-    private string name;
+    protected string name;
     [SerializeField]
     private string desc;
+
+    protected bool pickedUp = false;
+
+
     protected ItemManager managerParent;
     protected Interactable interactable;
     protected SpriteRenderer renderer;
@@ -26,7 +30,7 @@ public abstract class BaseItem : MonoBehaviour, IInteractEvent
         Destroy(renderer);
         Destroy(collider);
         transform.SetParent(managerParent.transform, false);
-        transform.position = Vector3.zero;
+        transform.localPosition = Vector3.zero;
     }
 
     private void Start()

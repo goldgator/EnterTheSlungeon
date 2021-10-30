@@ -8,14 +8,25 @@ public class Projectile : MonoBehaviour
     private Vector3 startVelocity;
     private float damage;
     private float knockBack;
+    private int pierce;
 
     public AudioClip hitFX;
+
+
+    //Events
+    public delegate void ProjectileEvent(Projectile projectile);
+
+    public static event ProjectileEvent projectileSpawnEvent;
+    public static event ProjectileEvent projectileUpdateEvent;
+    public static event ProjectileEvent projectileHitEvent;
+    public static event ProjectileEvent projectileDeathEvent;
 
     public void InstantiateProjectile(Vector3 newStartVelocity, float newDamage, float newKnockBack)
     {
         knockBack = newKnockBack;
         startVelocity = newStartVelocity;
         damage = newDamage;
+        if (gameObject.layer == 7) projectileSpawnEvent?.Invoke(this);
     }
 
     // Start is called before the first frame update
@@ -26,6 +37,11 @@ public class Projectile : MonoBehaviour
         rb.mass = knockBack;
     }
 
+    private void Update()
+    {
+        if (gameObject.layer == 7) projectileUpdateEvent?.Invoke(this);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Health otherHealth = collision.collider.GetComponent<Health>();
@@ -33,6 +49,7 @@ public class Projectile : MonoBehaviour
         if (otherHealth)
         {
             otherHealth.SubtractHealth(damage);
+            if (gameObject.layer == 7) projectileHitEvent?.Invoke(this);
         }
 
         AudioSource audioFXOG = Utilities.AudioFXObject.GetComponent<AudioSource>();
@@ -40,7 +57,14 @@ public class Projectile : MonoBehaviour
         audioFX.clip = hitFX;
         audioFX.Play();
         
+        if (pierce <= 0)
+        {
+            if (gameObject.layer == 7) projectileDeathEvent?.Invoke(this);
+            Destroy(gameObject);
+        } else
+        {
+            pierce--;
+        }
 
-        Destroy(gameObject);
     }
 }

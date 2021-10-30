@@ -19,7 +19,7 @@ public class RoomContent : MonoBehaviour
     void Start()
     {
         FindAllSubscribers();
-        parentRoom.roomEnterEvent += ActivateRoom;
+        parentRoom.roomEnterEvent += EnterRoom;
     }
 
     public void ForceComplete()
@@ -57,7 +57,10 @@ public class RoomContent : MonoBehaviour
         parentRoom.UpdateRoomCompletion();
     }
 
-
+    private void EnterRoom(Room room)
+    {
+        ActivateRoom();
+    }
 
     public void ActivateRoom()
     {

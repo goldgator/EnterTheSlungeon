@@ -68,7 +68,7 @@ public class Spikes : MonoBehaviour, IRoomObject
 
     private void Retract()
     {
-        Debug.Log("Retract");
+        //Debug.Log("Retract");
         //Do retract anim
         animator.Play("Retract");
         //Disable collider
@@ -78,7 +78,7 @@ public class Spikes : MonoBehaviour, IRoomObject
 
     private void Extend()
     {
-        Debug.Log("Extend");
+        //Debug.Log("Extend");
         //Do extend anim
         animator.Play("Extend");
         //Enable collider

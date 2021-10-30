@@ -31,6 +31,12 @@ public class BaseEnemy : MonoBehaviour, IHealthDeath
     protected float stopTime = 0;
     protected EnemySpawn homeSpawner;
 
+    //Events
+    public delegate void EnemyEvent();
+
+    public static event EnemyEvent enemyDeathEvent;
+    public static event EnemyEvent enemySpawnEvent;
+
 
     private void OnDrawGizmos()
     {
@@ -47,6 +53,8 @@ public class BaseEnemy : MonoBehaviour, IHealthDeath
         audioSource = GetComponent<AudioSource>();
         renderer = GetComponent<SpriteRenderer>();
         if (audioSource) audioSource.clip = attackSound;
+
+        enemySpawnEvent?.Invoke();
 
         //Delay action if enemy starts with a Spawn animation
         DelayAction();
@@ -78,6 +86,7 @@ public class BaseEnemy : MonoBehaviour, IHealthDeath
         }
         //Destroy this object
         homeSpawner?.EnemyDied(this);
+        enemyDeathEvent?.Invoke();
         Destroy(gameObject);
     }
 

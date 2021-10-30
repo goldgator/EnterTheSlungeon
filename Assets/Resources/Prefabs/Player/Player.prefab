@@ -1197,6 +1197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 744c96b442cc20149a2064d8b45c540b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overloadTransform: {fileID: 0}
 --- !u!1 &4632529183196506130
 GameObject:
   m_ObjectHideFlags: 0
@@ -1574,8 +1575,12 @@ MonoBehaviour:
   allStats:
   - statName: MoveSpeed
     baseValue: 6
+    roundValue: 0
+    range: {x: 3, y: 20}
   - statName: DodgeSpeed
-    baseValue: 16
+    baseValue: 12
+    roundValue: 0
+    range: {x: 10, y: 35}
 --- !u!61 &1067685949183023265
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1714,11 +1719,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 30
   invinicibilityTime: 1.8
-  hasRegen: 0
-  regenTime: 2
-  regenAmount: 1
-  parentHealth: {fileID: 0}
-  parentAddHealth: 0
   subEventThreshold: 1
   subtractEvent:
     m_PersistentCalls:
@@ -1726,6 +1726,18 @@ MonoBehaviour:
       - m_Target: {fileID: 5281613484409094259}
         m_TargetAssemblyTypeName: FlashSprite, Assembly-CSharp
         m_MethodName: Flash
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5941068773895197779}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: OnDamageTaken
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -91,7 +91,7 @@ public class CellSelect : MonoBehaviour
                 //Play fail noise and leave method
                 audioSource.clip = roomBump;
                 audioSource.Play();
-                return;
+                continue;
             }
 
             //Find in direction
@@ -100,7 +100,7 @@ public class CellSelect : MonoBehaviour
             {
                 audioSource.clip = roomBump;
                 audioSource.Play();
-                return;
+                continue;
             }
 
             //Check if room can't be pulled
@@ -109,7 +109,7 @@ public class CellSelect : MonoBehaviour
                 //Play fail noise and leave method
                 audioSource.clip = roomBump;
                 audioSource.Play();
-                return;
+                continue;
             }
 
             //IF if it has the right opening

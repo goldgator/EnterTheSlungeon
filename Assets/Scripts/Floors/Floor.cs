@@ -28,6 +28,7 @@ public class Floor : MonoBehaviour
     public string stringSeed;
     public int seed;
     public bool debug = false;
+    public bool itemTesting = false;
     private int currentGenData = 0;
     
 
@@ -42,6 +43,14 @@ public class Floor : MonoBehaviour
     private Room bossRoom;
 
     private bool gameOver = false;
+
+
+    //Events
+    public delegate void FloorEvent(Floor floor);
+
+    public static event FloorEvent preGenerationEvent;
+    public static event FloorEvent postGenerationEvent;
+    
     
 
     private static Floor instance;
@@ -80,8 +89,10 @@ public class Floor : MonoBehaviour
     private void StartFloor()
     {
         if (!RNGManager.instantiated) seeded = SetRandomSeed();
+        preGenerationEvent?.Invoke(this);
         if (generatedFloor == null) generatedFloor = FloorGenerator.GenerateFloor(floorType, patternSize, seeded);
         InstantiateFloor();
+        postGenerationEvent?.Invoke(this);
     }
 
     private bool SetRandomSeed()

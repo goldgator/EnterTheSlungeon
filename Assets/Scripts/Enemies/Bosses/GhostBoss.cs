@@ -55,6 +55,8 @@ public class GhostBoss : BaseEnemy
             enemy.Death();
         }
 
+        MusicManager.Instance.PlaySong("Victory");
+
         base.Death();
     }
 
@@ -178,12 +180,12 @@ public class GhostBoss : BaseEnemy
         for (int i = 0; i < attackNum; i++)
         {
             //Fade out anim
-            Debug.Log("Playing fade anim");
+            //Debug.Log("Playing fade anim");
             animator.Play("Fade");
             yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0)[0].clip.length + 1.5f);
 
             //Fade in and attack anim
-            Debug.Log("Playing fadeAttack anim");
+            //Debug.Log("Playing fadeAttack anim");
             animator.Play("FadeAttack");
             yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0)[0].clip.length + 1f);
         }

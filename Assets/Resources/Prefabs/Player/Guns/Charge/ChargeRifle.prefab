@@ -98,30 +98,56 @@ MonoBehaviour:
   allStats:
   - statName: FireRate
     baseValue: 0.4
+    roundValue: 0
+    range: {x: 0.01, y: 9999999}
   - statName: ShotDamage
     baseValue: 4
+    roundValue: 0
+    range: {x: 0.1, y: 9999999}
   - statName: ShotSize
     baseValue: 0.3
+    roundValue: 0
+    range: {x: 0.05, y: 10}
   - statName: ShotSpeed
     baseValue: 20
+    roundValue: 0
+    range: {x: 2, y: 30}
   - statName: KnockBack
     baseValue: 0.2
+    roundValue: 0
+    range: {x: 0, y: 15}
   - statName: ClipSize
     baseValue: 4
+    roundValue: 1
+    range: {x: 1, y: 9999999}
   - statName: ReloadSpeed
     baseValue: 3
+    roundValue: 0
+    range: {x: 0.2, y: 10}
   - statName: OverheatAddend
     baseValue: 10
+    roundValue: 0
+    range: {x: 0, y: 100}
   - statName: OverheatRecovery
     baseValue: 2
+    roundValue: 0
+    range: {x: 0.3, y: 100}
   - statName: ChargeTime
     baseValue: 2
+    roundValue: 0
+    range: {x: 0.5, y: 10}
   - statName: DamageMultiplier
     baseValue: 4
+    roundValue: 0
+    range: {x: 1, y: 10}
   - statName: SizeMultiplier
     baseValue: 2
+    roundValue: 0
+    range: {x: 1, y: 3}
   - statName: KnockbackMultiplier
     baseValue: 2
+    roundValue: 0
+    range: {x: 1, y: 3}
 --- !u!82 &2947377069368998517
 AudioSource:
   m_ObjectHideFlags: 0

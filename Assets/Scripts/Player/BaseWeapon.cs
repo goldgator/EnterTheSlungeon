@@ -156,8 +156,9 @@ public class BaseWeapon : MonoBehaviour
     {
         //Determine player and weapon scale
         float aimX = Mathf.Sign(direction.x);
-        Player.Instance.transform.localScale = new Vector3(aimX, 1, 1);
-        transform.localScale = new Vector3(aimX, aimX, 1);
+        Player.Instance.FlipSprite((aimX < 0));
+        //Player.Instance.transform.localScale = new Vector3(aimX, 1, 1);
+        transform.localScale = new Vector3(1, aimX, 1);
     }
 
     private void CorrectDirAndScale()
@@ -167,8 +168,9 @@ public class BaseWeapon : MonoBehaviour
 
         //Determine player and weapon scale
         float aimX = Mathf.Sign(direction.x);
-        Player.Instance.transform.localScale = new Vector3(aimX, 1, 1);
-        transform.localScale = new Vector3(aimX, aimX, 1);
+        //Player.Instance.transform.localScale = new Vector3(aimX, 1, 1);
+        Player.Instance.FlipSprite((aimX < 0));
+        transform.localScale = new Vector3(1, aimX, 1);
     }
 
     protected virtual void OnFire(bool pressed)
