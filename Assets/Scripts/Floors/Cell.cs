@@ -62,7 +62,7 @@ public class Cell : MonoBehaviour
                 int currInd = (int)currentDir;
                 int prevInd = (currInd == 0) ? 3 : currInd - 1;
 
-                Debug.Log("Turning off tiles");
+                //Debug.Log("Turning off tiles");
                 cornerTiles[currInd].SetActive(false);
                 cornerTiles[prevInd].SetActive(false);
             }

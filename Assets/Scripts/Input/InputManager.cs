@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class InputManager : MonoBehaviour
 {
@@ -40,6 +41,8 @@ public class InputManager : MonoBehaviour
     public event EventDelegate interactStartEvent;
     public event UpdateDelegate interactUpdateEvent;
     public event EventDelegate interactStopEvent;
+
+    
 
     #region Input Properties
     //Input values
@@ -132,13 +135,40 @@ public class InputManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+
+            //Add sceneLoaded event
+            SceneManager.sceneLoaded += OnSceneLoaded;
         } else
         {
             Destroy(gameObject);
         }
     }
+
+    private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        FindCamera();
+    }
+
+    private void FindCamera()
+    {
+        PlayerCamera newCamera = GameObject.FindObjectOfType<PlayerCamera>();
+
+        //Take camera off of playerCamera
+        if (newCamera != null)
+        {
+            playerCamera = newCamera.GetComponent<Camera>();
+        //Otherwise settle for main camera
+        } else
+        {
+            playerCamera = Camera.main;
+        }
+    }
+
     private void Start()
     {
+        //if the camera hasn't been created, take the main camera
+        if (playerCamera == null) FindCamera();
+
         baseControls = new BaseControls();
         baseControls.Enable();
         DontDestroyOnLoad(gameObject);
