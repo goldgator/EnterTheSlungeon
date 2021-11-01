@@ -39,6 +39,8 @@ public class WeaponManager : MonoBehaviour
 
     public void AddGun(GameObject newGun)
     {
+        if (newGun == null) return;
+
         GameObject newPivot = new GameObject();
         newPivot.name = "Weapon" + weaponPivots.Count;
         newPivot.transform.SetParent(transform, false);

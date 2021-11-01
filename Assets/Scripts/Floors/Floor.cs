@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class Floor : MonoBehaviour
 {
@@ -24,15 +25,19 @@ public class Floor : MonoBehaviour
     public int floorLevel = 1;
     public FloorGenerator.FloorType floorType = FloorGenerator.FloorType.Expansive;
     public int patternSize = 7;
-    public string stringSeed;
-    public int seed;
+    [SerializeField]
+    private string stringSeedOverwrite;
+    [SerializeField]
+    private int seedOverwrite = 0;
     public bool debug = false;
-    private int currentGenData = 0;
+    public bool itemTesting = false;
+    public static int currentGenData = 0;
+
     
 
     [Header("Components")]
     public GameObject floorCanvas;
-    public GameObject tempVictoryPanel;
+    public GameObject victoryPanel;
     public GameObject tempLossPanel;
 
 
@@ -41,6 +46,15 @@ public class Floor : MonoBehaviour
     private Room bossRoom;
 
     private bool gameOver = false;
+    public static string stringSeed = "";
+    public static int seed = 0;
+
+    //Events
+    public delegate void FloorEvent(Floor floor);
+
+    public static event FloorEvent preGenerationEvent;
+    public static event FloorEvent postGenerationEvent;
+    
     
 
     private static Floor instance;
@@ -62,25 +76,35 @@ public class Floor : MonoBehaviour
 
     public void SetFloorAttributes()
     {
-        currentGenData++;
-
         floorLevel = FloorGenerator.floorGenSequence[currentGenData].floorLevel;
         floorType = FloorGenerator.floorGenSequence[currentGenData].floorType;
         patternSize = FloorGenerator.floorGenSequence[currentGenData].patternSize;
+        currentGenData++;
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        UseOverwriteSeeds();
         StartFloor();
+        MusicManager.Instance.PlayFloorSong();
     }
+
+    private void UseOverwriteSeeds()
+    {
+        if (stringSeedOverwrite != "") stringSeed = stringSeedOverwrite;
+        if (seedOverwrite != 0) seed = seedOverwrite;
+    }
+
 
     static bool seeded = false;
     private void StartFloor()
     {
         if (!RNGManager.instantiated) seeded = SetRandomSeed();
+        preGenerationEvent?.Invoke(this);
         if (generatedFloor == null) generatedFloor = FloorGenerator.GenerateFloor(floorType, patternSize, seeded);
         InstantiateFloor();
+        postGenerationEvent?.Invoke(this);
     }
 
     private bool SetRandomSeed()
@@ -104,6 +128,7 @@ public class Floor : MonoBehaviour
         }
 
         RNGManager.instantiated = true;
+
         return seeded;
     }
 
@@ -128,18 +153,23 @@ public class Floor : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
-                SceneManager.LoadScene("FloorScene");
+                SceneManager.LoadScene("MainMenu");
             }
         }
     }
 
-    private void OnFloorFinish()
+    public void OnFloorFinish()
     {
-        tempVictoryPanel.SetActive(true);
+        victoryPanel.SetActive(true);
         Player.Instance.SetPlayerEnabled(false);
         Player.Instance.ForceStop();
         MusicManager.Instance.PlaySong("Victory");
         gameOver = true;
+    }
+
+    public int GetCurrentFloor()
+    {
+        return floorLevel;
     }
 
     public void OnPlayerDeath()
@@ -233,6 +263,29 @@ public class Floor : MonoBehaviour
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Gets the resource of the tile the player is in
+    /// </summary>
+    /// <returns></returns>
+    public ResourceData GetCurrentResource()
+    {
+        Vector2 pos = CurrentPlayerCell().GetData().position;
+
+        return GetResource(pos);
+    }
+
+    /// <summary>
+    /// Gets resource of the tile at position
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    public ResourceData GetResource(Vector2 pos)
+    {
+        ResourceData data = generatedFloor.resourceData.Where(ctx => ctx.position == pos).FirstOrDefault();
+
+        return data;
     }
 
     public Cell CurrentPlayerCell()

@@ -10,6 +10,10 @@ public class BaseStat
     public string statName;
     [SerializeField]
     private float baseValue;
+    [SerializeField]
+    private bool roundValue;
+    [SerializeField]
+    private Vector2 range = new Vector2(float.MinValue, float.MaxValue);
     [NonSerialized]
     public List<StatModifier> modifiers = new List<StatModifier>();
 
@@ -32,6 +36,19 @@ public class BaseStat
         statName = newName;
         baseValue = newValue;
         finalValue = baseValue;
+
+        roundValue = false;
+        range = new Vector2(float.MinValue, float.MaxValue);
+    }
+
+    public BaseStat(string newName, float newValue, bool newRoundValue, Vector2 newRange)
+    {
+        statName = newName;
+        baseValue = newValue;
+        finalValue = baseValue;
+
+        roundValue = newRoundValue;
+        range = newRange;
     }
 
     public void SetBaseValue(float newValue)
@@ -46,10 +63,15 @@ public class BaseStat
         modifiers.Add(newModifier);
     }
 
+    public void RequestUpdate()
+    {
+        updated = false;
+    }
+
     public void RemoveModifier(StatModifier statModifier)
     {
         if (modifiers == null) modifiers = new List<StatModifier>();
-        updated = true;
+        updated = false;
         modifiers.Remove(statModifier);
     }
 
@@ -87,6 +109,16 @@ public class BaseStat
                 default:
                     break;
             }
+        }
+
+
+        //Clamp to range
+        finalValue = Mathf.Clamp(finalValue, range.x, range.y);
+
+        //Round value if needed
+        if (roundValue)
+        {
+            finalValue = Mathf.Round(finalValue);
         }
 
 

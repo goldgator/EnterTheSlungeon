@@ -26,6 +26,16 @@ public class Chest : MonoBehaviour
     //R0 40%, R1 30%, R2 20%, R3 10%
     private void SelectItem()
     {
+        GameObject[] items;
+
+        //See if we're testing items
+        if (Floor.Instance.itemTesting)
+        {
+            items = Resources.LoadAll<GameObject>(ITEM_PATH + "RTest");
+            spawnedItem = items[RNGManager.GetItemRand(0, items.Length)];
+            return;
+        }
+
         //Returns 0-3 based on rarity
         int rarity = SelectRarity();
 
@@ -33,7 +43,7 @@ public class Chest : MonoBehaviour
         string rarityFolder = ITEM_PATH + "R" + rarity;
 
         //Get all items within the folder
-        GameObject[] items = Resources.LoadAll<GameObject>(rarityFolder);
+        items = Resources.LoadAll<GameObject>(rarityFolder);
 
         //Choose random item
         spawnedItem = items[RNGManager.GetItemRand(0, items.Length)];

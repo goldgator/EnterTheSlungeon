@@ -9,17 +9,33 @@ public class MusicManager : MonoBehaviour
 
     private const string MUSIC_PATH = "Audio/Music/";
 
-    public static MusicManager Instance { get; set; }
-    private void Awake()
-    {
-        if (Instance == null)
+    private static MusicManager instance;
+    public static MusicManager Instance { get
         {
-            Instance = this;
-        } else
-        {
-            Destroy(gameObject);
+            if (instance == null) instance = GameObject.FindObjectOfType<MusicManager>();
+            return instance;
         }
     }
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        } else
+        {
+            if (instance != this)
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    public void PlayFloorSong()
+    {
+        PlaySong("Floor" + Floor.Instance.floorLevel);
+    }
+
     private void Start()
     {
         musicSource = GetComponent<AudioSource>();

@@ -38,6 +38,14 @@ public class ItemManager : MonoBehaviour
         }
     }
 
+    public void RemoveMod(StatModifier modifier)
+    {
+        foreach (StatBlock block in targetStatBlocks)
+        {
+            block.RemoveModifier(modifier);
+        }
+    }
+
     public void AddItem(BaseItem item)
     {
         item.SetupItem();

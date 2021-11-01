@@ -50,7 +50,7 @@ public class CellUI : MonoBehaviour
 
         if (icon == null) return;
 
-        GameObject newObject = new GameObject("Icon");
+        GameObject newObject = new GameObject();
         Image newImage = newObject.AddComponent<Image>();
         newObject.transform.SetParent(baseUI, false);
 
@@ -62,13 +62,44 @@ public class CellUI : MonoBehaviour
         {
             case RoomData.RoomType.Boss:
                 newImage.color = Color.blue;
+                newImage.gameObject.name = "BossIcon";
                 break;
             case RoomData.RoomType.Mine:
-                newImage.color = Color.magenta;
+                newImage.color = Color.blue;
+                newImage.gameObject.name = "MineIcon";
                 break;
             case RoomData.RoomType.Item:
                 newImage.color = Color.yellow;
+                newImage.gameObject.name = "ItemIcon";
                 break;
+        }
+    }
+
+
+    public void UpdateIcon()
+    {
+        //Check if current cell is a mining room
+        if (cellData.roomOwner.roomType == RoomData.RoomType.Mine)
+        {
+            UpdateMineIcon();
+        }
+    }
+
+    private void UpdateMineIcon()
+    {
+        //Update Icon color
+        Image icon = transform.Find("BaseUI/MineIcon").GetComponent<Image>();
+
+        ResourceData currentResource = Floor.Instance.GetResource(cellData.position);
+        //Magenta if no resource
+        if (currentResource == null)
+        {
+            icon.color = Color.blue;
+            //Quartz color if over a resource
+        }
+        else
+        {
+            icon.color = Quartz.GetQuartzColor(currentResource.resourceType);
         }
     }
 

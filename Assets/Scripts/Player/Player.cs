@@ -19,6 +19,7 @@ public class Player : MonoBehaviour, IHealthDeath
     private StatBlock stats;
     private WeaponManager weaponManager;
     private Animator animator;
+    private SpriteRenderer renderer;
     private Rigidbody2D rb;
     private AudioSource audioSource;
     private Health playerHealth;
@@ -30,9 +31,22 @@ public class Player : MonoBehaviour, IHealthDeath
     private Vector3 lastMoveDir;
     private Vector3 velocity;
     private Wallet playerWallet = new Wallet();
-
-
     private const string PLAYER_PATH = "Prefabs/Player/Player";
+    public static GameObject secondaryWeapon;
+
+    //Events & delegates
+    public delegate void PlayerEvent();
+    public delegate void PlayerMoveEvent(Vector2 velocity);
+    public delegate void PlayerStatEvent(float stat);
+
+    public static event PlayerMoveEvent playerMoveEvent;
+    public static event PlayerStatEvent playerHealthEvent;
+    public static event PlayerEvent playerDodgeEvent;
+    
+
+
+
+    //Singleton
     private static Player instance;
     public static Player Instance { get { 
             if (instance == null)
@@ -44,6 +58,14 @@ public class Player : MonoBehaviour, IHealthDeath
             return instance;
         }
     }
+    public static bool InstanceExists()
+    {
+        return (instance != null);
+    }
+    public static void DestroyInstance()
+    {
+        if (instance != null) Destroy(instance.gameObject);
+    }
 
     private void Awake()
     {
@@ -51,6 +73,7 @@ public class Player : MonoBehaviour, IHealthDeath
         stats = GetComponent<StatBlock>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        renderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
         playerHealth = GetComponent<Health>();
         weaponManager = GetComponentInChildren<WeaponManager>();
@@ -70,6 +93,8 @@ public class Player : MonoBehaviour, IHealthDeath
         {
             weaponManager.AddGun(newWeapon);
         }
+
+        weaponManager.AddGun(secondaryWeapon);
     }
 
     public void OnPlayerDeath()
@@ -110,15 +135,32 @@ public class Player : MonoBehaviour, IHealthDeath
         }
     }
 
+    public Wallet GetWallet()
+    {
+        return playerWallet;
+    }
+
     private void ProcessMove()
     {
         velocity = InputManager.Instance.PlayerMovement.normalized;
         velocity *= stats.GetStatValue("MoveSpeed");
 
+        playerMoveEvent?.Invoke(velocity);
+
         lastMoveDir = velocity.normalized;
     }
     public void ForceStop() {
         velocity = new Vector2(0, 0);
+    }
+
+    public void TintPlayer(Color tint)
+    {
+        renderer.color = tint;
+    }
+
+    public void OnDamageTaken()
+    {
+        playerHealthEvent?.Invoke(playerHealth.HealthRatio);
     }
 
     private void Dodge()
@@ -129,6 +171,7 @@ public class Player : MonoBehaviour, IHealthDeath
             playerHealth.SetInvincibleTimer(0.25f);
             audioSource.clip = dodgeAudio;
             audioSource.Play();
+            playerDodgeEvent?.Invoke();
             StartCoroutine(DoDodge());
         }
     }
@@ -140,8 +183,10 @@ public class Player : MonoBehaviour, IHealthDeath
         //currentWeapon.gameObject.SetActive(false);
         currentWeapon.renderer.enabled = false;
         Vector3 dodgeDir = lastMoveDir;
-        if (dodgeDir.magnitude <= 0.1f) dodgeDir = new Vector3(transform.localScale.x, 0, 0);
-        transform.localScale = new Vector3(Mathf.Sign(dodgeDir.x), 1, 1);
+        if (dodgeDir.magnitude <= 0.1f) dodgeDir = new Vector3(1, 0, 0);
+
+        FlipSprite((dodgeDir.x < 0));
+        //transform.localScale = new Vector3(Mathf.Sign(dodgeDir.x), 1, 1);
 
         while (dodgeTime > 0)
         {
@@ -155,6 +200,11 @@ public class Player : MonoBehaviour, IHealthDeath
         //currentWeapon.gameObject.SetActive(true);
         currentWeapon.renderer.enabled = true;
         playerEnabled = true;
+    }
+
+    public void FlipSprite(bool spriteFlip)
+    {
+        renderer.flipX = spriteFlip;
     }
 
     public void AddQuartz(ResourceType type, int amount)

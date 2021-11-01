@@ -7,8 +7,11 @@ public class Room : MonoBehaviour
     public List<Cell> cells = new List<Cell>();
 
     //Events
-    public delegate void RoomEnter();
-    public RoomEnter roomEnterEvent;
+    public delegate void RoomEvent(Room room);
+    public RoomEvent roomEnterEvent;
+
+    public static RoomEvent entryRoomEvent;
+    public static RoomEvent anyRoomEnterEvent;
 
     private RoomContent roomContents;
     private RoomData myRoomData;
@@ -47,7 +50,11 @@ public class Room : MonoBehaviour
 
     private void Start()
     {
-        if (myRoomData.roomType == RoomData.RoomType.Entry) TakePlayer();
+        if (myRoomData.roomType == RoomData.RoomType.Entry)
+        {
+            TakePlayer();
+            entryRoomEvent?.Invoke(this);
+        }
     }
 
     public void InstantiateRoom(RoomData roomData)
@@ -115,11 +122,13 @@ public class Room : MonoBehaviour
         }
     }
 
-    public void RoomFinished()
+    public void UpdateRoomCompletion()
     {
         Floor.Instance.UpdateBossRoomState();
         UpdateCells();
     }
+
+   
 
     public void TakePlayer()
     {
@@ -135,11 +144,11 @@ public class Room : MonoBehaviour
         } else
         {
             CloseAllDoors();
-            roomEnterEvent?.Invoke();
+            roomEnterEvent?.Invoke(this);
         }
     }
 
-    private void CloseAllDoors()
+    public void CloseAllDoors()
     {
         foreach (Cell cell in cells)
         {

@@ -5,12 +5,13 @@ using UnityEngine;
 public class FloorData
 {
     public List<RoomData> roomData;
-    private List<RoomData> roomInteractOrder;
+    public List<RoomData> roomInteractOrder;
     public List<ResourceData> resourceData = new List<ResourceData>();
     public CellType[,] cells;
     public List<Vector2> originalSpots = new List<Vector2>();
     public FloorGenerator.FloorType floorType;
     private int sprinkleRoomsAdded = 0;
+    //bool failedFloor = false;
 
     public Vector2 roomMin;
     public Vector2 roomMax;
@@ -292,18 +293,8 @@ public class FloorData
         itemRoom.roomType = RoomData.RoomType.Item;
 
         //Assign Entry room, (first room in interact order)
-        if (roomInteractOrder[0].cellData.Count > 1)
-        {
-            //if first room is a big room, split the room, save the cell to find the old entry position
-            Debug.Log("Split Big room");
-            CellData startCell = roomInteractOrder[0].cellData[0];
-            SplitBigRoom(roomInteractOrder[0]);
-            startCell.roomOwner.roomType = RoomData.RoomType.Entry;
-            RandomRetreat(startCell.roomOwner, 3);
-        } else
-        {
-            roomInteractOrder[0].roomType = RoomData.RoomType.Entry;
-        }
+        roomInteractOrder[0].roomType = RoomData.RoomType.Entry;
+        
 
 
     }

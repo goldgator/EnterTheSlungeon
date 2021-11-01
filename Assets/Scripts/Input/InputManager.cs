@@ -3,12 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class InputManager : MonoBehaviour
 {
     //State variables
     public static bool isGamepad = false;
-    public Camera playerCamera;
+    private Camera playerCamera;
+    public Camera PlayerCamera
+    {
+        get
+        {
+            if (playerCamera == null) FindCamera();
+
+            return playerCamera;
+        }
+    }
     public BaseControls baseControls;
 
     //Delegates and events
@@ -36,6 +46,12 @@ public class InputManager : MonoBehaviour
     public event EventDelegate reloadStartEvent;
     public event UpdateDelegate reloadUpdateEvent;
     public event EventDelegate reloadStopEvent;
+
+    public event EventDelegate interactStartEvent;
+    public event UpdateDelegate interactUpdateEvent;
+    public event EventDelegate interactStopEvent;
+
+    
 
     #region Input Properties
     //Input values
@@ -67,7 +83,9 @@ public class InputManager : MonoBehaviour
     {
         get
         {
-            return playerCamera.ScreenToWorldPoint(MousePosition);
+            //if (PlayerCamera == null) throw new ArgumentException("Ass");
+
+            return PlayerCamera.ScreenToWorldPoint(MousePosition);
         }
     }
 
@@ -102,6 +120,14 @@ public class InputManager : MonoBehaviour
             return baseControls.Controls.Map.triggered;
         }
     }
+
+    public bool Interact
+    {
+        get
+        {
+            return baseControls.Controls.Interact.triggered;
+        }
+    }
     #endregion
 
     #region Event Subscription
@@ -120,13 +146,45 @@ public class InputManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+
+            //Add sceneLoaded event
+            SceneManager.sceneLoaded += OnSceneLoaded;
         } else
         {
-            Destroy(gameObject);
+            if (instance != this)
+            {
+                Destroy(gameObject);
+            }
         }
     }
+
+    private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        FindCamera();
+    }
+
+    private void FindCamera()
+    {
+        PlayerCamera newCamera = GameObject.FindObjectOfType<PlayerCamera>();
+
+        //Take camera off of playerCamera
+        if (newCamera != null)
+        {
+            playerCamera = newCamera.GetComponent<Camera>();
+        //Otherwise settle for main camera
+        } else
+        {
+            playerCamera = Camera.main;
+        }
+
+        //if (playerCamera) Debug.Log("Found camera");
+    }
+
     private void Start()
     {
+        //if the camera hasn't been created, take the main camera
+        if (PlayerCamera == null) FindCamera();
+
         baseControls = new BaseControls();
         baseControls.Enable();
         DontDestroyOnLoad(gameObject);
@@ -145,6 +203,9 @@ public class InputManager : MonoBehaviour
 
         baseControls.Controls.Reload.started += ctx => ReloadStart(ctx);
         baseControls.Controls.Reload.canceled += ctx => ReloadStop(ctx);
+
+        baseControls.Controls.Interact.started += ctx => InteractStart(ctx);
+        baseControls.Controls.Interact.canceled += ctx => InteractStop(ctx);
     }
 
     void MoveStart(InputAction.CallbackContext context)
@@ -198,6 +259,16 @@ public class InputManager : MonoBehaviour
         reloadStopEvent?.Invoke();
     }
 
+    void InteractStart(InputAction.CallbackContext context)
+    {
+        interactStartEvent?.Invoke();
+    }
+
+    void InteractStop(InputAction.CallbackContext context)
+    {
+        interactStopEvent?.Invoke();
+    }
+
     private void Update()
     {
         moveUpdateEvent?.Invoke(PlayerMovement);
@@ -205,5 +276,7 @@ public class InputManager : MonoBehaviour
         fireUpdateEvent?.Invoke(Fire);
 
         dodgeUpdateEvent?.Invoke(DodgeUpdate);
+
+        interactUpdateEvent?.Invoke(Interact);
     }
 }

@@ -52,7 +52,8 @@ public class Portal : MonoBehaviour
     {
         SceneManager.sceneLoaded += SceneLoaded;
 
-        SceneManager.LoadScene("FloorScene");
+        SceneDirector.Instance.LoadScene("FloorScene");
+       
     }
 
     private void SceneLoaded(Scene scene, LoadSceneMode mode)

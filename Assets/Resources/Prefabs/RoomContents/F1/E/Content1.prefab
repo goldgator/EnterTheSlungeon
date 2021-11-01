@@ -55,12 +55,12 @@ MonoBehaviour:
     spawners:
     - {fileID: 7556062528935546720}
   - hasParticles: 1
-    timeToSpawn: 3
+    timeToSpawn: 999
     spawners:
     - {fileID: 1733301854606262878}
     - {fileID: 3313172961077062234}
   - hasParticles: 1
-    timeToSpawn: 5.5
+    timeToSpawn: 999
     spawners:
     - {fileID: 4526393368978061532}
     - {fileID: 6911793406175562463}

@@ -25,13 +25,22 @@ public class PlayerCamera : MonoBehaviour
 
 
 
+    public static PlayerCamera instance;
+    public static PlayerCamera Instance { get
+        {
+            if (instance == null)
+            {
+                instance = GameObject.FindObjectOfType<PlayerCamera>();
+            }
 
-    public static PlayerCamera Instance { get; set; }
+            return instance;
+        }
+    }
     private void Awake()
     {
-        if (Instance == null)
+        if (instance == null)
         {
-            Instance = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
         } else
         {
@@ -40,6 +49,14 @@ public class PlayerCamera : MonoBehaviour
         }
     }
 
+    public static bool InstanceExists()
+    {
+        return (instance != null);
+    }
+    public static void DestroyInstance()
+    {
+        if (instance != null) Destroy(instance.gameObject);
+    }
 
 
     private void InstantiateFocus()

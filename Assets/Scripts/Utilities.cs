@@ -147,7 +147,7 @@ public static class Utilities
     {
         angle *= Mathf.Deg2Rad;
         float x = Mathf.Cos(angle);
-        float y = Mathf.Cos(angle);
+        float y = Mathf.Sin(angle);
 
         return new Vector2(x,y);
     }
@@ -159,5 +159,51 @@ public static class Utilities
         list.Insert(0, item);
     }
 
+    public static float MinAbs(float value1, float value2)
+    {
+        if (Mathf.Abs(value1) < Mathf.Abs(value2))
+        {
+            return value1;
+        } else
+        {
+            return value2;
+        }
+    }
+
+    public static int MinAbs(int value1, int value2)
+    {
+        if (Mathf.Abs(value1) < Mathf.Abs(value2))
+        {
+            return value1;
+        }
+        else
+        {
+            return value2;
+        }
+    }
+
+    public static float MaxAbs(float value1, float value2)
+    {
+        if (Mathf.Abs(value1) > Mathf.Abs(value2))
+        {
+            return value1;
+        }
+        else
+        {
+            return value2;
+        }
+    }
+
+    public static int MaxAbs(int value1, int value2)
+    {
+        if (Mathf.Abs(value1) > Mathf.Abs(value2))
+        {
+            return value1;
+        }
+        else
+        {
+            return value2;
+        }
+    }
 }
 

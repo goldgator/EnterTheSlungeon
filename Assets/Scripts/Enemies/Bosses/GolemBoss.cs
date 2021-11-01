@@ -25,7 +25,7 @@ public class GolemBoss : BaseEnemy
     protected override void Start()
     {
         base.Start();
-        MusicManager.Instance.PlaySong("Boss2");
+        MusicManager.Instance.PlaySong("Boss1");
         stopTime = RNGManager.GetEventRand(attackCooldown / 4f, attackCooldown / 2f);
     }
 
@@ -37,6 +37,12 @@ public class GolemBoss : BaseEnemy
         {
             HandleStates();
         }
+    }
+
+    public override void Death()
+    {
+        MusicManager.Instance.PlaySong("Victory");
+        base.Death();
     }
 
     private void HandleStates()

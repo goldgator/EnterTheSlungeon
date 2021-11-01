@@ -22,11 +22,40 @@ public class Quartz : MonoBehaviour
     private float speed = 14.0f;
     private float speedUpTime = 3.0f;
 
+    private static GameObject quartzPrefab;
+    public static GameObject QuartzPrefab
+    {
+        get
+        {
+            if (quartzPrefab == null) quartzPrefab = Resources.Load<GameObject>("Prefabs/Misc/Quartz");
+
+            return quartzPrefab;
+        }
+    }
+
     public static Sprite GetQuartzSprite(ResourceType type, bool chunk = false)
     {
         string path = (chunk) ? QUARTZ_PATH + "Chunks/" : QUARTZ_PATH;
 
         return Resources.Load<Sprite>(path + type.ToString());
+    }
+
+
+    public static Color GetQuartzColor(ResourceType type)
+    {
+        switch (type)
+        {
+            case ResourceType.Time:
+                return new Color(.9f, .9f, .9f);
+            case ResourceType.Space:
+                return new Color(1f, .3f, .5f);
+            case ResourceType.Void:
+                return new Color(0f, 0f, 0f);
+            case ResourceType.Valuable:
+                return new Color(1f, 0f, 1f);
+            default:
+                return new Color(0f, .5f, 0f);
+        }
     }
 
     public void SetType(ResourceType newType)

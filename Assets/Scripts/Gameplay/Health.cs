@@ -9,16 +9,17 @@ public class Health : MonoBehaviour
     private float currentHealth = 1;
     public float invinicibilityTime = 0.0f;
     private float invincTimer = 0;
-    public bool hasRegen = false;
-    public float regenTime = 2.0f;
-    private float currentRegTime;
-    public float regenAmount = 1.0f;
+    //public bool hasRegen = false;
+    //public float regenTime = 2.0f;
+    //private float currentRegTime;
+    //public float regenAmount = 1.0f;
 
-    public Health parentHealth;
-    public bool parentAddHealth;
+    //public Health parentHealth;
+    //public bool parentAddHealth;
 
-    public bool HasDied { get { return hasDied; } }
     private bool hasDied = false;
+    public bool HasDied { get { return hasDied; } }
+    public float HealthRatio { get => currentHealth / maxHealth; }
 
     //public UnityEvent deathEvent;
 
@@ -55,7 +56,7 @@ public class Health : MonoBehaviour
         if (invincTimer > 0) return;
 
         currentHealth -= minus;
-        parentHealth?.SubtractHealth(minus);
+
 
         if (minus >= subEventThreshold)
         {
@@ -77,14 +78,7 @@ public class Health : MonoBehaviour
 
     private void Update()
     {
-        currentRegTime += Time.deltaTime;
         invincTimer -= Time.deltaTime;
-
-        if (currentRegTime > regenTime && hasRegen && !hasDied)
-        {
-            AddHealth(regenAmount);
-            currentRegTime = 0;
-        }
 
         if (currentHealth <= 0 && !hasDied)
         {
