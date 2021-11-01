@@ -5,22 +5,42 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class PlayerInteractPrompt : MonoBehaviour
 {
-    public static PlayerInteractPrompt Instance { get; set; }
+    public static PlayerInteractPrompt instance;
+    public static PlayerInteractPrompt Instance { get
+        {
+            if (instance == null) instance = GameObject.FindObjectOfType<PlayerInteractPrompt>();
+
+            return instance;
+        }
+    }
+
+    public static bool InstanceExists()
+    {
+        return (instance != null);
+    }
+
+    private void OnDestroy()
+    {
+        instance = null;
+    }
+
     private void Awake()
     {
-        Instance = this;
+        instance = this;
 
         HidePrompt();
     }
 
     public void ShowPrompt()
     {
-        gameObject.SetActive(true);
+        if (this == null) return;
+        gameObject?.SetActive(true);
     }
 
     public void HidePrompt()
     {
-        gameObject.SetActive(false);
+        if (this == null) return;
+        gameObject?.SetActive(false);
     }
 
 

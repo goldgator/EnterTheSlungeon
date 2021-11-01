@@ -107,7 +107,7 @@ MonoBehaviour:
     roundValue: 0
     range: {x: 0.2, y: 10}
   - statName: OverheatAddend
-    baseValue: 5
+    baseValue: 2
     roundValue: 0
     range: {x: 0, y: 100}
   - statName: OverheatRecovery

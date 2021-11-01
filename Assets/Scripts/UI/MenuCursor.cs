@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class MenuCursor : MonoBehaviour
 
     //Store the current Interactable
     private Interactable currentInteractable;
+    private SpriteRenderer renderer;
 
     private Collider2D collider;
     [SerializeField]
@@ -26,6 +28,9 @@ public class MenuCursor : MonoBehaviour
     {
         Instance = this;
         collider = GetComponent<Collider2D>();
+        renderer = GetComponentInChildren<SpriteRenderer>();
+
+        SetCursorUIState(uiState);
     }
 
     private void OnEnable()
@@ -43,6 +48,8 @@ public class MenuCursor : MonoBehaviour
 
         collider.enabled = !state;
         canvasObject.SetActive(state);
+        renderer.enabled = !state;
+
         if (state) currentInteractable = null;
     }
 
@@ -69,15 +76,15 @@ public class MenuCursor : MonoBehaviour
 
     private void FollowMouse()
     {
-        if (uiState)
-        {
+        
+        if (uiState){
             cursorUIObject.position = InputManager.Instance.MousePosition;
         } else
         {
             Vector3 newPos = InputManager.Instance.MouseWorldPosition;
             newPos.z = 0;
             transform.position = newPos;
-        }
+        }   
 
     }
 

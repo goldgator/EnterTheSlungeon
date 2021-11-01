@@ -25,16 +25,19 @@ public class Floor : MonoBehaviour
     public int floorLevel = 1;
     public FloorGenerator.FloorType floorType = FloorGenerator.FloorType.Expansive;
     public int patternSize = 7;
-    public string stringSeed;
-    public int seed;
+    [SerializeField]
+    private string stringSeedOverwrite;
+    [SerializeField]
+    private int seedOverwrite = 0;
     public bool debug = false;
     public bool itemTesting = false;
-    private int currentGenData = 0;
+    public static int currentGenData = 0;
+
     
 
     [Header("Components")]
     public GameObject floorCanvas;
-    public GameObject tempVictoryPanel;
+    public GameObject victoryPanel;
     public GameObject tempLossPanel;
 
 
@@ -43,7 +46,8 @@ public class Floor : MonoBehaviour
     private Room bossRoom;
 
     private bool gameOver = false;
-
+    public static string stringSeed = "";
+    public static int seed = 0;
 
     //Events
     public delegate void FloorEvent(Floor floor);
@@ -72,18 +76,26 @@ public class Floor : MonoBehaviour
 
     public void SetFloorAttributes()
     {
-        currentGenData++;
-
         floorLevel = FloorGenerator.floorGenSequence[currentGenData].floorLevel;
         floorType = FloorGenerator.floorGenSequence[currentGenData].floorType;
         patternSize = FloorGenerator.floorGenSequence[currentGenData].patternSize;
+        currentGenData++;
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        UseOverwriteSeeds();
         StartFloor();
+        MusicManager.Instance.PlayFloorSong();
     }
+
+    private void UseOverwriteSeeds()
+    {
+        if (stringSeedOverwrite != "") stringSeed = stringSeedOverwrite;
+        if (seedOverwrite != 0) seed = seedOverwrite;
+    }
+
 
     static bool seeded = false;
     private void StartFloor()
@@ -116,6 +128,7 @@ public class Floor : MonoBehaviour
         }
 
         RNGManager.instantiated = true;
+
         return seeded;
     }
 
@@ -140,18 +153,23 @@ public class Floor : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
-                SceneManager.LoadScene("FloorScene");
+                SceneManager.LoadScene("MainMenu");
             }
         }
     }
 
-    private void OnFloorFinish()
+    public void OnFloorFinish()
     {
-        tempVictoryPanel.SetActive(true);
+        victoryPanel.SetActive(true);
         Player.Instance.SetPlayerEnabled(false);
         Player.Instance.ForceStop();
         MusicManager.Instance.PlaySong("Victory");
         gameOver = true;
+    }
+
+    public int GetCurrentFloor()
+    {
+        return floorLevel;
     }
 
     public void OnPlayerDeath()

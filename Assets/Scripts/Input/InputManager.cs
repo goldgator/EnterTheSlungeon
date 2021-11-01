@@ -9,7 +9,16 @@ public class InputManager : MonoBehaviour
 {
     //State variables
     public static bool isGamepad = false;
-    public Camera playerCamera;
+    private Camera playerCamera;
+    public Camera PlayerCamera
+    {
+        get
+        {
+            if (playerCamera == null) FindCamera();
+
+            return playerCamera;
+        }
+    }
     public BaseControls baseControls;
 
     //Delegates and events
@@ -74,7 +83,9 @@ public class InputManager : MonoBehaviour
     {
         get
         {
-            return playerCamera.ScreenToWorldPoint(MousePosition);
+            //if (PlayerCamera == null) throw new ArgumentException("Ass");
+
+            return PlayerCamera.ScreenToWorldPoint(MousePosition);
         }
     }
 
@@ -140,7 +151,10 @@ public class InputManager : MonoBehaviour
             SceneManager.sceneLoaded += OnSceneLoaded;
         } else
         {
-            Destroy(gameObject);
+            if (instance != this)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
@@ -162,12 +176,14 @@ public class InputManager : MonoBehaviour
         {
             playerCamera = Camera.main;
         }
+
+        //if (playerCamera) Debug.Log("Found camera");
     }
 
     private void Start()
     {
         //if the camera hasn't been created, take the main camera
-        if (playerCamera == null) FindCamera();
+        if (PlayerCamera == null) FindCamera();
 
         baseControls = new BaseControls();
         baseControls.Enable();

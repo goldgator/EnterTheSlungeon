@@ -32,6 +32,7 @@ public class Player : MonoBehaviour, IHealthDeath
     private Vector3 velocity;
     private Wallet playerWallet = new Wallet();
     private const string PLAYER_PATH = "Prefabs/Player/Player";
+    public static GameObject secondaryWeapon;
 
     //Events & delegates
     public delegate void PlayerEvent();
@@ -56,6 +57,14 @@ public class Player : MonoBehaviour, IHealthDeath
 
             return instance;
         }
+    }
+    public static bool InstanceExists()
+    {
+        return (instance != null);
+    }
+    public static void DestroyInstance()
+    {
+        if (instance != null) Destroy(instance.gameObject);
     }
 
     private void Awake()
@@ -84,6 +93,8 @@ public class Player : MonoBehaviour, IHealthDeath
         {
             weaponManager.AddGun(newWeapon);
         }
+
+        weaponManager.AddGun(secondaryWeapon);
     }
 
     public void OnPlayerDeath()

@@ -14,7 +14,10 @@ public class MenuPlayer : MonoBehaviour
     private Animator animator;
     private SpriteRenderer renderer;
 
+    [SerializeField]
+    private Animator trapdoorAnimator;
 
+    public bool listening = true;
     public bool AtLocation { get => (targetPos == transform.position); }
     
 
@@ -26,6 +29,11 @@ public class MenuPlayer : MonoBehaviour
 
         animator = GetComponent<Animator>();
         renderer = GetComponent<SpriteRenderer>();
+        trapdoorAnimator.speed = 0;
+
+        //Kill any player instance that might be alive
+        if (Player.InstanceExists()) Player.DestroyInstance();
+        if (PlayerCamera.InstanceExists()) PlayerCamera.DestroyInstance();
     }
 
     private void Start()
@@ -35,6 +43,9 @@ public class MenuPlayer : MonoBehaviour
 
     public void SetTargetPos(Transform targetTransform)
     {
+        //Ignore if not listening
+        if (!listening) return;
+
         targetPos = targetTransform.position;
     }
 
@@ -72,5 +83,27 @@ public class MenuPlayer : MonoBehaviour
 
             renderer.flipX = isLeft;
         }
+    }
+
+    public void StartFloorAnim()
+    {
+        //Set speed to 0 so it doesn't move
+        listening = false;
+
+        //Start coroutine so it waits till they are in place
+        StartCoroutine(StartFloorCoroutine());
+    }
+
+    private IEnumerator StartFloorCoroutine()
+    {
+        while (!AtLocation) yield return null;
+
+        animator.SetTrigger("Fall");
+        trapdoorAnimator.speed = 1;
+    }
+
+    private void StartFloor()
+    {
+        SceneDirector.Instance.LoadScene("StartRun");
     }
 }

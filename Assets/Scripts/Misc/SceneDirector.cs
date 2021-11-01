@@ -15,6 +15,8 @@ public class SceneDirector : MonoBehaviour
     private float transitionTime = 1.0f;
     private float timer;
 
+    private bool loadFloorData = false;
+
     private static SceneDirector instance;
     public static SceneDirector Instance
     {
@@ -44,7 +46,13 @@ public class SceneDirector : MonoBehaviour
     private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
         //Start Untranstiation Coroutine
-        Debug.Log("Scene loaded");
+        //Debug.Log("Scene loaded");
+        if (loadFloorData)
+        {
+            loadFloorData = false;
+            Floor.Instance.SetFloorAttributes();
+        }
+
         StartCoroutine(OnSceneLoadCoroutine());
     }
 
@@ -70,7 +78,7 @@ public class SceneDirector : MonoBehaviour
         }
 
         //Load the scene
-        Debug.Log("Started scene load");
+        //Debug.Log("Started scene load");
         SceneManager.LoadScene(sceneName);
     }
 
@@ -89,6 +97,17 @@ public class SceneDirector : MonoBehaviour
             yield return null;
         }
     }
+
+
+    public void LoadFloorScene(string seed)
+    {
+        Floor.stringSeed = seed;
+
+        loadFloorData = true;
+        LoadScene("FloorScene");
+    }
+
+    
 
 
     public void CloseGame()

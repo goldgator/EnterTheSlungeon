@@ -46,6 +46,11 @@ public class Interactable : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        FindInterfaces();
+    }
+
+    private void Awake()
+    {
         outlineMaterial = Resources.Load<Material>("Materials/Flash");
         renderer = GetComponent<SpriteRenderer>();
         collider = GetComponent<Collider2D>();
@@ -53,7 +58,6 @@ public class Interactable : MonoBehaviour
         //Create outline and hide
         CreateOutline();
         if (interactText != null && interactText != "") CreateText();
-        FindInterfaces();
     }
 
     private void FindInterfaces()
@@ -74,7 +78,7 @@ public class Interactable : MonoBehaviour
         SpriteRenderer outlineRenderer = outline.AddComponent<SpriteRenderer>();
         outline.transform.SetParent(transform, false);
         outlineRenderer.sprite = renderer.sprite;
-        outlineRenderer.sortingOrder = renderer.sortingOrder - 1;
+        outlineRenderer.sortingOrder = renderer.sortingOrder - 2;
         outlineRenderer.material = outlineMaterial;
 
 
@@ -158,7 +162,7 @@ public class Interactable : MonoBehaviour
         outline.transform.localScale = DetermineScale();
 
         //Create Prompt
-        PlayerInteractPrompt.Instance?.ShowPrompt();
+        if (PlayerInteractPrompt.InstanceExists()) PlayerInteractPrompt.Instance?.ShowPrompt();
 
         //Trigger relevant events
         inRangeEvent?.Invoke();
@@ -169,14 +173,14 @@ public class Interactable : MonoBehaviour
         //Unsubscribe from Interact listener
         if (usesKey) InputManager.Instance.interactStartEvent -= OnInteract;
 
-        //Hide outline
+        //Hide outline 
         outline.SetActive(false);
 
         //Hide text if available
         textObject?.SetActive(false);
 
         //Remove Prompt
-        PlayerInteractPrompt.Instance?.HidePrompt();
+        if (PlayerInteractPrompt.InstanceExists()) PlayerInteractPrompt.Instance?.HidePrompt();
 
         //Trigger relevant events
         leaveRangeEvent?.Invoke();

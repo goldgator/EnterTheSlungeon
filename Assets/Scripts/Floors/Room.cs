@@ -54,7 +54,6 @@ public class Room : MonoBehaviour
         {
             TakePlayer();
             entryRoomEvent?.Invoke(this);
-            MusicManager.Instance.PlaySong("Floor3");
         }
     }
 

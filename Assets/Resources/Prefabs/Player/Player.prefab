@@ -1683,8 +1683,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   startingWeapons:
-  - {fileID: 5540495575679167429, guid: 6622f2de70f32484ab314e39314b8064, type: 3}
-  - {fileID: 5540495575679167429, guid: aee8b87f75ecc6041a0aa4bf34cca9b9, type: 3}
+  - {fileID: 5540495575679167429, guid: 6ba8688504ccea14bac7074807cfe7e3, type: 3}
   dodgeAudio: {fileID: 8300000, guid: eb2ec8a100217b5469d715e324d5b227, type: 3}
 --- !u!95 &1003930773
 Animator:

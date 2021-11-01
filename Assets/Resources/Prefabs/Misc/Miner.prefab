@@ -148,11 +148,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 10
   invinicibilityTime: 0
-  hasRegen: 0
-  regenTime: 2
-  regenAmount: 1
-  parentHealth: {fileID: 0}
-  parentAddHealth: 0
   subEventThreshold: 0.1
   subtractEvent:
     m_PersistentCalls:
@@ -271,13 +266,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec372db8b2dc0d64fb3b3d336e516e32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventBaseTime: 60
+  eventBaseTime: 180
   spawnTime: 3
   maxSpawns: 4
   minSpawnRadius: 2.7
   maxspawnRadius: 7.3
   enemyPool:
-  - 
+  - EyeballSlime
+  - Slime
+  - Bat
+  - Bat
+  - Skeleton
+  - Skeleton
   revealParent: {fileID: 5150842533474334126}
   particles: {fileID: 4618572298388336423}
   quartzRenderer: {fileID: 7439216782462871249}
@@ -295,6 +295,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOn: 1
+  usesKey: 1
+  interactText: 
   interactEvent:
     m_PersistentCalls:
       m_Calls:
@@ -310,6 +312,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  inRangeEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  leaveRangeEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!212 &9124771393702403751
 SpriteRenderer:
   m_ObjectHideFlags: 0

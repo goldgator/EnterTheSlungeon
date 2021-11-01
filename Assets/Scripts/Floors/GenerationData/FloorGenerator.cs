@@ -70,11 +70,19 @@ public static class FloorGenerator
         //Don't even bother if floorData was not even created
         if (floorData == null) return false;
 
+        //Determine if entry room is a big room
+        //Reject if so
+        if (floorData.roomInteractOrder[0].cellData.Count > 1)
+        {
+            Debug.LogWarning("Generated floor rejected for: Entry room was a big room");
+            return false;
+        }
+
         //Determine how many rooms remain in their original spot
         //Reject if over 1
         if (floorData.UnshuffledRooms() > 1)
         {
-            Debug.LogError("Generated floor rejected for: poor shuffling");
+            Debug.LogWarning("Generated floor rejected for: Poor shuffling");
             return false;
         }
 
@@ -82,7 +90,7 @@ public static class FloorGenerator
         //Reject if it didn't
         if (floorData.resourceData.Count < 2)
         {
-            Debug.LogError("Generated floor rejected for: no resources");
+            Debug.LogWarning("Generated floor rejected for: No resources");
             return false;
         }
 

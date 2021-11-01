@@ -114,7 +114,7 @@ public class QuartzMiner : MonoBehaviour, IRoomObject, IInteractEvent
         quartzCollider.enabled = true;
 
         //Change music
-        MusicManager.Instance.PlaySong("Floor3");
+        MusicManager.Instance.PlayFloorSong();
 
         //Clear floor resource data
         Floor.Instance.GetFloorData().resourceData.Clear();

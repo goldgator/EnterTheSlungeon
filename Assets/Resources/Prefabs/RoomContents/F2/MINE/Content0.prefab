@@ -3426,34 +3426,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Miner
       objectReference: {fileID: 0}
-    - target: {fileID: 7902280257290944352, guid: 137827fe65afe644fbb08bba8418b3c8, type: 3}
-      propertyPath: enemyPool.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7902280257290944352, guid: 137827fe65afe644fbb08bba8418b3c8, type: 3}
-      propertyPath: enemyPool.Array.data[0]
-      value: EyeballSlime
-      objectReference: {fileID: 0}
-    - target: {fileID: 7902280257290944352, guid: 137827fe65afe644fbb08bba8418b3c8, type: 3}
-      propertyPath: enemyPool.Array.data[1]
-      value: Slime
-      objectReference: {fileID: 0}
-    - target: {fileID: 7902280257290944352, guid: 137827fe65afe644fbb08bba8418b3c8, type: 3}
-      propertyPath: enemyPool.Array.data[2]
-      value: Bat
-      objectReference: {fileID: 0}
-    - target: {fileID: 7902280257290944352, guid: 137827fe65afe644fbb08bba8418b3c8, type: 3}
-      propertyPath: enemyPool.Array.data[3]
-      value: Bat
-      objectReference: {fileID: 0}
-    - target: {fileID: 7902280257290944352, guid: 137827fe65afe644fbb08bba8418b3c8, type: 3}
-      propertyPath: enemyPool.Array.data[4]
-      value: Skeleton
-      objectReference: {fileID: 0}
-    - target: {fileID: 7902280257290944352, guid: 137827fe65afe644fbb08bba8418b3c8, type: 3}
-      propertyPath: enemyPool.Array.data[5]
-      value: Skeleton
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 137827fe65afe644fbb08bba8418b3c8, type: 3}
 --- !u!4 &7769439581659944077 stripped
