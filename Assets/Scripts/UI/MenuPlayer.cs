@@ -34,6 +34,9 @@ public class MenuPlayer : MonoBehaviour
         //Kill any player instance that might be alive
         if (Player.InstanceExists()) Player.DestroyInstance();
         if (PlayerCamera.InstanceExists()) PlayerCamera.DestroyInstance();
+
+        //Set music
+        MusicManager.Instance.PlaySong("MainTheme");
     }
 
     private void Start()

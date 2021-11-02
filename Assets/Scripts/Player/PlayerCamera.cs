@@ -53,6 +53,7 @@ public class PlayerCamera : MonoBehaviour
     {
         return (instance != null);
     }
+
     public static void DestroyInstance()
     {
         if (instance != null) Destroy(instance.gameObject);
