@@ -9,6 +9,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Collider2D))]
 public class Interactable : MonoBehaviour
 {
+    private bool locked = false;
     public bool isOn = true;
     [SerializeField]
     private bool usesKey = true;
@@ -125,7 +126,10 @@ public class Interactable : MonoBehaviour
     }
 
     private void OnInteract() {
-        interactEvent?.Invoke();
+        if (!locked)
+        {
+            interactEvent?.Invoke();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -141,7 +145,7 @@ public class Interactable : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && isOn)
+        if (collision.CompareTag("Player"))
         {
             InteractLeave();
         }
@@ -194,5 +198,10 @@ public class Interactable : MonoBehaviour
         {
             InteractLeave();
         }
+    }
+
+    public void SetLocked(bool state)
+    {
+        locked = state;
     }
 }

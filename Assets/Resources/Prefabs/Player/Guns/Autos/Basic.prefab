@@ -128,7 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   renderer: {fileID: 6238623091948740227}
   shotTransform: {fileID: 2935413535987004734}
-  gunSprite: {fileID: 21300000, guid: 4e6574e688677b949b5b5d2b33cdad70, type: 3}
+  gunSprite: {fileID: 21300000, guid: 8e90f1f8aa8618142ab6bc01f41e523f, type: 3}
   projectile: {fileID: 6229470945475235130, guid: 119b20632921a004a9169ad642aa077b, type: 3}
   gunSound: {fileID: 8300000, guid: 6739c01659ad96d47987f4ddee226b36, type: 3}
 --- !u!82 &2947377069368998517
@@ -298,12 +298,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 101
-  m_Sprite: {fileID: 21300000, guid: 4e6574e688677b949b5b5d2b33cdad70, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8e90f1f8aa8618142ab6bc01f41e523f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.6875, y: 0.4375}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

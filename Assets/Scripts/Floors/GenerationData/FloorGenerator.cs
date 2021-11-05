@@ -31,7 +31,9 @@ public static class FloorGenerator
 
     //First one is default, values in inspector will take priority
     public static FloorGenData[] floorGenSequence = {
+            new FloorGenData(1, 5, FloorType.Expansive),
             new FloorGenData(1, 7, FloorType.Expansive),
+            new FloorGenData(2, 5, FloorType.Tight),
             new FloorGenData(2, 7, FloorType.Tight),
             new FloorGenData(3, 7, FloorType.ConstrainedExpansive)
         };

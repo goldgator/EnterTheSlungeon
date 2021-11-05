@@ -10,6 +10,8 @@ public class Portal : MonoBehaviour
 {
     private float enableTimer = 0.1f;
     private bool enabled = false;
+    [SerializeField]
+    private bool toShop = false;
 
     private SpriteRenderer renderer;
     private CircleCollider2D collider;
@@ -44,7 +46,13 @@ public class Portal : MonoBehaviour
     {
         if (enabled && collision.CompareTag("Player"))
         {
-            LoadNextFloor();
+            if (toShop)
+            {
+                SceneDirector.Instance.LoadScene("ShopScene");
+            } else
+            {
+                LoadNextFloor();
+            }
         }
     }
 

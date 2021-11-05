@@ -10,8 +10,8 @@ public static class RNGManager
     public static bool instantiated;
 
     //ALL OF THESE ARE System.Random classes, NOT UnityEngine.Random
-    private static Random worldRand;
-    private static Random itemRand;
+    private static Random worldRand = new Random();
+    private static Random itemRand = new Random();
     private static Random eventRand = new Random();
 
 

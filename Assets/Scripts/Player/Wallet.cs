@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 public class Wallet
 {
-    private int voidQuartz;
-    private int spaceQuartz;
-    private int timeQuartz;
+    private int voidQuartz = 0;
+    private int spaceQuartz = 0;
+    private int timeQuartz = 0;
     private int valuableQuartz;
     //Other usable items go here
 
@@ -52,6 +52,23 @@ public class Wallet
             case ResourceType.Valuable:
                 valuableQuartz -= amount;
                 break;
+        }
+    }
+
+    public int QuartzAmount(ResourceType quartzType)
+    {
+        switch (quartzType)
+        {
+            case ResourceType.Time:
+                return TimeQuartz;
+            case ResourceType.Space:
+                return SpaceQuartz;
+            case ResourceType.Void:
+                return VoidQuartz;
+            case ResourceType.Valuable:
+                return ValuableQuartz;
+            default:
+                return -1;
         }
     }
 }

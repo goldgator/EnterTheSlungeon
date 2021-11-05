@@ -30,6 +30,7 @@ public class Floor : MonoBehaviour
     [SerializeField]
     private int seedOverwrite = 0;
     public bool debug = false;
+    public static bool ItemTesting { get; set; }
     public bool itemTesting = false;
     public static int currentGenData = 0;
 
@@ -72,6 +73,7 @@ public class Floor : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        ItemTesting = itemTesting; 
     }
 
     public void SetFloorAttributes()
