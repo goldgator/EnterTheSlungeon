@@ -6,6 +6,12 @@ public class ChargeWeapon : BaseWeapon
 {
     public bool canReleaseEarly = true;
     private float chargeTime = 0f;
+    [SerializeField]
+    private float shakeStrength = 0.05f;
+    [SerializeField]
+    private GameObject chargingAnim;
+
+    private Vector3 lastOffset = new Vector3();
 
     protected override void OnEnable()
     {
@@ -22,7 +28,24 @@ public class ChargeWeapon : BaseWeapon
     protected override void Fire()
     {
         chargeTime += Time.deltaTime;
-        //Add animations later
+
+        //Add sparkle effect if finished charging
+        float maxChargeTime = stats.GetStatValue("ChargeTime");
+        chargingAnim.SetActive(chargeTime >= maxChargeTime);
+
+        //Shake anim
+        //Redo last offset to put back to normal pos
+        transform.localPosition -= lastOffset;
+
+        //Get random Vector2
+        float randAngle = RNGManager.GetEventRand(0, 360f) * Mathf.Deg2Rad;
+        Vector2 direction = new Vector2(Mathf.Cos(randAngle), Mathf.Sin(randAngle));
+
+        //Get currentStrength
+        float currentStrength = Mathf.Lerp(0, shakeStrength, chargeTime / maxChargeTime);
+
+        lastOffset = new Vector3(direction.x * currentStrength, direction.y * currentStrength);
+        transform.localPosition += lastOffset;
     }
 
     private void FireRelease()
@@ -30,10 +53,15 @@ public class ChargeWeapon : BaseWeapon
         if (chargeTime == 0) return;
         float maxChargeTime = stats.GetStatValue("ChargeTime");
 
+        //Redo last offset to put back to normal pos
+        transform.localPosition -= lastOffset;
+        chargingAnim.SetActive(false);
+
         if (!canReleaseEarly)
         {
             if (chargeTime < maxChargeTime) return;
         }
+
 
         SpawnProjectile();
 
