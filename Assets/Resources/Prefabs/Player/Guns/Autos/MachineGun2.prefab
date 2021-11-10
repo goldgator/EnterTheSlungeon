@@ -131,6 +131,13 @@ MonoBehaviour:
   gunSprite: {fileID: 21300000, guid: 3826deb33ee932149966ecac20118069, type: 3}
   projectile: {fileID: 6229470945475235130, guid: 119b20632921a004a9169ad642aa077b, type: 3}
   gunSound: {fileID: 8300000, guid: 34b439bf70b80a6409eadecc6be92d68, type: 3}
+  gunName: Machine Gun V2
+  upgradePaths:
+  - upgradedGun: {fileID: 5540495575679167429, guid: aee8b87f75ecc6041a0aa4bf34cca9b9, type: 3}
+    price:
+      voidQuartz: 20
+      spaceQuartz: 20
+      timeQuartz: 40
 --- !u!82 &2947377069368998517
 AudioSource:
   m_ObjectHideFlags: 0

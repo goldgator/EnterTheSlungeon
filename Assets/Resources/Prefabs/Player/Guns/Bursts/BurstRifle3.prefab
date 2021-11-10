@@ -82,6 +82,8 @@ MonoBehaviour:
   gunSprite: {fileID: 21300000, guid: 9e45e203c02b679499267ee3e12e13cb, type: 3}
   projectile: {fileID: 6229470945475235130, guid: 119b20632921a004a9169ad642aa077b, type: 3}
   gunSound: {fileID: 8300000, guid: a4ef8ffb6472a4f39a9a6462b071a991, type: 3}
+  gunName: Burst Rifle V3
+  upgradePaths: []
 --- !u!114 &4121533236700596262
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -121,13 +121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ee473a9d2b2ea469f365825ca33896, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 18
+  maxHealth: 16
   invinicibilityTime: 0
-  hasRegen: 0
-  regenTime: 2
-  regenAmount: 1
-  parentHealth: {fileID: 0}
-  parentAddHealth: 0
   subEventThreshold: 0
   subtractEvent:
     m_PersistentCalls:

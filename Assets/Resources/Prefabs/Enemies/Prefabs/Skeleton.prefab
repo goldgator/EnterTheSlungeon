@@ -122,13 +122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ee473a9d2b2ea469f365825ca33896, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 8
+  maxHealth: 12
   invinicibilityTime: 0
-  hasRegen: 0
-  regenTime: 2
-  regenAmount: 1
-  parentHealth: {fileID: 0}
-  parentAddHealth: 0
   subEventThreshold: 0
   subtractEvent:
     m_PersistentCalls:
@@ -238,7 +233,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36d5e818ff954a94386d60c0081028ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  quartzPrefab: {fileID: 2284714550500931354, guid: 3ae79b1c832a6e24fa97549bb096e3b1, type: 3}
   quartzMin: 2
   quartzMax: 4
   uniformDrop: 1

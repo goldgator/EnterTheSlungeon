@@ -55,6 +55,21 @@ public class WeaponManager : MonoBehaviour
         SwapToWeapon(weapons.Count - 1);
     }
 
+    public void ReplaceCurrentWeapon(GameObject newGun)
+    {
+        RemoveGun(currWeapon);
+
+        AddGun(newGun);
+    }
+
+    private void RemoveGun(int index)
+    {
+        BaseWeapon removedWeapon = weapons[index];
+        weapons.Remove(removedWeapon);
+
+        Destroy(removedWeapon.gameObject);
+    }
+
     private void UpdateInfo()
     {
         //Currently breaks if any weapons are disabled

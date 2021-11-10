@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2753423270076530291}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.05, z: 0}
+  m_LocalPosition: {x: 1.406, y: -0.015, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4995975327278882461}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 4121533236700596262}
   - component: {fileID: 2947377069368998517}
   m_Layer: 6
-  m_Name: ChargeRifle
+  m_Name: ChargeRifle4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,9 +80,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   renderer: {fileID: 6238623091948740227}
   shotTransform: {fileID: 2935413535987004734}
-  gunSprite: {fileID: 21300000, guid: 4c25190ce801bee4e96711c398b629d8, type: 3}
+  gunSprite: {fileID: 21300000, guid: f1710e45c12172c41aa0c5ffe8a8341a, type: 3}
   projectile: {fileID: 6229470945475235130, guid: 119b20632921a004a9169ad642aa077b, type: 3}
   gunSound: {fileID: 8300000, guid: a4ef8ffb6472a4f39a9a6462b071a991, type: 3}
+  gunName: Charge Rifle V4
+  upgradePaths: []
   canReleaseEarly: 1
   shakeStrength: 0.05
   chargingAnim: {fileID: 8930898404235352498}
@@ -100,15 +102,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allStats:
   - statName: FireRate
-    baseValue: 0.4
+    baseValue: 0.35
     roundValue: 0
     range: {x: 0.01, y: 9999999}
   - statName: ShotDamage
-    baseValue: 4
+    baseValue: 5
     roundValue: 0
     range: {x: 0.1, y: 9999999}
   - statName: ShotSize
-    baseValue: 0.3
+    baseValue: 0.55
     roundValue: 0
     range: {x: 0.05, y: 10}
   - statName: ShotSpeed
@@ -116,11 +118,11 @@ MonoBehaviour:
     roundValue: 0
     range: {x: 2, y: 30}
   - statName: KnockBack
-    baseValue: 0.2
+    baseValue: 0.4
     roundValue: 0
     range: {x: 0, y: 15}
   - statName: ClipSize
-    baseValue: 4
+    baseValue: 5
     roundValue: 1
     range: {x: 1, y: 9999999}
   - statName: ReloadSpeed
@@ -128,27 +130,27 @@ MonoBehaviour:
     roundValue: 0
     range: {x: 0.2, y: 10}
   - statName: OverheatAddend
-    baseValue: 10
+    baseValue: 15
     roundValue: 0
     range: {x: 0, y: 100}
   - statName: OverheatRecovery
-    baseValue: 2
+    baseValue: 1
     roundValue: 0
     range: {x: 0.3, y: 100}
   - statName: ChargeTime
-    baseValue: 2
+    baseValue: 2.2
     roundValue: 0
     range: {x: 0.5, y: 10}
   - statName: DamageMultiplier
-    baseValue: 4
+    baseValue: 8
     roundValue: 0
     range: {x: 1, y: 10}
   - statName: SizeMultiplier
-    baseValue: 2
+    baseValue: 3
     roundValue: 0
     range: {x: 1, y: 3}
   - statName: KnockbackMultiplier
-    baseValue: 2
+    baseValue: 2.8
     roundValue: 0
     range: {x: 1, y: 3}
 --- !u!82 &2947377069368998517
@@ -272,7 +274,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8052221649311023183}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.119, y: 0.072, z: 0}
+  m_LocalPosition: {x: 0.367, y: -0.006, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1723429777572706138}
@@ -318,7 +320,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 101
-  m_Sprite: {fileID: 21300000, guid: 4c25190ce801bee4e96711c398b629d8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f1710e45c12172c41aa0c5ffe8a8341a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

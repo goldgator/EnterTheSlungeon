@@ -18,6 +18,11 @@ public class BaseWeapon : MonoBehaviour
     public GameObject projectile;
     public AudioClip gunSound;
 
+    [Header("Details")]
+    public string gunName;
+
+    [Header("Upgrades")]
+    public List<UpgradePath> upgradePaths = new List<UpgradePath>();
     //[Header("Stats")]
     //[SerializeField]
     protected StatBlock stats;
@@ -41,14 +46,21 @@ public class BaseWeapon : MonoBehaviour
         remainingAmmo = (int)stats.GetStatValue("ClipSize");
     }
 
+    
+
     public void SetEquipped(bool newState)
     {
         equipped = newState;
         renderer.enabled = newState;
+        
     }
+
+    
 
     public StatBlock GetStatBlock()
     {
+        if (stats == null) stats = GetComponent<StatBlock>();
+
         return stats;
     }
 

@@ -30,7 +30,7 @@ public class Player : MonoBehaviour, IHealthDeath
     private bool playerEnabled = true;
     private Vector3 lastMoveDir;
     private Vector3 velocity;
-    private Wallet playerWallet = new Wallet();
+    private Wallet playerWallet = new Wallet(0,0,0);
     private const string PLAYER_PATH = "Prefabs/Player/Player";
     public static GameObject secondaryWeapon;
 

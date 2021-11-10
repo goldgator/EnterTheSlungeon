@@ -24,9 +24,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2753423270076530291}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.884, y: 0.138, z: 0}
+  m_LocalPosition: {x: 1.064, y: -0.041, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4995975327278882461}
   m_Father: {fileID: 1723429777572706138}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -39,11 +40,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1723429777572706138}
-  - component: {fileID: 4486092076384995042}
+  - component: {fileID: 6043984183350704978}
   - component: {fileID: 4121533236700596262}
   - component: {fileID: 2947377069368998517}
   m_Layer: 6
-  m_Name: BurstRifle1
+  m_Name: ChargeRifle2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,7 +66,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4486092076384995042
+--- !u!114 &6043984183350704978
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -74,21 +75,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 5540495575679167429}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7454925665595a349bee6cb18cc05845, type: 3}
+  m_Script: {fileID: 11500000, guid: 46a133f520986574c873a909d49c17f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   renderer: {fileID: 6238623091948740227}
   shotTransform: {fileID: 2935413535987004734}
-  gunSprite: {fileID: 21300000, guid: 95f3b2dda290075459f680276dbbd957, type: 3}
+  gunSprite: {fileID: 21300000, guid: 4c25190ce801bee4e96711c398b629d8, type: 3}
   projectile: {fileID: 6229470945475235130, guid: 119b20632921a004a9169ad642aa077b, type: 3}
   gunSound: {fileID: 8300000, guid: a4ef8ffb6472a4f39a9a6462b071a991, type: 3}
-  gunName: Burst Rifle V1
+  gunName: Charge Rifle V2
   upgradePaths:
-  - upgradedGun: {fileID: 5540495575679167429, guid: 6622f2de70f32484ab314e39314b8064, type: 3}
+  - upgradedGun: {fileID: 5540495575679167429, guid: baeb71f5e408e644f85c9db580e064da, type: 3}
     price:
-      voidQuartz: 25
-      spaceQuartz: 10
-      timeQuartz: 10
+      voidQuartz: 20
+      spaceQuartz: 40
+      timeQuartz: 20
+  - upgradedGun: {fileID: 5540495575679167429, guid: 70d21d3ca024d72479137bc57c52bf61, type: 3}
+    price:
+      voidQuartz: 0
+      spaceQuartz: 60
+      timeQuartz: 0
+  canReleaseEarly: 1
+  shakeStrength: 0.05
+  chargingAnim: {fileID: 8930898404235352498}
 --- !u!114 &4121533236700596262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,49 +112,57 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allStats:
   - statName: FireRate
-    baseValue: 0.35
+    baseValue: 0.3
     roundValue: 0
     range: {x: 0.01, y: 9999999}
   - statName: ShotDamage
-    baseValue: 1
+    baseValue: 3
     roundValue: 0
     range: {x: 0.1, y: 9999999}
   - statName: ShotSize
-    baseValue: 0.17
+    baseValue: 0.4
     roundValue: 0
     range: {x: 0.05, y: 10}
   - statName: ShotSpeed
-    baseValue: 18
+    baseValue: 20
     roundValue: 0
     range: {x: 2, y: 30}
   - statName: KnockBack
-    baseValue: 0.3
+    baseValue: 0.25
     roundValue: 0
     range: {x: 0, y: 15}
   - statName: ClipSize
-    baseValue: 21
+    baseValue: 4
     roundValue: 1
     range: {x: 1, y: 9999999}
   - statName: ReloadSpeed
-    baseValue: 2
+    baseValue: 2.5
     roundValue: 0
     range: {x: 0.2, y: 10}
   - statName: OverheatAddend
-    baseValue: 1
+    baseValue: 10
     roundValue: 0
     range: {x: 0, y: 100}
   - statName: OverheatRecovery
-    baseValue: 2
+    baseValue: 1
     roundValue: 0
     range: {x: 0.3, y: 100}
-  - statName: BurstNum
-    baseValue: 3
-    roundValue: 1
-    range: {x: 1, y: 10}
-  - statName: BurstGap
-    baseValue: 0.05
+  - statName: ChargeTime
+    baseValue: 1.2
     roundValue: 0
-    range: {x: 0.01, y: 0.2}
+    range: {x: 0.5, y: 10}
+  - statName: DamageMultiplier
+    baseValue: 4
+    roundValue: 0
+    range: {x: 1, y: 10}
+  - statName: SizeMultiplier
+    baseValue: 2.2
+    roundValue: 0
+    range: {x: 1, y: 3}
+  - statName: KnockbackMultiplier
+    baseValue: 2.5
+    roundValue: 0
+    range: {x: 1, y: 3}
 --- !u!82 &2947377069368998517
 AudioSource:
   m_ObjectHideFlags: 0
@@ -267,8 +284,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8052221649311023183}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.428, y: 0.072, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
+  m_LocalPosition: {x: 0.367, y: -0.006, z: 0}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_Children: []
   m_Father: {fileID: 1723429777572706138}
   m_RootOrder: 1
@@ -313,14 +330,116 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 101
-  m_Sprite: {fileID: 21300000, guid: 95f3b2dda290075459f680276dbbd957, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4c25190ce801bee4e96711c398b629d8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2, y: 1}
+  m_Size: {x: 1.875, y: 1.125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &8930898404235352498
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4995975327278882461}
+  - component: {fileID: 6735301108988463672}
+  - component: {fileID: 6635090327085706742}
+  m_Layer: 0
+  m_Name: SmallStar_64x64_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &4995975327278882461
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8930898404235352498}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2935413535987004734}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &6735301108988463672
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8930898404235352498}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 102
+  m_Sprite: {fileID: 3723959565391247759, guid: 2093d281e1415204497c989af10edaf4, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.8627451}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 2.0078433, y: 2}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!95 &6635090327085706742
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8930898404235352498}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e40dfb0f9df08284d8101cdb15c01203, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
