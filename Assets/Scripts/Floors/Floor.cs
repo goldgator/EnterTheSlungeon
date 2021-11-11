@@ -73,7 +73,10 @@ public class Floor : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        ItemTesting = itemTesting; 
+        ItemTesting = itemTesting;
+
+        //Set PlayerCursor to game mode
+        PlayerCursor.Instance.SetCursorUIState(false);
     }
 
     public void SetFloorAttributes()
@@ -142,7 +145,10 @@ public class Floor : MonoBehaviour
             Player.Instance.ForceStop();
 
             floorCanvas.SetActive(!currentState);
+            PlayerCursor.Instance.SetCursorUIState(!currentState);
             Player.Instance.SetPlayerEnabled(currentState);
+
+
         }
 
         //Check if game won

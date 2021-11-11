@@ -15,6 +15,8 @@ public class Interactable : MonoBehaviour
     private bool usesKey = true;
     [SerializeField]
     private string interactText;
+    [SerializeField]
+    private string targetTag = "Player";
     private GameObject textObject;
 
     private static GameObject interactTextPrefab;
@@ -135,7 +137,7 @@ public class Interactable : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //Debug.Log("Trigger entered: " + collision.gameObject.name);
-        if (collision.CompareTag("Player") && isOn)
+        if (collision.CompareTag(targetTag) && isOn)
         {
             InteractEnter();
         }
@@ -145,7 +147,7 @@ public class Interactable : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag(targetTag))
         {
             InteractLeave();
         }

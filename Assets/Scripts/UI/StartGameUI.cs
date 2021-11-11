@@ -19,6 +19,8 @@ public class StartGameUI : MonoBehaviour
     [SerializeField]
     private float optionOffset;
     [SerializeField]
+    private float offscreenOffset;
+    [SerializeField]
     private float seedInputOffset;
     [SerializeField]
     private float transitionTime = 1.5f;
@@ -39,6 +41,9 @@ public class StartGameUI : MonoBehaviour
 
         //Change music
         MusicManager.Instance.PlaySong("StartRun");
+
+        //Set the PlayerCursor to UI mode
+        PlayerCursor.Instance.SetCursorUIState(true);
     }
 
     public void SelectSecondaryGun(GameObject newPrefab)
@@ -50,7 +55,6 @@ public class StartGameUI : MonoBehaviour
 
     public void LoadFirstFloor()
     {
-        
         SceneDirector.Instance.LoadFloorScene(seed);
     }
 
@@ -70,7 +74,7 @@ public class StartGameUI : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            currentOptionOffset = Mathf.Lerp(-optionOffset, optionOffset, timer / transitionTime);
+            currentOptionOffset = Mathf.Lerp(-offscreenOffset, optionOffset, timer / transitionTime);
             currentInputOffset = Mathf.Lerp(-140, seedInputOffset, timer / transitionTime);
 
             gunOption1.anchoredPosition = new Vector2(currentOptionOffset, gunOption1.anchoredPosition.y);
@@ -95,7 +99,7 @@ public class StartGameUI : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            currentOptionOffset = Mathf.Lerp(optionOffset, -optionOffset, timer / transitionTime);
+            currentOptionOffset = Mathf.Lerp(optionOffset, -offscreenOffset, timer / transitionTime);
             currentInputOffset = Mathf.Lerp(seedInputOffset, -140, timer / transitionTime);
 
             gunOption1.anchoredPosition = new Vector2(currentOptionOffset, gunOption1.anchoredPosition.y);

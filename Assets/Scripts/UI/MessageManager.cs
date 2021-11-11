@@ -26,8 +26,8 @@ public class MessageManager : MonoBehaviour
     private float popupSpeed = 950.0f;
     private bool popupActive = false;
     private float popupTimer = 0f;
-    private float targetHeight = 20;
-    private float restHeight = -200;
+    private float targetHeight = 35;
+    private float restHeight = -300;
 
 
     private static MessageManager instance;

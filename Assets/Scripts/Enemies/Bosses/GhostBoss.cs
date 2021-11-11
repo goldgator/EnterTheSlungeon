@@ -174,7 +174,7 @@ public class GhostBoss : BaseEnemy
     private IEnumerator DarkenAction(int attackNum)
     {
         //Start Dimming the screen
-        StartCoroutine(SetScreenDarken(2f, .9f));
+        StartCoroutine(SetScreenDarken(2f, 1f));
 
         //Loop as many times as required
         for (int i = 0; i < attackNum; i++)

@@ -240,6 +240,7 @@ MonoBehaviour:
   isOn: 1
   usesKey: 0
   interactText: Start Floor
+  targetTag: Cursor
   interactEvent:
     m_PersistentCalls:
       m_Calls:

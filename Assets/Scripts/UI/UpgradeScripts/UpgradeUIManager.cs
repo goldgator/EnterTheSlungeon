@@ -25,6 +25,9 @@ public class UpgradeUIManager : MonoBehaviour
     {
         //Get the Object prefab
         upgradeObjectPrefab = Resources.Load<GameObject>("Prefabs/UI/UpgradeMenu/UpgradeOption");
+
+        //Change music
+        MusicManager.Instance.PlaySong("Shop");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
