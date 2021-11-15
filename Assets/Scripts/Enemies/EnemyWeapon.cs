@@ -16,12 +16,15 @@ public class EnemyWeapon : MonoBehaviour
     public float damage;
     private float shotTimer = 0;
     public float shotCooldown;
+    public float shotCooldownStart;
 
     protected void Start()
     {
         target = Player.Instance;
         audioSource = GetComponent<AudioSource>();
         renderer = GetComponent<SpriteRenderer>();
+
+        shotTimer = shotCooldownStart;
     }
 
     private void Update()

@@ -33,7 +33,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8954729865920170506}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.9, y: 1.8, z: -1.0036067}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -124,26 +124,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 8
   invinicibilityTime: 0
-  hasRegen: 0
-  regenTime: 2
-  regenAmount: 1
-  parentHealth: {fileID: 0}
-  parentAddHealth: 0
-  deathEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8954729865920170511}
-        m_TargetAssemblyTypeName: BaseEnemy, Assembly-CSharp
-        m_MethodName: Death
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   subEventThreshold: 0
   subtractEvent:
     m_PersistentCalls:
@@ -191,7 +171,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36d5e818ff954a94386d60c0081028ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  quartzPrefab: {fileID: 2284714550500931354, guid: 3ae79b1c832a6e24fa97549bb096e3b1, type: 3}
   quartzMin: 1
   quartzMax: 4
   uniformDrop: 1

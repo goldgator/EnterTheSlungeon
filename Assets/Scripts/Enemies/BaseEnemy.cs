@@ -38,7 +38,7 @@ public class BaseEnemy : MonoBehaviour, IHealthDeath
     public static event EnemyEvent enemySpawnEvent;
 
 
-    private void OnDrawGizmos()
+    protected virtual void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
