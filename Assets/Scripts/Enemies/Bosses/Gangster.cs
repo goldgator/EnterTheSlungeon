@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bandit : BaseEnemy
+public class Gangster : BaseEnemy
 {
     [SerializeField]
     private Vector2 targetRange;
@@ -42,6 +42,9 @@ public class Bandit : BaseEnemy
     {
         stopTime -= Time.deltaTime;
         dodgeTimer -= Time.deltaTime;
+
+        //Update animator
+        animator.SetFloat("Speed", rb.velocity.magnitude);
 
         //Orient sprite
         renderer.flipX = ((target.transform.position - transform.position).x < 0);

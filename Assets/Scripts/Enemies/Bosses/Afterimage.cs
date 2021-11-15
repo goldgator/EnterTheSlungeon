@@ -40,7 +40,7 @@ public class Afterimage : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, parent.transform.position, (-timeDelay) / morphTime);
         }
 
-        if (timeDelay < -morphTime)
+        if (timeDelay <= -morphTime)
         {
             Destroy(gameObject);
         }

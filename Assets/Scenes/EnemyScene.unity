@@ -1101,7 +1101,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5702017989284875080, guid: b5c1099d9698c544485c92ada4184c9e, type: 3}
       propertyPath: m_Name
-      value: Bandit
+      value: Gangster
       objectReference: {fileID: 0}
     - target: {fileID: 5702017989284875083, guid: b5c1099d9698c544485c92ada4184c9e, type: 3}
       propertyPath: m_RootOrder
