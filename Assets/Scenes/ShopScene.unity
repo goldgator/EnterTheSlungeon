@@ -591,6 +591,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 113358903}
     m_Modifications:
+    - target: {fileID: 6831052441382364175, guid: 3a5cfc6051ce76049952ee9bb45aec30, type: 3}
+      propertyPath: m_SortingOrder
+      value: 300
+      objectReference: {fileID: 0}
     - target: {fileID: 6831052441751702762, guid: 3a5cfc6051ce76049952ee9bb45aec30, type: 3}
       propertyPath: m_Name
       value: ShopContent

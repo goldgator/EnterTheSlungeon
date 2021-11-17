@@ -1484,6 +1484,7 @@ GameObject:
   - component: {fileID: 468385805}
   - component: {fileID: 5281613484409094259}
   - component: {fileID: 468385813}
+  - component: {fileID: 1212531474789159448}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -1619,7 +1620,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 999999
+  m_Mass: 9999
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -1671,8 +1672,8 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.2923552
     - serializedVersion: 3
-      time: 0.5019259
-      value: 0.10290846
+      time: 0.5015597
+      value: 0.09094557
       inSlope: 0.06208517
       outSlope: 0.06208517
       tangentMode: 0
@@ -1683,7 +1684,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   startingWeapons:
-  - {fileID: 5540495575679167429, guid: 6ba8688504ccea14bac7074807cfe7e3, type: 3}
+  - {fileID: 5540495575679167429, guid: aee8b87f75ecc6041a0aa4bf34cca9b9, type: 3}
+  - {fileID: 5540495575679167429, guid: 6e2b764b7330c5d49a39af359e509b20, type: 3}
+  - {fileID: 5540495575679167429, guid: baeb71f5e408e644f85c9db580e064da, type: 3}
   dodgeAudio: {fileID: 8300000, guid: eb2ec8a100217b5469d715e324d5b227, type: 3}
 --- !u!95 &1003930773
 Animator:
@@ -1722,9 +1725,9 @@ MonoBehaviour:
   subtractEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5281613484409094259}
-        m_TargetAssemblyTypeName: FlashSprite, Assembly-CSharp
-        m_MethodName: Flash
+      - m_Target: {fileID: 5941068773895197779}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: OnDamageTaken
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1734,9 +1737,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5941068773895197779}
-        m_TargetAssemblyTypeName: Player, Assembly-CSharp
-        m_MethodName: OnDamageTaken
+      - m_Target: {fileID: 5281613484409094259}
+        m_TargetAssemblyTypeName: FlashSprite, Assembly-CSharp
+        m_MethodName: Blink
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1857,6 +1860,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1212531474789159448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5941068773895197780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4b32a06d6969f840b0cd8b49d962ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6045685108978208759
 GameObject:
   m_ObjectHideFlags: 0

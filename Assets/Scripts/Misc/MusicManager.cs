@@ -29,18 +29,14 @@ public class MusicManager : MonoBehaviour
                 Destroy(gameObject);
             }
         }
+        musicSource.clip = currentSong;
+        musicSource = GetComponent<AudioSource>();
+        musicSource.Play();
     }
 
     public void PlayFloorSong()
     {
         PlaySong("Floor" + Floor.Instance.floorLevel);
-    }
-
-    private void Start()
-    {
-        musicSource = GetComponent<AudioSource>();
-        musicSource.clip = currentSong;
-        musicSource.Play();
     }
 
     public void PlaySong(string songName)
