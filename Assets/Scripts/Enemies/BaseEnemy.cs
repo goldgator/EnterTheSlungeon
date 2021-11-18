@@ -96,7 +96,7 @@ public class BaseEnemy : MonoBehaviour, IHealthDeath
         newSpawn.AddTrackedEnemy(this);
     }
 
-    public void OnDeath()
+    public virtual void OnDeath()
     {
         Death();
     }

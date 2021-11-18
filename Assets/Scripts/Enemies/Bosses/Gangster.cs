@@ -1,9 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Gangster : BaseEnemy
 {
+    [Header("Gangster")]
+    [SerializeField]
+    private AudioClip flashbangSound;
+    [SerializeField]
+    private Image flashImage;
+    [SerializeField]
+    private GameObject smokeParent;
+    [SerializeField]
+    private GameObject weaponParent;
     [SerializeField]
     private Vector2 targetRange;
     [SerializeField]
@@ -21,12 +31,17 @@ public class Gangster : BaseEnemy
     private float dodgeSpeed;
     [SerializeField]
     private AnimationCurve dodgeCurve;
+
+    [SerializeField]
+    private float healthSmokeRatio = .3f;
     
     private Vector3 targetPosition;
     private Vector2 strafeOffset;
 
     private bool moving = false;
     private bool active = true;
+
+    private bool smoke = false;
 
 
     protected override void Start()
@@ -36,6 +51,7 @@ public class Gangster : BaseEnemy
         collider = GetComponent<BoxCollider2D>();
 
         targetPosition = transform.position;
+        MusicManager.Instance.PlaySong("Boss3");
     }
 
     private void FixedUpdate()
@@ -49,6 +65,29 @@ public class Gangster : BaseEnemy
         //Orient sprite
         renderer.flipX = ((target.transform.position - transform.position).x < 0);
 
+        if (health.HealthRatio <= healthSmokeRatio && !smoke)
+        {
+            smoke = true;
+            rb.velocity = new Vector2();
+
+            active = false;
+
+            //Disable weapon parent
+            weaponParent.SetActive(false);
+            StopAllCoroutines();
+
+            //Start smoke animation
+            //Debug.Log("Playing smokescreen");
+            animator.Play("SmokeScreen");
+
+            float animationTime = animator.GetCurrentAnimatorClipInfo(0)[0].clip.length;
+
+            //Add stop time equal to animation time plus 6 extra seconds
+            stopTime = animationTime + 6;
+            //Add invincibility equal to animation time plus 1 extra second
+            health.SetInvincibleTimer(animationTime + 1);
+        }
+
         if (!health.HasDied && stopTime <= 0)
         {
             UpdateTargetPos();
@@ -59,6 +98,107 @@ public class Gangster : BaseEnemy
             }
         }
     }
+
+
+    public void CreateSmokeScreen()
+    {
+        //Start smoke screen coroutine
+        StartCoroutine(AddSmokeScreen());
+    }
+
+    public IEnumerator AddSmokeScreen()
+    {
+        //Play flashbang sound
+        audioSource.clip = flashbangSound;
+        audioSource.Play();
+
+        //Play new music
+        MusicManager.Instance.PlaySong("Boss3-5");
+
+        //Flash the screen
+        float time = 0f;
+        while (time < .1f)
+        {
+            time += Time.deltaTime;
+            Color newColor = Color.Lerp(Color.clear, Color.white, time / .1f);
+            flashImage.color = newColor;
+            yield return null;
+        }
+
+        //Enable Smoke Parent
+        smokeParent.SetActive(true);
+
+        //Wait a full second
+        yield return new WaitForSeconds(1);
+
+        //slowly remove flash over 2.5 seconds
+        time = 0f;
+        while (time < 2.5f)
+        {
+            time += Time.deltaTime;
+            Color newColor = Color.Lerp(Color.white, Color.clear, time / 2.5f);
+            Debug.Log("Color: " + newColor);
+            flashImage.color = newColor;
+            yield return null;
+        }
+
+        //Enable weapon again
+        weaponParent.SetActive(true);
+
+        active = true;
+    }
+
+    public IEnumerator DeathRoutine()
+    {
+        active = false;
+
+        //Disable weapon
+        weaponParent.SetActive(false);
+
+        //Flash the screen
+        float time = 0f;
+        while (time < .1f)
+        {
+            time += Time.deltaTime;
+            Color newColor = Color.Lerp(Color.clear, Color.white, time / .1f);
+            flashImage.color = newColor;
+            yield return null;
+        }
+
+        //Disable Smoke Parent
+        smokeParent.SetActive(false);
+
+        //Wait a full second
+        yield return new WaitForSeconds(1);
+
+        //slowly remove flash over 2.5 seconds
+        time = 0f;
+        while (time < 2.5f)
+        {
+            time += Time.deltaTime;
+            Color newColor = Color.Lerp(Color.white, Color.clear, time / 2.5f);
+            Debug.Log("Color: " + newColor);
+            flashImage.color = newColor;
+            yield return null;
+        }
+
+        
+        MusicManager.Instance.PlaySong("Victory");
+
+        Death();
+    }
+
+    public override void OnDeath()
+    {
+        //Play take hit anim
+        animator.Play("Dying");
+
+        //reset velocity
+        rb.velocity = new Vector2();
+
+        StartCoroutine(DeathRoutine());
+    }
+
 
     protected override void OnDrawGizmos()
     {
@@ -142,8 +282,6 @@ public class Gangster : BaseEnemy
         active = false;
         moving = false;
 
-        //Hide weapon
-
         //Give immunity frames
         health.SetInvincibleTimer(dodgeTime);
 
@@ -158,8 +296,6 @@ public class Gangster : BaseEnemy
             yield return null;
             dodgeTime -= Time.deltaTime;
         }
-
-        //Show weapon
 
         //Remove velocity
         rb.velocity = new Vector3();

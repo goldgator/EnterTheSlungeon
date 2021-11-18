@@ -29,8 +29,8 @@ public class MusicManager : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-        musicSource.clip = currentSong;
         musicSource = GetComponent<AudioSource>();
+        musicSource.clip = currentSong;
         musicSource.Play();
     }
 
