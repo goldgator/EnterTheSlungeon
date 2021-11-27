@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 200
-  m_Sprite: {fileID: 21300000, guid: 10224e23b8d8abe428b4acdaca02c514, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebf4ffc9de93444488e6b91293e55f99, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -134,6 +134,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOn: 1
+  usesKey: 1
+  interactText: 
+  targetTag: Player
   interactEvent:
     m_PersistentCalls:
       m_Calls: []

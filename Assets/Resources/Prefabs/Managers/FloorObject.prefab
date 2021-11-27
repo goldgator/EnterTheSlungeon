@@ -851,7 +851,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 19
   m_TargetDisplay: 0
 --- !u!114 &452427624776773400
 MonoBehaviour:
@@ -1199,7 +1199,7 @@ MonoBehaviour:
   testPrefab: {fileID: 7079308923648832422, guid: 131e7cfca22671f46ba0c2fbf2f71438, type: 3}
   testBorder: {fileID: 1750995467180137382, guid: 86befaed5c401a14fb639feebf64b078, type: 3}
   visitedParent: {fileID: 452427624923873111}
-  floorLevel: 2
+  floorLevel: 1
   floorType: 1
   patternSize: 7
   stringSeedOverwrite: 

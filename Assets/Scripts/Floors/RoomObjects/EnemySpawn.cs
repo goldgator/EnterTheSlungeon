@@ -70,12 +70,12 @@ public class EnemySpawn : MonoBehaviour
         {
             GameObject[] allEnemies = Resources.LoadAll<GameObject>(path);
             GameObject chosenEnemy = allEnemies[RNGManager.GetEventRand(0, allEnemies.Length)];
-            spawnedEnemy = Instantiate(chosenEnemy, transform.position, Quaternion.identity).GetComponent<BaseEnemy>();
+            spawnedEnemy = Instantiate(chosenEnemy, transform.position, Quaternion.identity).RetrieveComponentInBaseOrChildren<BaseEnemy>();
         }
         else
         {
             GameObject enemy = Resources.Load<GameObject>(path + enemyName);
-            spawnedEnemy = Instantiate(enemy, transform.position, Quaternion.identity).GetComponent<BaseEnemy>();
+            spawnedEnemy = Instantiate(enemy, transform.position, Quaternion.identity).RetrieveComponentInBaseOrChildren<BaseEnemy>();
         }
 
         spawnedEnemy.InstantiateEnemy(this);

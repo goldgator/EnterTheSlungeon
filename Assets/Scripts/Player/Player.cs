@@ -58,6 +58,9 @@ public class Player : MonoBehaviour, IHealthDeath
             return instance;
         }
     }
+
+    
+
     public static bool InstanceExists()
     {
         return (instance != null);
@@ -97,6 +100,11 @@ public class Player : MonoBehaviour, IHealthDeath
         weaponManager.AddGun(secondaryWeapon);
     }
 
+    public Health GetHealth()
+    {
+        return playerHealth;
+    }
+
     public void OnPlayerDeath()
     {
         animator.SetBool("Death", true);
@@ -120,6 +128,7 @@ public class Player : MonoBehaviour, IHealthDeath
     public void SetPlayerEnabled(bool isEnabled)
     {
         playerEnabled = isEnabled;
+        weaponManager.CurrentWeapon.SetControls(isEnabled);
     }
 
     public bool GetPlayerEnabled()

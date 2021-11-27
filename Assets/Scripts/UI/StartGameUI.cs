@@ -58,6 +58,11 @@ public class StartGameUI : MonoBehaviour
         SceneDirector.Instance.LoadFloorScene(seed);
     }
 
+    public void SetQuickRun(bool value)
+    {
+        Floor.quickRun = value;
+    }
+
     public void RevealOptions()
     {
         //Start Coroutine to move them into proper positions

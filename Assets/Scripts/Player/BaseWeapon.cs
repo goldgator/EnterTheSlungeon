@@ -6,7 +6,6 @@ using UnityEngine;
 [RequireComponent(typeof(StatBlock))]
 public class BaseWeapon : MonoBehaviour
 {
-
     [Header("Components")]
     public new SpriteRenderer renderer;
     public Transform shotTransform;
@@ -46,16 +45,23 @@ public class BaseWeapon : MonoBehaviour
         remainingAmmo = (int)stats.GetStatValue("ClipSize");
     }
 
-    
+    protected virtual void OnEnable()
+    {
+        StartControls();
+    }
+
+    protected virtual void OnDisable()
+    {
+        DisableControls();
+    }
 
     public void SetEquipped(bool newState)
     {
         equipped = newState;
         renderer.enabled = newState;
-        
-    }
 
-    
+        if (newState) StartControls(); else DisableControls();
+    }
 
     public StatBlock GetStatBlock()
     {
@@ -79,22 +85,29 @@ public class BaseWeapon : MonoBehaviour
         gunUI = newUI;
     }
 
-    protected virtual void OnEnable()
+    protected virtual void StartControls()
     {
         if (InputManager.Instance)
         {
+            InputManager.Instance.fireStartEvent += TryReload;
             InputManager.Instance.fireUpdateEvent += OnFire;
             InputManager.Instance.reloadStartEvent += OnReload;
         }
     }
 
-    protected virtual void OnDisable()
+    protected virtual void DisableControls()
     {
         if (InputManager.Instance)
         {
+            InputManager.Instance.fireStartEvent -= TryReload;
             InputManager.Instance.fireUpdateEvent -= OnFire;
             InputManager.Instance.reloadStartEvent -= OnReload;
         }
+    }
+
+    public void SetControls(bool enabled)
+    {
+        if (enabled) StartControls(); else DisableControls();
     }
 
     // Update is called once per frame
@@ -132,7 +145,7 @@ public class BaseWeapon : MonoBehaviour
     private void UpdateOverheat()
     {
         //Change recovery speed if overheated or not
-        float heatModifer = (overheated) ? 1 : 2;
+        float heatModifer = (equipped) ? 1f : 1.75f;
         currentOverheat = Mathf.Max(0, currentOverheat - (Time.deltaTime * stats.GetStatValue("OverheatRecovery") * heatModifer));
         float progress = currentOverheat / maxOverheat;
 
@@ -187,6 +200,14 @@ public class BaseWeapon : MonoBehaviour
         renderer.flipY = (aimX < 0);
     }
 
+    protected void TryReload()
+    {
+        if (GetRemainingAmmo() <= 0 && !isReloading)
+        {
+            OnReload();
+        }
+    }
+
     protected virtual void OnFire(bool pressed)
     {
         if (fireTimer >= stats.GetStatValue("FireRate") && pressed && remainingAmmo > 0 && !isReloading && !overheated && equipped)
@@ -197,10 +218,24 @@ public class BaseWeapon : MonoBehaviour
 
     protected virtual void OnReload()
     {
+        //Debug.Log("Reloading: " + gameObject.name);
         int maxAmmo = (int)stats.GetStatValue("ClipSize");
-        if (remainingAmmo < maxAmmo && !isReloading && !overheated)
+        if (remainingAmmo < maxAmmo && !isReloading && !overheated && equipped)
         {
+            StopAllCoroutines();
             StartCoroutine(Reload(maxAmmo));
+        }
+    }
+
+    public virtual void CancelReload()
+    {
+        if (isReloading)
+        {
+            StopAllCoroutines();
+            //StopCoroutine("Reload");
+            gunUI.UpdateReload(1);
+            isReloading = false;
+            gunUI.UpdateAmmo();
         }
     }
 

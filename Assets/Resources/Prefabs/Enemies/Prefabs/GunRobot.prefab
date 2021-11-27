@@ -95,8 +95,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 81764b23e5b364bcdbebf662664d45f4, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 0.4
+  m_PlayOnAwake: 0
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -193,6 +193,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootingTransform: {fileID: 7742957430707316782}
+  swapX: 0
   projectile: {fileID: 6229470945475235130, guid: b92f6bb7d6f6f7c48a880869064078e4, type: 3}
   shotSpeed: 9
   damage: 5
@@ -521,8 +522,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 81764b23e5b364bcdbebf662664d45f4, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 1
+  m_PlayOnAwake: 0
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -619,6 +620,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootingTransform: {fileID: 5395885746640202476}
+  swapX: 0
   projectile: {fileID: 6229470945475235130, guid: b92f6bb7d6f6f7c48a880869064078e4, type: 3}
   shotSpeed: 9
   damage: 5

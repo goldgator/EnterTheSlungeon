@@ -13,16 +13,27 @@ public class ChargeWeapon : BaseWeapon
 
     private Vector3 lastOffset = new Vector3();
 
-    protected override void OnEnable()
+
+    protected override void StartControls()
     {
-        base.OnEnable();
-        InputManager.Instance.fireStopEvent += FireRelease;
+        if (InputManager.Instance)
+        {
+            InputManager.Instance.fireStartEvent += TryReload;
+            InputManager.Instance.fireUpdateEvent += OnFire;
+            InputManager.Instance.reloadStartEvent += OnReload;
+            InputManager.Instance.fireStopEvent += FireRelease;
+        }
     }
 
-    protected override void OnDisable()
+    protected override void DisableControls()
     {
-        base.OnDisable();
-        InputManager.Instance.fireStopEvent -= FireRelease;
+        if (InputManager.Instance)
+        {
+            InputManager.Instance.fireStartEvent -= TryReload;
+            InputManager.Instance.fireUpdateEvent -= OnFire;
+            InputManager.Instance.reloadStartEvent -= OnReload;
+            InputManager.Instance.fireStopEvent -= FireRelease;
+        }
     }
 
     protected override void Fire()

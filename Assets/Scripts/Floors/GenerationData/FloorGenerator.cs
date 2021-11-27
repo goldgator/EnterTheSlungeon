@@ -35,7 +35,14 @@ public static class FloorGenerator
             new FloorGenData(1, 7, FloorType.Expansive),
             new FloorGenData(2, 5, FloorType.Tight),
             new FloorGenData(2, 7, FloorType.Tight),
-            new FloorGenData(3, 7, FloorType.ConstrainedExpansive)
+            new FloorGenData(3, 5, FloorType.Tight),
+            new FloorGenData(3, 7, FloorType.Tight)
+        };
+
+    public static FloorGenData[] quickGenSequence = {
+            new FloorGenData(1, 5, FloorType.Expansive),
+            new FloorGenData(2, 5, FloorType.Tight),
+            new FloorGenData(3, 5, FloorType.Tight)
         };
 
     public static FloorData GenerateFloor(FloorType floorType, int patternSize, bool seeded)

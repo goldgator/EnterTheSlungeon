@@ -14,7 +14,12 @@ public class QuartzDrops : MonoBehaviour, IHealthDeath
 
     private void Start()
     {
-        
+        //Double min and max if run is a quick run
+        if (Floor.quickRun)
+        {
+            quartzMin *= 2;
+            quartzMax *= 2;
+        }
     }
 
     private void DropQuartz()

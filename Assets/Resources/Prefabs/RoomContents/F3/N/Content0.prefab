@@ -55,7 +55,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1362611696304659668}
-  - component: {fileID: 4686728573685853422}
   m_Layer: 0
   m_Name: Objects
   m_TagString: Untagged
@@ -78,34 +77,6 @@ Transform:
   m_Father: {fileID: 5938319491097965932}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4686728573685853422
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3929198511720424306}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 073a00761cc688a43aa428fbfbca257d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waves:
-  - hasParticles: 0
-    timeToSpawn: 0
-    spawners:
-    - {fileID: 0}
-    - {fileID: 0}
-  - hasParticles: 1
-    timeToSpawn: 30
-    spawners:
-    - {fileID: 0}
-  - hasParticles: 0
-    timeToSpawn: 0
-    spawners:
-    - {fileID: 0}
-    - {fileID: 0}
-  canSpawnEarly: 1
 --- !u!1 &5938319489682482635
 GameObject:
   m_ObjectHideFlags: 0

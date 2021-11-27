@@ -303,7 +303,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 452427626158695470, guid: a1279c945df1bdb4d874804479c614f4, type: 3}
       propertyPath: floorLevel
-      value: 1
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 452427626158695470, guid: a1279c945df1bdb4d874804479c614f4, type: 3}
+      propertyPath: patternSize
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1279c945df1bdb4d874804479c614f4, type: 3}

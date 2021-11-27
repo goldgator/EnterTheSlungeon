@@ -10,6 +10,7 @@ public class EnemyWeapon : MonoBehaviour
     protected Player target;
     protected AudioSource audioSource;
     public Transform shootingTransform;
+    public bool swapX = false;
 
     public GameObject projectile;
     public float shotSpeed;
@@ -68,7 +69,8 @@ public class EnemyWeapon : MonoBehaviour
     {
         //Determine player and weapon scale
         float aimX = Mathf.Sign(direction.x);
-        transform.localScale = new Vector3(1, aimX, 1);
+        Vector3 newScale = (swapX) ? new Vector3(aimX, aimX, 1) : new Vector3(1, aimX, 1);
+        transform.localScale = newScale;
     }
 
 }

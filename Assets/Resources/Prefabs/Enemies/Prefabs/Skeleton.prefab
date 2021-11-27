@@ -251,6 +251,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gun
       objectReference: {fileID: 0}
+    - target: {fileID: 3421597872564885186, guid: 7f334b8ccabbd5143bc13b16e4d59d05, type: 3}
+      propertyPath: swapX
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5325536059167525152, guid: 7f334b8ccabbd5143bc13b16e4d59d05, type: 3}
       propertyPath: m_RootOrder
       value: 0

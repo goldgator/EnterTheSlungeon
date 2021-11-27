@@ -28,6 +28,24 @@ public class ItemManager : MonoBehaviour
     public void AddTargetStatBlock(StatBlock newBlock)
     {
         targetStatBlocks.Add(newBlock);
+        ApplyPassiveMods();
+    }
+
+    public void ApplyPassiveMods()
+    {
+        foreach (BaseItem item in items)
+        {
+            if (item is PassiveItem)
+            {
+                PassiveItem passiveItem = (PassiveItem)item;
+                passiveItem.ApplyMods();
+            }
+        }
+    }
+
+    public void RemoveTargetStatBlock(StatBlock oldBlock)
+    {
+        targetStatBlocks.Remove(oldBlock);
     }
 
     public void AttachMod(StatModifier modifier)

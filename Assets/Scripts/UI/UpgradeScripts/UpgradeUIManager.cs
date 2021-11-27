@@ -28,6 +28,9 @@ public class UpgradeUIManager : MonoBehaviour
 
         //Change music
         MusicManager.Instance.PlaySong("Shop");
+
+        //Heal player
+        Player.Instance.GetHealth().FullHeal();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

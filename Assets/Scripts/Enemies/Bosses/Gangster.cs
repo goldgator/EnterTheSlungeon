@@ -185,6 +185,7 @@ public class Gangster : BaseEnemy
         
         MusicManager.Instance.PlaySong("Victory");
 
+        Destroy(transform.parent.gameObject, .1f);
         Death();
     }
 

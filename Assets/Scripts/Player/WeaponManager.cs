@@ -67,6 +67,8 @@ public class WeaponManager : MonoBehaviour
         BaseWeapon removedWeapon = weapons[index];
         weapons.Remove(removedWeapon);
 
+        removedWeapon.SetControls(false);
+        itemManager.RemoveTargetStatBlock(removedWeapon.GetStatBlock());
         Destroy(removedWeapon.gameObject);
     }
 
@@ -93,6 +95,7 @@ public class WeaponManager : MonoBehaviour
 
     private void SwapWeapon()
     {
+        CurrentWeapon.CancelReload();
         SwapToWeapon((currWeapon + 1) % weapons.Count);
     }
 

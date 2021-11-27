@@ -126,6 +126,15 @@ public static class Utilities
         }
     }
 
+    public static T RetrieveComponentInBaseOrChildren<T>(this GameObject gameObject) where T : Component
+    {
+        T component = gameObject.GetComponent<T>();
+
+        if (component == null) component = gameObject.GetComponentInChildren<T>();
+
+        return component;
+    }
+
     public static void GetAllChildren(this GameObject parent, out List<GameObject> childrenList, bool recursive = false)
     {
         childrenList = new List<GameObject>();

@@ -69,8 +69,11 @@ public class BaseStat
     public void AddModifier(StatModifier newModifier)
     {
         if (modifiers == null) modifiers = new List<StatModifier>();
-        updated = false;
-        modifiers.Add(newModifier);
+        if (!modifiers.Contains(newModifier))
+        {
+            modifiers.Add(newModifier);
+            updated = false;
+        }
     }
 
     public void RequestUpdate()
