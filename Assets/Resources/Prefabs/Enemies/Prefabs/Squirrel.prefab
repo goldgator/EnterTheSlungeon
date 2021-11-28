@@ -104,7 +104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 6
   damage: 3
-  attackRange: 1.7
+  attackRange: 1.5
   attackCooldown: 1
   attackSound: {fileID: 8300000, guid: 303d44c8d6ec943a38df8ec10b19d9c7, type: 3}
   deathFX: SquirrelDeath

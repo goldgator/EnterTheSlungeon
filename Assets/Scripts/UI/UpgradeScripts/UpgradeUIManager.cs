@@ -45,6 +45,7 @@ public class UpgradeUIManager : MonoBehaviour
                 currentGun = manager.CurrentWeapon;
 
                 InstantiateUI();
+                PlayerCursor.Instance.SetCursorUIState(true);
             }
         }
     }
@@ -56,6 +57,7 @@ public class UpgradeUIManager : MonoBehaviour
 
         //Enable player movement
         Player.Instance.SetPlayerEnabled(true);
+        PlayerCursor.Instance.SetCursorUIState(false);
     }
 
     private void InstantiateUI()

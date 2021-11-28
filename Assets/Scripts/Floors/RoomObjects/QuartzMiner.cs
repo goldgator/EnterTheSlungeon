@@ -95,7 +95,7 @@ public class QuartzMiner : MonoBehaviour, IRoomObject, IInteractEvent
 
         //StartCoroutines
         StartCoroutine(MineSpawnEvent());
-        StartCoroutine(MineSpawnEvent());
+        //StartCoroutine(MineSpawnEvent());
     }
 
     public void StopMineEvent()

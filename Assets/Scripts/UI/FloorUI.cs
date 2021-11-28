@@ -35,6 +35,7 @@ public class FloorUI : MonoBehaviour
 
         UpdateColor();
         UpdatePatternImages();
+        UpdateResourceImages();
     }
 
     
@@ -153,10 +154,25 @@ public class FloorUI : MonoBehaviour
 
     private void UpdateResourceImages()
     {
+        if (floorData.resourceData.Count == 0)
+        {
+            DeleteResourceImages();
+            return;
+        }
+
         for (int i = 0; i < floorData.resourceData.Count; i++)
         {
             resourceImages[i].transform.SetParent(GetCellUIAtPos(floorData.resourceData[i].position).transform, false);
         }
+    }
+
+    public void DeleteResourceImages()
+    {
+        for (int i = 0; i < resourceImages.Count; i++)
+        {
+            Destroy(resourceImages[i].gameObject);
+        }
+        resourceImages.Clear();
     }
 
     public GameObject GetCellUIAtPos(Vector2 position)

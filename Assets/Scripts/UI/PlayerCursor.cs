@@ -110,7 +110,7 @@ public class PlayerCursor : MonoBehaviour
 
     private void OnPlayerClick()
     {
-        currentInteractable?.TriggerInteractable();
+        if (currentInteractable != null && currentInteractable.ListensToCursor) currentInteractable.TriggerInteractable();
     }
 
     // Update is called once per frame

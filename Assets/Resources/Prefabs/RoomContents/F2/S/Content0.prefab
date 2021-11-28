@@ -146,31 +146,31 @@ MonoBehaviour:
     spawners:
     - {fileID: 8256726808515296437}
   - hasParticles: 0
-    timeToSpawn: 0
+    timeToSpawn: 0.2
     spawners:
     - {fileID: 5432709333633321408}
   - hasParticles: 0
-    timeToSpawn: 0
+    timeToSpawn: 0.2
     spawners:
     - {fileID: 3919206819792666494}
   - hasParticles: 0
-    timeToSpawn: 0
+    timeToSpawn: 0.2
     spawners:
     - {fileID: 764923897746877833}
   - hasParticles: 0
-    timeToSpawn: 0
+    timeToSpawn: 0.2
     spawners:
     - {fileID: 5107006360916083438}
   - hasParticles: 0
-    timeToSpawn: 0
+    timeToSpawn: 0.2
     spawners:
     - {fileID: 2279925151255063079}
   - hasParticles: 0
-    timeToSpawn: 0
+    timeToSpawn: 0.2
     spawners:
     - {fileID: 3553247435315894418}
   - hasParticles: 0
-    timeToSpawn: 0
+    timeToSpawn: 0.2
     spawners:
     - {fileID: 2383086391885352573}
   canSpawnEarly: 1

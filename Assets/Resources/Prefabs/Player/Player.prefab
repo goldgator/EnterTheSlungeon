@@ -961,6 +961,7 @@ GameObject:
   - component: {fileID: 2149424040126631569}
   - component: {fileID: 2514931991342024413}
   - component: {fileID: 8334119558433669801}
+  - component: {fileID: 3111615416265453285}
   m_Layer: 6
   m_Name: GunInfo
   m_TagString: Untagged
@@ -1010,7 +1011,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.627451}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1089,6 +1090,18 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3111615416265453285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3423261076576208097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 879fa3154b39d6b42b8557722ce36489, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3675850654859110366
 GameObject:
   m_ObjectHideFlags: 0
@@ -1621,7 +1634,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 9999
-  m_LinearDrag: 0
+  m_LinearDrag: 0.01
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -1685,6 +1698,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   startingWeapons:
   - {fileID: 5540495575679167429, guid: 6ba8688504ccea14bac7074807cfe7e3, type: 3}
+  - {fileID: 5540495575679167429, guid: f48bc5bf513d7c64daac83849d4dbc46, type: 3}
   dodgeAudio: {fileID: 8300000, guid: eb2ec8a100217b5469d715e324d5b227, type: 3}
 --- !u!95 &1003930773
 Animator:

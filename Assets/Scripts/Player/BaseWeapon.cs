@@ -36,7 +36,7 @@ public class BaseWeapon : MonoBehaviour
     protected float maxOverheat = 100;
     protected float currentOverheat = 0;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         stats = GetComponent<StatBlock>();
         audioSource = GetComponent<AudioSource>();

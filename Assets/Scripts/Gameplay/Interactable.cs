@@ -13,6 +13,7 @@ public class Interactable : MonoBehaviour
     public bool isOn = true;
     [SerializeField]
     private bool usesKey = true;
+    public bool ListensToCursor { get { return (isOn && !usesKey); } }
     [SerializeField]
     private string interactText;
     [SerializeField]

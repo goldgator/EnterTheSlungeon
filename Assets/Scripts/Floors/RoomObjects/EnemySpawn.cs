@@ -10,6 +10,7 @@ public class EnemySpawn : MonoBehaviour
     public bool dropsQuartz = true;
     public string enemyName;
 
+    private bool isSpawning = false;
     private int enemyDeaths = 0;
     private int totalDeathCount = 0;
     private List<BaseEnemy> spawnedEnemies = new List<BaseEnemy>();
@@ -59,10 +60,12 @@ public class EnemySpawn : MonoBehaviour
     private void SpawnEnemyWithAnim()
     {
         GetComponent<Animator>()?.SetTrigger("Spawn");
+        isSpawning = true;
     }
 
     public void OnSpawnEnemy()
     {
+        isSpawning = false;
         string path = (isBoss) ? BOSS_PATH : PREFAB_PATH;
 
         BaseEnemy spawnedEnemy;
@@ -102,7 +105,7 @@ public class EnemySpawn : MonoBehaviour
 
     public bool SpawnsBeenKilled()
     {
-        return (enemyDeaths >= totalDeathCount || totalDeathCount == 0);
+        return (enemyDeaths >= totalDeathCount && !isSpawning);
     }
 
     public void DestroySpawner(bool destroyEnemies)
