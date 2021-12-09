@@ -202,7 +202,7 @@ public static class FloorGenerator
         //Roll a chance to combine rooms into a large room
         if (RNGManager.GetWorldRand(0, 100) < 40)
         {
-            Debug.Log("Attempting big room");
+            //Debug.Log("Attempting big room");
             AddBigRoom(roomData);
         }
 
@@ -247,13 +247,13 @@ public static class FloorGenerator
 
             //Add new bigRoom to the list
             roomData.Add(newBigRoom);
-            Debug.Log("Big room added");
+            //Debug.Log("Big room added");
         }
         //ELSE
         else
         {
             //Throw exception saying bigroom failed
-            Debug.Log("Big room failed");
+            //Debug.Log("Big room failed");
         }
 
     }

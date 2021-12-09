@@ -32,7 +32,7 @@ public class EnemySplit : MonoBehaviour, IHealthDeath
             if (rb)
             {
                 float randAngle = RNGManager.GetEventRand(0f, 360f);
-                Debug.Log(randAngle);
+                //Debug.Log(randAngle);
                 Vector2 direction = Utilities.GetUnitVector2(randAngle);
                 rb.velocity = direction * splitStrength;
             }

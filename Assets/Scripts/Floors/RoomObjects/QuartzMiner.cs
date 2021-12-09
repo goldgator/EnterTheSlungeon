@@ -233,7 +233,7 @@ public class QuartzMiner : MonoBehaviour, IRoomObject, IInteractEvent
 
         randDir *= distance;
 
-        Debug.Log("Spawn Location: " + randDir);
+        //Debug.Log("Spawn Location: " + randDir);
 
         return randDir;
     }

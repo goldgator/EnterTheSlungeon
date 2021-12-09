@@ -137,7 +137,7 @@ public class Gangster : BaseEnemy
         {
             time += Time.deltaTime;
             Color newColor = Color.Lerp(Color.white, Color.clear, time / 2.5f);
-            Debug.Log("Color: " + newColor);
+            //Debug.Log("Color: " + newColor);
             flashImage.color = newColor;
             yield return null;
         }
@@ -177,7 +177,7 @@ public class Gangster : BaseEnemy
         {
             time += Time.deltaTime;
             Color newColor = Color.Lerp(Color.white, Color.clear, time / 2.5f);
-            Debug.Log("Color: " + newColor);
+            //Debug.Log("Color: " + newColor);
             flashImage.color = newColor;
             yield return null;
         }

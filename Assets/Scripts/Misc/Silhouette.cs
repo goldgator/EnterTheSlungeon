@@ -32,7 +32,7 @@ public class Silhouette : MonoBehaviour
         copy.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
         copy.material = Resources.Load<Material>(MAT_PATH);
         copy.color = new Color(.65f,.65f,.65f, original.color.a * .5f);
-        copy.sortingOrder = 700;
+        copy.sortingOrder = 690;
     }
 
     void Update()
@@ -42,5 +42,6 @@ public class Silhouette : MonoBehaviour
         copy.flipY = original.flipY;
         copy.enabled = original.enabled;
         copy.transform.rotation = original.transform.rotation;
+        copy.transform.localScale = original.transform.localScale;
     }
 }

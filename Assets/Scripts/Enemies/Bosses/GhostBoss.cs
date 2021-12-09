@@ -232,7 +232,7 @@ public class GhostBoss : BaseEnemy
         float start = screenDarken.color.a;
         float end = darkenTarget;
 
-        Debug.Log(start + "-> " + end);
+        //Debug.Log(start + "-> " + end);
 
         while (timer < darkenTime)
         {

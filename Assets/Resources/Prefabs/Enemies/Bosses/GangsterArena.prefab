@@ -10110,7 +10110,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9147818099959428963}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Shooting Transform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14948,7 +14948,7 @@ GameObject:
   - component: {fileID: 9147818100157186347}
   - component: {fileID: 9147818100157186346}
   - component: {fileID: 9147818100157186349}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15034,6 +15034,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootingTransform: {fileID: 9147818099959428963}
+  swapX: 0
   projectile: {fileID: 6229470945475235130, guid: b92f6bb7d6f6f7c48a880869064078e4, type: 3}
   shotSpeed: 13
   damage: 5
@@ -20140,7 +20141,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5702017989284875084, guid: b5c1099d9698c544485c92ada4184c9e, type: 3}
       propertyPath: maxHealth
-      value: 250
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 6827554257619136191, guid: b5c1099d9698c544485c92ada4184c9e, type: 3}
       propertyPath: m_Volume

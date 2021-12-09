@@ -294,9 +294,6 @@ public class FloorData
 
         //Assign Entry room, (first room in interact order)
         roomInteractOrder[0].roomType = RoomData.RoomType.Entry;
-        
-
-
     }
 
     private void SplitBigRoom(RoomData bigRoom)
@@ -1078,7 +1075,7 @@ public class FloorData
         //Get a list of all successfully added sprinkle rooms (back of the roomData list)
         List<RoomData> sprinkleRooms = roomData.GetRange(roomData.Count - sprinkleRoomsAdded, sprinkleRoomsAdded);
         if (sprinkleRooms.Count == 0) {
-            Debug.LogError("Failed to add Mine room");
+            //Debug.LogError("Failed to add Mine room");
             return;
         };
 

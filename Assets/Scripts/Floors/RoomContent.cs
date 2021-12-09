@@ -47,7 +47,7 @@ public class RoomContent : MonoBehaviour
         }
 
         //If not returned by now, room is completed, call RoomCompleted()
-        Debug.Log("Room Completed");
+        //Debug.Log("Room Completed");
         RoomCompleted();
     }
 

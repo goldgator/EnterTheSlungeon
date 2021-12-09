@@ -281,6 +281,7 @@ public class BaseWeapon : MonoBehaviour
         GameObject newProjectile = Instantiate(projectile, shotTransform.position, Quaternion.identity);
         float size = stats.GetStatValue("ShotSize");
         newProjectile.transform.localScale = new Vector3(size, size, size);
+        
 
         //Add velocity
         Vector3 velocity = stats.GetStatValue("ShotSpeed") * transform.right;

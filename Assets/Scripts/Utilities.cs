@@ -74,7 +74,7 @@ public static class Utilities
             return CardinalDir.West;
         } else
         {
-            Debug.Log(vector);
+            //Debug.Log(vector);
             throw new Exception("Invalid vector for Cardinal Direction");
         }
     }
