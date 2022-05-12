@@ -3022,12 +3022,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4642897000986253780, guid: ab4023e8d47c1d540954ed3142aacb08, type: 3}
       propertyPath: m_Volume
-      value: 0.4
+      value: 0.15
       objectReference: {fileID: 0}
-    - target: {fileID: 4642897000986253781, guid: ab4023e8d47c1d540954ed3142aacb08, type: 3}
-      propertyPath: currentSong
-      value: 
-      objectReference: {fileID: 8300000, guid: c31d050626586704aa5a2ae6b2317034, type: 3}
     - target: {fileID: 4642897000986253783, guid: ab4023e8d47c1d540954ed3142aacb08, type: 3}
       propertyPath: m_Name
       value: MusicManager

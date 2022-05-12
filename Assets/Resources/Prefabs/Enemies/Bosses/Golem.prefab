@@ -424,6 +424,7 @@ MonoBehaviour:
   damage: 8
   boxEnabled: 0
   tickSpeed: 0.2
+  lifetime: 3.4028235e+38
 --- !u!1 &883267220
 GameObject:
   m_ObjectHideFlags: 0
@@ -821,7 +822,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ee473a9d2b2ea469f365825ca33896, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 200
+  maxHealth: 75
   invinicibilityTime: 0
   subEventThreshold: 0
   subtractEvent:

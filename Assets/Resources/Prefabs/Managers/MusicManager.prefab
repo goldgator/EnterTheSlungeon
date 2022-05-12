@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9990541a2a5dc9045af61e92affed804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentSong: {fileID: 8300000, guid: 7e9b8382956192d4c970b5d866484680, type: 3}
+  currentSong: {fileID: 8300000, guid: c31d050626586704aa5a2ae6b2317034, type: 3}
 --- !u!82 &4642897000986253780
 AudioSource:
   m_ObjectHideFlags: 0
@@ -57,7 +57,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: cc8faaff4b7c04745b3bf2bd060d29c5, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.4
+  m_Volume: 0.15
   m_Pitch: 1
   Loop: 1
   Mute: 0

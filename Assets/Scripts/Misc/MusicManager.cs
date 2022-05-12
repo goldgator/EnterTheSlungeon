@@ -8,6 +8,7 @@ public class MusicManager : MonoBehaviour
     public AudioClip currentSong;
 
     private const string MUSIC_PATH = "Audio/Music/";
+    private bool isLowVolume = false;
 
     private static MusicManager instance;
     public static MusicManager Instance { get
@@ -32,6 +33,19 @@ public class MusicManager : MonoBehaviour
         musicSource = GetComponent<AudioSource>();
         musicSource.clip = currentSong;
         musicSource.Play();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Equals))
+        {
+            AudioListener.volume += .05f;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Minus))
+        {
+            AudioListener.volume -= .05f;
+        }
     }
 
     public void PlayFloorSong()
