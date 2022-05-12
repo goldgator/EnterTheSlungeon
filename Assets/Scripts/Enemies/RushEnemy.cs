@@ -35,7 +35,7 @@ public class RushEnemy : BaseEnemy
         //Orient sprite
         transform.localScale = new Vector3(Mathf.Sign(distance.x) * flipMod, transform.localScale.y, transform.localScale.z);
         
-        //if (distance.magnitude > attackRange)
+
         Vector3 velocity = speed * distance.normalized;
 
         velocity = velocity * Time.deltaTime;
@@ -76,7 +76,7 @@ public class RushEnemy : BaseEnemy
         }
     }
 
-    public void Attack()
+    public virtual void Attack()
     {
         //Play sound
         if (audioSource) audioSource.Play();

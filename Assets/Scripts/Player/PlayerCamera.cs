@@ -42,6 +42,7 @@ public class PlayerCamera : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            camera = GetComponent<Camera>();
         } else
         {
             Destroy(gameObject);
@@ -72,7 +73,7 @@ public class PlayerCamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        camera = GetComponent<Camera>();
+        
         GetScreenWorldSize();
         if (target == null) target = Player.Instance.transform;
         InstantiateFocus();
@@ -154,11 +155,11 @@ public class PlayerCamera : MonoBehaviour
 
     public void GetNewBounds()
     {
-        if (lockedToBounds)
+        if (lockedToBounds && (Floor.Instance != null))
         {
             //Find current room
             Room currentRoom = Floor.Instance.CurrentPlayerCell().GetRoom();
-            //Create room bounds (CURRENTLY ONLY WORKS WITH SINGLE CELL ROOMS)
+            
             Vector2 bottomLeft = new Vector2(currentRoom.transform.position.x, currentRoom.transform.position.y);
             Vector2 size = currentRoom.GridSize * Floor.CELL_SIZE;
 
@@ -168,5 +169,15 @@ public class PlayerCamera : MonoBehaviour
             yRange.x = bottomLeft.y + screenHeight / 2;
             yRange.y = bottomLeft.y + size.y - (screenHeight / 2);
         }
+    }
+
+    public void TakeBounds(Vector2 newRangeX, Vector2 newRangeY)
+    {
+        GetScreenWorldSize();
+        xRange.x = newRangeX.x + screenWidth / 2;
+        xRange.y = newRangeX.y - screenWidth / 2;
+
+        yRange.x = newRangeY.x + screenHeight / 2;
+        yRange.y = newRangeY.y - screenHeight / 2;
     }
 }

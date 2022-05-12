@@ -74,7 +74,7 @@ public static class Utilities
             return CardinalDir.West;
         } else
         {
-            Debug.Log(vector);
+            //Debug.Log(vector);
             throw new Exception("Invalid vector for Cardinal Direction");
         }
     }
@@ -124,6 +124,15 @@ public static class Utilities
         {
             return wantedComponent;
         }
+    }
+
+    public static T RetrieveComponentInBaseOrChildren<T>(this GameObject gameObject) where T : Component
+    {
+        T component = gameObject.GetComponent<T>();
+
+        if (component == null) component = gameObject.GetComponentInChildren<T>();
+
+        return component;
     }
 
     public static void GetAllChildren(this GameObject parent, out List<GameObject> childrenList, bool recursive = false)

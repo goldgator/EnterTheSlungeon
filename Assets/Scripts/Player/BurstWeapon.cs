@@ -22,4 +22,11 @@ public class BurstWeapon : BaseWeapon
             yield return new WaitForSeconds(burstGap);
         }
     }
+
+    public override void CancelReload()
+    {
+        if (isReloading) StopAllCoroutines();
+
+        base.CancelReload();
+    }
 }

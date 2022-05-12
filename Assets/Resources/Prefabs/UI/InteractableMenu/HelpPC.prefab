@@ -127,6 +127,7 @@ MonoBehaviour:
   isOn: 1
   usesKey: 0
   interactText: Help
+  targetTag: Cursor
   interactEvent:
     m_PersistentCalls:
       m_Calls:

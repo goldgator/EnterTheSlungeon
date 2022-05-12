@@ -12,18 +12,36 @@ public class ChargeWeapon : BaseWeapon
     private GameObject chargingAnim;
 
     private Vector3 lastOffset = new Vector3();
+    private Vector3 originalOffset = new Vector3();
 
-    protected override void OnEnable()
+    private void Start()
     {
-        base.OnEnable();
-        InputManager.Instance.fireStopEvent += FireRelease;
+        originalOffset = transform.localPosition;
     }
 
-    protected override void OnDisable()
+    protected override void StartControls()
     {
-        base.OnDisable();
-        InputManager.Instance.fireStopEvent -= FireRelease;
+        if (InputManager.Instance)
+        {
+            InputManager.Instance.fireStartEvent += TryReload;
+            InputManager.Instance.fireUpdateEvent += OnFire;
+            InputManager.Instance.reloadStartEvent += OnReload;
+            InputManager.Instance.fireStopEvent += FireRelease;
+        }
     }
+
+    protected override void DisableControls()
+    {
+        if (InputManager.Instance)
+        {
+            InputManager.Instance.fireStartEvent -= TryReload;
+            InputManager.Instance.fireUpdateEvent -= OnFire;
+            InputManager.Instance.reloadStartEvent -= OnReload;
+            InputManager.Instance.fireStopEvent -= FireRelease;
+        }
+    }
+
+    
 
     protected override void Fire()
     {
@@ -34,8 +52,8 @@ public class ChargeWeapon : BaseWeapon
         chargingAnim.SetActive(chargeTime >= maxChargeTime);
 
         //Shake anim
-        //Redo last offset to put back to normal pos
-        transform.localPosition -= lastOffset;
+        //Set local pos back to original position
+        transform.localPosition = originalOffset;
 
         //Get random Vector2
         float randAngle = RNGManager.GetEventRand(0, 360f) * Mathf.Deg2Rad;

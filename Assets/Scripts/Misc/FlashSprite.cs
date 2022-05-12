@@ -23,6 +23,11 @@ public class FlashSprite : MonoBehaviour
         StartCoroutine(DoFlash());
     }
 
+    public void Blink()
+    {
+        StartCoroutine(BlinkSprite());
+    }
+
     public IEnumerator DoFlash()
     {
         if (renderer.material != originalMat) yield break;
@@ -32,6 +37,17 @@ public class FlashSprite : MonoBehaviour
             renderer.material = flashMaterial;
             yield return new WaitForSeconds(flashTime);
             renderer.material = originalMat;
+            yield return new WaitForSeconds(flashTime);
+        }
+    }
+
+    public IEnumerator BlinkSprite()
+    {
+        for (int i = 0; i < flashAmount; i++)
+        {
+            renderer.enabled = false;
+            yield return new WaitForSeconds(flashTime);
+            renderer.enabled = true;
             yield return new WaitForSeconds(flashTime);
         }
     }

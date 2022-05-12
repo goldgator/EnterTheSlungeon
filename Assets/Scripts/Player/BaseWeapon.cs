@@ -6,7 +6,6 @@ using UnityEngine;
 [RequireComponent(typeof(StatBlock))]
 public class BaseWeapon : MonoBehaviour
 {
-
     [Header("Components")]
     public new SpriteRenderer renderer;
     public Transform shotTransform;
@@ -18,6 +17,11 @@ public class BaseWeapon : MonoBehaviour
     public GameObject projectile;
     public AudioClip gunSound;
 
+    [Header("Details")]
+    public string gunName;
+
+    [Header("Upgrades")]
+    public List<UpgradePath> upgradePaths = new List<UpgradePath>();
     //[Header("Stats")]
     //[SerializeField]
     protected StatBlock stats;
@@ -32,7 +36,7 @@ public class BaseWeapon : MonoBehaviour
     protected float maxOverheat = 100;
     protected float currentOverheat = 0;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         stats = GetComponent<StatBlock>();
         audioSource = GetComponent<AudioSource>();
@@ -41,14 +45,28 @@ public class BaseWeapon : MonoBehaviour
         remainingAmmo = (int)stats.GetStatValue("ClipSize");
     }
 
+    protected virtual void OnEnable()
+    {
+        StartControls();
+    }
+
+    protected virtual void OnDisable()
+    {
+        DisableControls();
+    }
+
     public void SetEquipped(bool newState)
     {
         equipped = newState;
         renderer.enabled = newState;
+
+        if (newState) StartControls(); else DisableControls();
     }
 
     public StatBlock GetStatBlock()
     {
+        if (stats == null) stats = GetComponent<StatBlock>();
+
         return stats;
     }
 
@@ -67,22 +85,29 @@ public class BaseWeapon : MonoBehaviour
         gunUI = newUI;
     }
 
-    protected virtual void OnEnable()
+    protected virtual void StartControls()
     {
         if (InputManager.Instance)
         {
+            InputManager.Instance.fireStartEvent += TryReload;
             InputManager.Instance.fireUpdateEvent += OnFire;
             InputManager.Instance.reloadStartEvent += OnReload;
         }
     }
 
-    protected virtual void OnDisable()
+    protected virtual void DisableControls()
     {
         if (InputManager.Instance)
         {
+            InputManager.Instance.fireStartEvent -= TryReload;
             InputManager.Instance.fireUpdateEvent -= OnFire;
             InputManager.Instance.reloadStartEvent -= OnReload;
         }
+    }
+
+    public void SetControls(bool enabled)
+    {
+        if (enabled) StartControls(); else DisableControls();
     }
 
     // Update is called once per frame
@@ -120,7 +145,7 @@ public class BaseWeapon : MonoBehaviour
     private void UpdateOverheat()
     {
         //Change recovery speed if overheated or not
-        float heatModifer = (overheated) ? 1 : 2;
+        float heatModifer = (equipped) ? 1f : 1.75f;
         currentOverheat = Mathf.Max(0, currentOverheat - (Time.deltaTime * stats.GetStatValue("OverheatRecovery") * heatModifer));
         float progress = currentOverheat / maxOverheat;
 
@@ -158,7 +183,8 @@ public class BaseWeapon : MonoBehaviour
         float aimX = Mathf.Sign(direction.x);
         Player.Instance.FlipSprite((aimX < 0));
         //Player.Instance.transform.localScale = new Vector3(aimX, 1, 1);
-        transform.localScale = new Vector3(1, aimX, 1);
+        //transform.localScale = new Vector3(1, aimX, 1);
+        renderer.flipY = (aimX < 0);
     }
 
     private void CorrectDirAndScale()
@@ -170,7 +196,16 @@ public class BaseWeapon : MonoBehaviour
         float aimX = Mathf.Sign(direction.x);
         //Player.Instance.transform.localScale = new Vector3(aimX, 1, 1);
         Player.Instance.FlipSprite((aimX < 0));
-        transform.localScale = new Vector3(1, aimX, 1);
+        //transform.localScale = new Vector3(1, aimX, 1);
+        renderer.flipY = (aimX < 0);
+    }
+
+    protected void TryReload()
+    {
+        if (GetRemainingAmmo() <= 0 && !isReloading)
+        {
+            OnReload();
+        }
     }
 
     protected virtual void OnFire(bool pressed)
@@ -183,10 +218,24 @@ public class BaseWeapon : MonoBehaviour
 
     protected virtual void OnReload()
     {
+        //Debug.Log("Reloading: " + gameObject.name);
         int maxAmmo = (int)stats.GetStatValue("ClipSize");
-        if (remainingAmmo < maxAmmo && !isReloading && !overheated)
+        if (remainingAmmo < maxAmmo && !isReloading && !overheated && equipped)
         {
+            StopAllCoroutines();
             StartCoroutine(Reload(maxAmmo));
+        }
+    }
+
+    public virtual void CancelReload()
+    {
+        if (isReloading)
+        {
+            StopAllCoroutines();
+            //StopCoroutine("Reload");
+            gunUI.UpdateReload(1);
+            isReloading = false;
+            gunUI.UpdateAmmo();
         }
     }
 
@@ -232,6 +281,7 @@ public class BaseWeapon : MonoBehaviour
         GameObject newProjectile = Instantiate(projectile, shotTransform.position, Quaternion.identity);
         float size = stats.GetStatValue("ShotSize");
         newProjectile.transform.localScale = new Vector3(size, size, size);
+        
 
         //Add velocity
         Vector3 velocity = stats.GetStatValue("ShotSpeed") * transform.right;

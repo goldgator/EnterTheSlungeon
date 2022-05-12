@@ -30,8 +30,11 @@ public class Floor : MonoBehaviour
     [SerializeField]
     private int seedOverwrite = 0;
     public bool debug = false;
+    public static bool ItemTesting { get; set; }
     public bool itemTesting = false;
+
     public static int currentGenData = 0;
+    public static bool quickRun = false;
 
     
 
@@ -72,13 +75,26 @@ public class Floor : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        ItemTesting = itemTesting;
+
+        //Set PlayerCursor to game mode
+        PlayerCursor.Instance.SetCursorUIState(false);
     }
 
     public void SetFloorAttributes()
     {
-        floorLevel = FloorGenerator.floorGenSequence[currentGenData].floorLevel;
-        floorType = FloorGenerator.floorGenSequence[currentGenData].floorType;
-        patternSize = FloorGenerator.floorGenSequence[currentGenData].patternSize;
+        if (quickRun)
+        {
+            floorLevel = FloorGenerator.quickGenSequence[currentGenData].floorLevel;
+            floorType = FloorGenerator.quickGenSequence[currentGenData].floorType;
+            patternSize = FloorGenerator.quickGenSequence[currentGenData].patternSize;
+        } else
+        {
+            floorLevel = FloorGenerator.floorGenSequence[currentGenData].floorLevel;
+            floorType = FloorGenerator.floorGenSequence[currentGenData].floorType;
+            patternSize = FloorGenerator.floorGenSequence[currentGenData].patternSize;
+        }
+        
         currentGenData++;
     }
 
@@ -140,14 +156,16 @@ public class Floor : MonoBehaviour
             Player.Instance.ForceStop();
 
             floorCanvas.SetActive(!currentState);
+            PlayerCursor.Instance.SetCursorUIState(!currentState);
             Player.Instance.SetPlayerEnabled(currentState);
         }
 
         //Check if game won
-        /*if (bossRoom.Completed)
+        int neededFloors = (quickRun) ? FloorGenerator.quickGenSequence.Length : FloorGenerator.floorGenSequence.Length;
+        if (bossRoom.Completed && currentGenData >= (neededFloors))
         {
             OnFloorFinish();
-        }*/
+        }
 
         if (gameOver)
         {
@@ -160,6 +178,7 @@ public class Floor : MonoBehaviour
 
     public void OnFloorFinish()
     {
+        currentGenData = 0;
         victoryPanel.SetActive(true);
         Player.Instance.SetPlayerEnabled(false);
         Player.Instance.ForceStop();

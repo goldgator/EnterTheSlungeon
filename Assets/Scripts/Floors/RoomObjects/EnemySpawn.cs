@@ -10,6 +10,7 @@ public class EnemySpawn : MonoBehaviour
     public bool dropsQuartz = true;
     public string enemyName;
 
+    private bool isSpawning = false;
     private int enemyDeaths = 0;
     private int totalDeathCount = 0;
     private List<BaseEnemy> spawnedEnemies = new List<BaseEnemy>();
@@ -59,10 +60,12 @@ public class EnemySpawn : MonoBehaviour
     private void SpawnEnemyWithAnim()
     {
         GetComponent<Animator>()?.SetTrigger("Spawn");
+        isSpawning = true;
     }
 
     public void OnSpawnEnemy()
     {
+        isSpawning = false;
         string path = (isBoss) ? BOSS_PATH : PREFAB_PATH;
 
         BaseEnemy spawnedEnemy;
@@ -70,12 +73,12 @@ public class EnemySpawn : MonoBehaviour
         {
             GameObject[] allEnemies = Resources.LoadAll<GameObject>(path);
             GameObject chosenEnemy = allEnemies[RNGManager.GetEventRand(0, allEnemies.Length)];
-            spawnedEnemy = Instantiate(chosenEnemy, transform.position, Quaternion.identity).GetComponent<BaseEnemy>();
+            spawnedEnemy = Instantiate(chosenEnemy, transform.position, Quaternion.identity).RetrieveComponentInBaseOrChildren<BaseEnemy>();
         }
         else
         {
             GameObject enemy = Resources.Load<GameObject>(path + enemyName);
-            spawnedEnemy = Instantiate(enemy, transform.position, Quaternion.identity).GetComponent<BaseEnemy>();
+            spawnedEnemy = Instantiate(enemy, transform.position, Quaternion.identity).RetrieveComponentInBaseOrChildren<BaseEnemy>();
         }
 
         spawnedEnemy.InstantiateEnemy(this);
@@ -102,7 +105,7 @@ public class EnemySpawn : MonoBehaviour
 
     public bool SpawnsBeenKilled()
     {
-        return (enemyDeaths >= totalDeathCount || totalDeathCount == 0);
+        return (enemyDeaths >= totalDeathCount && !isSpawning);
     }
 
     public void DestroySpawner(bool destroyEnemies)

@@ -8,7 +8,7 @@ public class StatBlock : MonoBehaviour
 {
     public List<BaseStat> allStats = new List<BaseStat>();
 
-    private BaseStat GetStat(string tag)
+    public BaseStat GetStat(string tag)
     {
         foreach (BaseStat stat in allStats)
         {
@@ -26,8 +26,8 @@ public class StatBlock : MonoBehaviour
             return stat.Value;
         } catch(NullReferenceException nre)
         {
-            Debug.LogError("Could not find stat '" + tag + "' in object '" + gameObject.name + "'\nDefaulting to value 0");
-            Debug.LogError(nre.Message);
+            Debug.LogWarning("Could not find stat '" + tag + "' in object '" + gameObject.name + "'\nDefaulting to value 0");
+            Debug.LogWarning(nre.Message);
             return 0;
         }
     }
@@ -44,6 +44,35 @@ public class StatBlock : MonoBehaviour
 
         allStats.Add(new BaseStat(tag, baseValue));
     }
+
+    public List<string> FindStatDiffs(StatBlock otherBlock)
+    {
+        List<string> statDiffs = new List<string>();
+
+        //Compare all stats from the first gun
+        foreach (BaseStat stat in allStats)
+        {
+            if (!stat.CompareStat(otherBlock))
+            {
+                if (!statDiffs.Contains(stat.statName)) statDiffs.Add(stat.statName);
+            }
+        }
+
+        //Compare all stats from the second gun
+        foreach (BaseStat stat in otherBlock.allStats)
+        {
+            if (!stat.CompareStat(this))
+            {
+                if (!statDiffs.Contains(stat.statName)) statDiffs.Add(stat.statName);
+            }
+        }
+
+        return statDiffs;
+    }
+
+
+
+    
 
     public void AddModifier(StatModifier modifier)
     {

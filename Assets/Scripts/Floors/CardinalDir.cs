@@ -5,5 +5,3 @@
     South,
     West
 }
-
-

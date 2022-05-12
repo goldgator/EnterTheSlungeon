@@ -30,7 +30,7 @@ public class Player : MonoBehaviour, IHealthDeath
     private bool playerEnabled = true;
     private Vector3 lastMoveDir;
     private Vector3 velocity;
-    private Wallet playerWallet = new Wallet();
+    private Wallet playerWallet = new Wallet(0,0,0);
     private const string PLAYER_PATH = "Prefabs/Player/Player";
     public static GameObject secondaryWeapon;
 
@@ -58,6 +58,9 @@ public class Player : MonoBehaviour, IHealthDeath
             return instance;
         }
     }
+
+    
+
     public static bool InstanceExists()
     {
         return (instance != null);
@@ -97,6 +100,11 @@ public class Player : MonoBehaviour, IHealthDeath
         weaponManager.AddGun(secondaryWeapon);
     }
 
+    public Health GetHealth()
+    {
+        return playerHealth;
+    }
+
     public void OnPlayerDeath()
     {
         animator.SetBool("Death", true);
@@ -120,6 +128,7 @@ public class Player : MonoBehaviour, IHealthDeath
     public void SetPlayerEnabled(bool isEnabled)
     {
         playerEnabled = isEnabled;
+        weaponManager.CurrentWeapon.SetControls(isEnabled);
     }
 
     public bool GetPlayerEnabled()

@@ -11,6 +11,10 @@ public class HitBox : MonoBehaviour
 
     [SerializeField]
     private float tickSpeed = .2f;
+
+    [SerializeField]
+    private float lifetime = float.MaxValue;
+
     private float tickTimer;
     private bool didDamage;
 
@@ -23,6 +27,9 @@ public class HitBox : MonoBehaviour
     private void Update()
     {
         tickTimer -= Time.deltaTime;
+        lifetime -= Time.deltaTime;
+
+        if (lifetime <= 0) boxEnabled = false;
 
         if (didDamage)
         {

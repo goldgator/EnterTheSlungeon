@@ -85,7 +85,7 @@ public class Quartz : MonoBehaviour
         //Choose random angle
         Vector2 direction = Utilities.GetUnitVector2(RNGManager.GetEventRand(0f,360f));
         //Set velocity of rigid body
-        rb.velocity = direction * speed * .5f;
+        rb.velocity = direction * RNGManager.GetEventRand(speed / 2, speed) * .5f;
     }
 
     // Update is called once per frame

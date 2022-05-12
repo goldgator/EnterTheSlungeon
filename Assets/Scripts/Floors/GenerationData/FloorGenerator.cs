@@ -31,9 +31,18 @@ public static class FloorGenerator
 
     //First one is default, values in inspector will take priority
     public static FloorGenData[] floorGenSequence = {
+            new FloorGenData(1, 5, FloorType.Expansive),
             new FloorGenData(1, 7, FloorType.Expansive),
+            new FloorGenData(2, 5, FloorType.Tight),
             new FloorGenData(2, 7, FloorType.Tight),
-            new FloorGenData(3, 7, FloorType.ConstrainedExpansive)
+            new FloorGenData(3, 5, FloorType.Tight),
+            new FloorGenData(3, 7, FloorType.Tight)
+        };
+
+    public static FloorGenData[] quickGenSequence = {
+            new FloorGenData(1, 5, FloorType.Expansive),
+            new FloorGenData(2, 5, FloorType.Tight),
+            new FloorGenData(3, 5, FloorType.Tight)
         };
 
     public static FloorData GenerateFloor(FloorType floorType, int patternSize, bool seeded)
@@ -193,7 +202,7 @@ public static class FloorGenerator
         //Roll a chance to combine rooms into a large room
         if (RNGManager.GetWorldRand(0, 100) < 40)
         {
-            Debug.Log("Attempting big room");
+            //Debug.Log("Attempting big room");
             AddBigRoom(roomData);
         }
 
@@ -238,13 +247,13 @@ public static class FloorGenerator
 
             //Add new bigRoom to the list
             roomData.Add(newBigRoom);
-            Debug.Log("Big room added");
+            //Debug.Log("Big room added");
         }
         //ELSE
         else
         {
             //Throw exception saying bigroom failed
-            Debug.Log("Big room failed");
+            //Debug.Log("Big room failed");
         }
 
     }

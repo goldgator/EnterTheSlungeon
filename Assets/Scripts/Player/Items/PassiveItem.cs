@@ -11,7 +11,12 @@ public class PassiveItem : BaseItem
     {
         base.SetupItem();
 
-        foreach(StatModifier mod in statMods)
+        ApplyMods();
+    }
+
+    public void ApplyMods()
+    {
+        foreach (StatModifier mod in statMods)
         {
             managerParent.AttachMod(mod);
         }

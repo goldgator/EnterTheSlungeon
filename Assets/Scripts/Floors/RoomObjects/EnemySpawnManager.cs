@@ -80,8 +80,6 @@ public class EnemySpawnManager : MonoBehaviour, IRoomObject
             if (!spawn.SpawnsBeenKilled()) return false;
         }
 
-        //If passes through foreach loop, all spawns have had their enemy die
-        //Debug.Log("Wave " + waveIndex + " completed");
         return true;
     }
 

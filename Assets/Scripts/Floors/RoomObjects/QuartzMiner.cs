@@ -95,7 +95,7 @@ public class QuartzMiner : MonoBehaviour, IRoomObject, IInteractEvent
 
         //StartCoroutines
         StartCoroutine(MineSpawnEvent());
-        StartCoroutine(MineSpawnEvent());
+        //StartCoroutine(MineSpawnEvent());
     }
 
     public void StopMineEvent()
@@ -233,7 +233,7 @@ public class QuartzMiner : MonoBehaviour, IRoomObject, IInteractEvent
 
         randDir *= distance;
 
-        Debug.Log("Spawn Location: " + randDir);
+        //Debug.Log("Spawn Location: " + randDir);
 
         return randDir;
     }

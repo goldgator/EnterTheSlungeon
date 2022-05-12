@@ -55,12 +55,25 @@ public class BaseStat
     {
         baseValue = newValue;
     }
+
+    public bool CompareStat(StatBlock targetBlock)
+    {
+        BaseStat targetStat = targetBlock.GetStat(statName);
+        float targetBaseValue = (targetStat == null) ? 0 : targetStat.baseValue;
+
+        return (baseValue == targetBaseValue);
+    }
+
+    
     
     public void AddModifier(StatModifier newModifier)
     {
         if (modifiers == null) modifiers = new List<StatModifier>();
-        updated = false;
-        modifiers.Add(newModifier);
+        if (!modifiers.Contains(newModifier))
+        {
+            modifiers.Add(newModifier);
+            updated = false;
+        }
     }
 
     public void RequestUpdate()

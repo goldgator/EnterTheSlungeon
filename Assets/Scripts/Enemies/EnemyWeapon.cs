@@ -10,18 +10,22 @@ public class EnemyWeapon : MonoBehaviour
     protected Player target;
     protected AudioSource audioSource;
     public Transform shootingTransform;
+    public bool swapX = false;
 
     public GameObject projectile;
     public float shotSpeed;
     public float damage;
-    private float shotTimer = 0;
+    protected float shotTimer = 0;
     public float shotCooldown;
+    public float shotCooldownStart;
 
     protected void Start()
     {
         target = Player.Instance;
         audioSource = GetComponent<AudioSource>();
         renderer = GetComponent<SpriteRenderer>();
+
+        shotTimer = -shotCooldownStart;
     }
 
     private void Update()
@@ -35,7 +39,12 @@ public class EnemyWeapon : MonoBehaviour
         }
     }
 
-    private void Shoot()
+    public virtual void Shoot()
+    {
+        SpawnProjectile();
+    }
+
+    protected void SpawnProjectile()
     {
         //Play sound
         if (audioSource) audioSource.Play();
@@ -60,7 +69,8 @@ public class EnemyWeapon : MonoBehaviour
     {
         //Determine player and weapon scale
         float aimX = Mathf.Sign(direction.x);
-        transform.localScale = new Vector3(aimX, aimX, 1);
+        Vector3 newScale = (swapX) ? new Vector3(aimX, aimX, 1) : new Vector3(1, aimX, 1);
+        transform.localScale = newScale;
     }
 
 }

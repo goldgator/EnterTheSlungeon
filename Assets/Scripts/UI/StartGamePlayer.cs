@@ -15,6 +15,8 @@ public class StartGamePlayer : MonoBehaviour
     private void Start()
     {
         animator = GetComponent<Animator>();
+
+        Floor.currentGenData = 0;
     }
 
     public void StartGamePlayerLoadScene()

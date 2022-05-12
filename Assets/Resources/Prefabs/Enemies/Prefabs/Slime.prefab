@@ -32,7 +32,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5702017989284875080}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.3, y: 1.332, z: -1.0036067}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -121,13 +121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ee473a9d2b2ea469f365825ca33896, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 8
+  maxHealth: 4
   invinicibilityTime: 0
-  hasRegen: 0
-  regenTime: 2
-  regenAmount: 1
-  parentHealth: {fileID: 0}
-  parentAddHealth: 0
   subEventThreshold: 0
   subtractEvent:
     m_PersistentCalls:
@@ -227,7 +222,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36d5e818ff954a94386d60c0081028ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  quartzPrefab: {fileID: 2284714550500931354, guid: 3ae79b1c832a6e24fa97549bb096e3b1, type: 3}
   quartzMin: 0
   quartzMax: 3
   uniformDrop: 1
